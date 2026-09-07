@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SOP7：真实病例数据读取、检查与清洗</title>
+  <link rel="stylesheet" href="../style.css">
+  <link rel="stylesheet" href="./practice.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css" crossorigin="anonymous" referrerpolicy="no-referrer">
+</head>
+<body>
+  <div class="book-shell practice-page">
+    <aside class="book-sidebar" aria-label="本页目录">
+      <div class="toc-scroll">
+        <div class="toc__title">目录</div>
+        <ul class="book-nav toc">
+          <li><a class="lv1" href="#p1">1. 正式读取真实数据</a></li>
+          <li><a class="lv1" href="#p2">2. 需要检查什么</a></li>
+          <li><a class="lv1" href="#p3">3. 核心实验</a></li>
+          <li><a class="lv1" href="#p4">4. 进阶任务</a></li>
+          <li><a class="lv1" href="#p5">5. 作业</a></li>
+        </ul>
+        <div class="toc__title" style="margin-top:18px;">全部实验</div>
+        <ul class="book-nav">
+        <li><a href="sop00-dataset.html">SOP0：认识课程数据</a></li>
+        <li><a href="sop01-syntax.html">SOP1：Python 语法元素与病例信息处理</a></li>
+        <li><a href="sop02-structures.html">SOP2：Python 数据结构与病例组织</a></li>
+        <li><a href="sop03-control.html">SOP3：程序控制结构与病例规则筛选</a></li>
+        <li><a href="sop04-functions.html">SOP4：函数与病例处理工具箱</a></li>
+        <li><a href="sop05-dynamic.html">SOP5：动态函数与可配置病例规则</a></li>
+        <li><a href="sop06-files.html">SOP6：文件操作与数据格式转换</a></li>
+        <li><a href="sop07-quality.html" class="is-active">SOP7：真实病例数据读取、检查与清洗</a></li>
+        <li><a href="sop08-pandas.html">SOP8：pandas 综合数据处理与病例分析</a></li>
+        <li><a href="sop09-api.html">SOP9：网络请求、大模型 API 与智能报告</a></li>
+        <li><a href="sop10-web.html">SOP10：Python Web 应用与交互式分析平台</a></li>
+        <li><a href="sop11-project.html">SOP11：完整项目集成、测试与交付</a></li>
+        </ul>
+      </div>
+    </aside>
+
+    <main class="book-main">
+      <article class="article">
+        <div class="practice-breadcrumb">
+          <a href="./">Practice</a><span class="sep">/</span>SOP7
+        </div>
+        <h1>SOP7：真实病例数据读取、检查与清洗</h1>
+
+        <p class="practice-lead">真实数据为什么不能读取以后直接使用？完成后你将得到「病例数据质量控制系统」。</p>
+
+        <section class="exercise" id="p1">
+          <h2>1. 正式读取真实数据</h2>
+
+          <pre><code class="language-python">import csv
+from pathlib import Path
+
+data_path = Path("data/diabetic_data.csv")
+with data_path.open("r", encoding="utf-8") as f:
+    reader = csv.DictReader(f)
+    rows = list(reader)
+
+print(len(rows), len(rows[0]))
+patients = {r["patient_nbr"] for r in rows}
+print(len(patients))</code></pre>
+
+        </section>
+        <section class="exercise" id="p2">
+          <h2>2. 需要检查什么</h2>
+
+          <ul class="tasks">
+            <li>数据维度、患者数、变量数</li>
+            <li>缺失值与特殊缺失标记 <code>?</code></li>
+            <li>重复记录、非法值、分类取值是否异常</li>
+            <li>用 <code>IDS_mapping.csv</code> 解释编码字段</li>
+            <li>区分 <code>patient_nbr</code> 与 <code>encounter_id</code></li>
+          </ul>
+
+        </section>
+        <section class="exercise" id="p3">
+          <h2>3. 核心实验</h2>
+
+          <p style="margin: 0 0 10px; color: var(--ink-light);">读取 <code>diabetic_data.csv</code>，生成 <code>data_quality_report</code>，至少包含：记录数、患者数、变量数、缺失情况、异常情况、字段类型、质量说明。</p>
+
+        </section>
+        <section class="exercise" id="p4">
+          <h2>4. 进阶任务</h2>
+
+          <p style="margin: 0 0 10px; color: var(--ink-light);">把质量检查步骤全部封装成函数，例如 <code>check_shape()</code>、<code>check_missing()</code>、<code>check_duplicates()</code>、<code>build_report()</code>。</p>
+
+        </section>
+        <section class="exercise" id="p5">
+          <h2>5. 作业</h2>
+
+          <h3>作业 1</h3>
+          <p style="margin: 0 0 10px; color: var(--ink-light);">输出完整的数据质量报告（TXT 或 JSON）。</p>
+          <h3>作业 2</h3>
+          <p style="margin: 0 0 10px; color: var(--ink-light);">结合 <code>IDS_mapping.csv</code>，把 <code>admission_type_id</code> 的取值分布翻译成可读文字统计。</p>
+
+        </section>
+      </article>
+    </main>
+  </div>
+
+  <script>
+    (function () {
+      const links = Array.from(document.querySelectorAll('.toc a[href^="#"]'));
+      const idToLink = new Map();
+      links.forEach((a) => {
+        const id = decodeURIComponent(a.getAttribute('href').slice(1));
+        if (id) idToLink.set(id, a);
+      });
+      const headings = Array.from(document.querySelectorAll('section[id]'))
+        .filter((h) => idToLink.has(h.id));
+      if (headings.length === 0) return;
+      const clear = () => links.forEach((a) => a.classList.remove('is-active'));
+      const setActive = (id) => { clear(); const a = idToLink.get(id); if (a) a.classList.add('is-active'); };
+      const initial = (location.hash && location.hash.slice(1)) || headings[0].id;
+      setActive(decodeURIComponent(initial));
+      const obs = new IntersectionObserver((entries) => {
+        const visible = entries.filter((e) => e.isIntersecting).sort((a, b) => (a.boundingClientRect.top - b.boundingClientRect.top));
+        if (visible.length > 0) setActive(visible[0].target.id);
+      }, { rootMargin: '-15% 0px -75% 0px', threshold: [0, 1] });
+      headings.forEach((h) => obs.observe(h));
+    })();
+  </script>
+
+  <script>
+    (function () {
+      document.querySelectorAll('pre > code').forEach((code) => {
+        const pre = code.parentElement;
+        if (!pre || pre.querySelector('.copy-btn')) return;
+        const btn = document.createElement('button');
+        btn.className = 'copy-btn';
+        btn.type = 'button';
+        btn.textContent = '复制';
+        btn.addEventListener('click', async () => {
+          try {
+            await navigator.clipboard.writeText(code.innerText);
+            btn.dataset.state = 'ok';
+            btn.textContent = '已复制';
+            setTimeout(() => { delete btn.dataset.state; btn.textContent = '复制'; }, 1200);
+          } catch (e) {
+            const range = document.createRange();
+            range.selectNodeContents(code);
+            const sel = window.getSelection();
+            sel.removeAllRanges();
+            sel.addRange(range);
+            btn.textContent = '请 Ctrl+C';
+            setTimeout(() => { btn.textContent = '复制'; }, 1200);
+          }
+        });
+        pre.appendChild(btn);
+      });
+    })();
+  </script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/python.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script>hljs.highlightAll();</script>
+</body>
+</html>

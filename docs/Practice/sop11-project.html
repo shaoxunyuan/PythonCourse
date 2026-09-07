@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SOP11：完整项目集成、测试与交付</title>
+  <link rel="stylesheet" href="../style.css">
+  <link rel="stylesheet" href="./practice.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css" crossorigin="anonymous" referrerpolicy="no-referrer">
+</head>
+<body>
+  <div class="book-shell practice-page">
+    <aside class="book-sidebar" aria-label="本页目录">
+      <div class="toc-scroll">
+        <div class="toc__title">目录</div>
+        <ul class="book-nav toc">
+          <li><a class="lv1" href="#p1">1. 推荐项目结构</a></li>
+          <li><a class="lv1" href="#p2">2. 最终平台功能</a></li>
+          <li><a class="lv1" href="#p3">3. 依赖、配置与安全</a></li>
+          <li><a class="lv1" href="#p4">4. 验收要点</a></li>
+          <li><a class="lv1" href="#p5">5. 作业</a></li>
+        </ul>
+        <div class="toc__title" style="margin-top:18px;">全部实验</div>
+        <ul class="book-nav">
+        <li><a href="sop00-dataset.html">SOP0：认识课程数据</a></li>
+        <li><a href="sop01-syntax.html">SOP1：Python 语法元素与病例信息处理</a></li>
+        <li><a href="sop02-structures.html">SOP2：Python 数据结构与病例组织</a></li>
+        <li><a href="sop03-control.html">SOP3：程序控制结构与病例规则筛选</a></li>
+        <li><a href="sop04-functions.html">SOP4：函数与病例处理工具箱</a></li>
+        <li><a href="sop05-dynamic.html">SOP5：动态函数与可配置病例规则</a></li>
+        <li><a href="sop06-files.html">SOP6：文件操作与数据格式转换</a></li>
+        <li><a href="sop07-quality.html">SOP7：真实病例数据读取、检查与清洗</a></li>
+        <li><a href="sop08-pandas.html">SOP8：pandas 综合数据处理与病例分析</a></li>
+        <li><a href="sop09-api.html">SOP9：网络请求、大模型 API 与智能报告</a></li>
+        <li><a href="sop10-web.html">SOP10：Python Web 应用与交互式分析平台</a></li>
+        <li><a href="sop11-project.html" class="is-active">SOP11：完整项目集成、测试与交付</a></li>
+        </ul>
+      </div>
+    </aside>
+
+    <main class="book-main">
+      <article class="article">
+        <div class="practice-breadcrumb">
+          <a href="./">Practice</a><span class="sep">/</span>SOP11
+        </div>
+        <h1>SOP11：完整项目集成、测试与交付</h1>
+
+        <p class="practice-lead">把前 10 次实验的代码组合成结构完整、能够运行、能够处理异常的最终项目：《糖尿病住院病例数据分析与智能报告平台》。</p>
+
+        <section class="exercise" id="p1">
+          <h2>1. 推荐项目结构</h2>
+
+          <pre><code>PythonCourseProject/
+├── app.py
+├── data/
+├── utils/
+│   ├── loader.py
+│   ├── cleaner.py
+│   ├── filter.py
+│   ├── analysis.py
+│   ├── visualization.py
+│   ├── report.py
+│   └── llm.py
+├── output/
+├── requirements.txt
+├── README.md
+└── .gitignore</code></pre>
+
+        </section>
+        <section class="exercise" id="p2">
+          <h2>2. 最终平台功能</h2>
+
+          <ul class="tasks">
+            <li>数据导入与概览（记录数、患者数、变量数）</li>
+            <li>数据质量检查（缺失、异常、编码）</li>
+            <li>病例查询与筛选</li>
+            <li>统计分析与可视化</li>
+            <li>结果导出（筛选结果、统计表、报告）</li>
+            <li>AI 智能摘要（统计由 Python 完成，摘要由大模型生成）</li>
+            <li>异常处理：文件不存在、格式错误、缺字段、API 失败等都要有清晰提示</li>
+          </ul>
+
+        </section>
+        <section class="exercise" id="p3">
+          <h2>3. 依赖、配置与安全</h2>
+
+          <ul class="tasks">
+            <li>用 <code>requirements.txt</code> 记录依赖</li>
+            <li>API Key 放在环境变量中，不要写入公开代码</li>
+            <li>使用相对路径访问 <code>data/</code> 与 <code>output/</code></li>
+            <li>README 说明：项目名称、功能、环境、安装、运行、目录与模块</li>
+          </ul>
+
+        </section>
+        <section class="exercise" id="p4">
+          <h2>4. 验收要点</h2>
+
+          <ul class="tasks">
+            <li>项目能运行，能读取课程数据</li>
+            <li>核心功能完整，代码函数化、模块化</li>
+            <li>页面可交互，分析结果与图表正确</li>
+            <li>API 可调用，或能正确处理调用失败</li>
+            <li>具备基本异常处理；能解释核心代码，并能现场做一次小修改</li>
+          </ul>
+
+        </section>
+        <section class="exercise" id="p5">
+          <h2>5. 作业</h2>
+
+          <h3>最终作业</h3>
+          <p style="margin: 0 0 10px; color: var(--ink-light);">提交完整项目（含 README、requirements.txt、主要模块与运行说明），作为学期最终作品。</p>
+
+        </section>
+      </article>
+    </main>
+  </div>
+
+  <script>
+    (function () {
+      const links = Array.from(document.querySelectorAll('.toc a[href^="#"]'));
+      const idToLink = new Map();
+      links.forEach((a) => {
+        const id = decodeURIComponent(a.getAttribute('href').slice(1));
+        if (id) idToLink.set(id, a);
+      });
+      const headings = Array.from(document.querySelectorAll('section[id]'))
+        .filter((h) => idToLink.has(h.id));
+      if (headings.length === 0) return;
+      const clear = () => links.forEach((a) => a.classList.remove('is-active'));
+      const setActive = (id) => { clear(); const a = idToLink.get(id); if (a) a.classList.add('is-active'); };
+      const initial = (location.hash && location.hash.slice(1)) || headings[0].id;
+      setActive(decodeURIComponent(initial));
+      const obs = new IntersectionObserver((entries) => {
+        const visible = entries.filter((e) => e.isIntersecting).sort((a, b) => (a.boundingClientRect.top - b.boundingClientRect.top));
+        if (visible.length > 0) setActive(visible[0].target.id);
+      }, { rootMargin: '-15% 0px -75% 0px', threshold: [0, 1] });
+      headings.forEach((h) => obs.observe(h));
+    })();
+  </script>
+
+  <script>
+    (function () {
+      document.querySelectorAll('pre > code').forEach((code) => {
+        const pre = code.parentElement;
+        if (!pre || pre.querySelector('.copy-btn')) return;
+        const btn = document.createElement('button');
+        btn.className = 'copy-btn';
+        btn.type = 'button';
+        btn.textContent = '复制';
+        btn.addEventListener('click', async () => {
+          try {
+            await navigator.clipboard.writeText(code.innerText);
+            btn.dataset.state = 'ok';
+            btn.textContent = '已复制';
+            setTimeout(() => { delete btn.dataset.state; btn.textContent = '复制'; }, 1200);
+          } catch (e) {
+            const range = document.createRange();
+            range.selectNodeContents(code);
+            const sel = window.getSelection();
+            sel.removeAllRanges();
+            sel.addRange(range);
+            btn.textContent = '请 Ctrl+C';
+            setTimeout(() => { btn.textContent = '复制'; }, 1200);
+          }
+        });
+        pre.appendChild(btn);
+      });
+    })();
+  </script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/python.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script>hljs.highlightAll();</script>
+</body>
+</html>
