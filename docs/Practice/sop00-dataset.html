@@ -10,9 +10,8 @@
 </head>
 <body>
   <div class="book-shell practice-page">
-    <aside class="book-sidebar" aria-label="导航">
+    <aside class="book-sidebar" aria-label="本页目录">
       <div class="toc-scroll">
-
         <div class="toc__title">目录</div>
         <ul class="book-nav toc">
           <li><a class="lv1" href="#p1">1. 数据文件</a></li>
@@ -20,10 +19,12 @@
           <li><a class="lv1" href="#p3">3. 一行代表什么</a></li>
           <li><a class="lv1" href="#p4">4. 数据主要包含什么</a></li>
           <li><a class="lv1" href="#p5">5. IDS_mapping.csv</a></li>
-          <li><a class="lv1" href="#p6">6. 这份数据怎么用</a></li>
+          <li><a class="lv1" href="#p6">6. 课程使用路径</a></li>
+          <li><a class="lv1" href="#p7">7. 使用目的：智能报告平台</a></li>
         </ul>
       </div>
     </aside>
+
     <main class="book-main">
       <article class="article">
         <div class="practice-breadcrumb">
@@ -31,40 +32,34 @@
         </div>
         <h1>SOP0：认识课程数据</h1>
 
-        <p class="practice-lead">开始写代码之前，先弄清：整个学期在处理什么数据、数据有多大、一行代表什么。</p>
-
         <section class="exercise" id="p1">
           <h2>1. 数据文件</h2>
-
-          <p style="margin: 0 0 10px; color: var(--ink-light);">课程数据在 <code>data/</code> 目录：</p>
+          <p style="margin: 0 0 10px; color: var(--ink-light);">课程数据位于 <code>data/</code>：</p>
           <ul class="tasks">
             <li><a href="https://github.com/shaoxunyuan/PythonCourse/blob/main/data/diabetic_data.csv"><code>diabetic_data.csv</code></a>：主数据，住院记录</li>
             <li><a href="https://github.com/shaoxunyuan/PythonCourse/blob/main/data/IDS_mapping.csv"><code>IDS_mapping.csv</code></a>：编码字段说明</li>
           </ul>
-
         </section>
+
         <section class="exercise" id="p2">
           <h2>2. 数据维度</h2>
-
-          <p style="margin: 0 0 10px; color: var(--ink-light);"><code>diabetic_data.csv</code> 实际维度：</p>
+          <p style="margin: 0 0 10px; color: var(--ink-light);"><code>diabetic_data.csv</code>：</p>
           <ul class="tasks">
             <li><strong>101,766 行 × 50 列</strong></li>
             <li>101,766 条住院记录</li>
             <li>50 个字段</li>
             <li>不同 <code>patient_nbr</code>：<strong>71,518</strong></li>
           </ul>
-
         </section>
+
         <section class="exercise" id="p3">
           <h2>3. 一行代表什么</h2>
-
           <div class="book-callout">
-            <strong>101,766 行并不代表 101,766 名患者。</strong><br>
-            一行表示一次住院记录（encounter），不是一名唯一患者。
+            一行表示一次住院记录（encounter）。同一 <code>patient_nbr</code> 可对应多次住院。
           </div>
           <ul class="tasks">
             <li><code>patient_nbr</code>：患者编号</li>
-            <li><code>encounter_id</code>：一次具体住院记录编号</li>
+            <li><code>encounter_id</code>：一次住院记录编号</li>
           </ul>
           <pre><code>患者 patient_nbr
         ↓
@@ -92,11 +87,10 @@ encounter_id 3
               </tbody>
             </table>
           </div>
-
         </section>
+
         <section class="exercise" id="p4">
           <h2>4. 数据主要包含什么</h2>
-
           <p style="margin: 0 0 10px; color: var(--ink-light);">50 个字段大致分为：</p>
           <ul class="tasks">
             <li><strong>A. 患者基本信息</strong>：<code>race</code>、<code>gender</code>、<code>age</code></li>
@@ -114,13 +108,11 @@ encounter_id 3
             <li><code>&gt;30</code>：35,545</li>
             <li><code>&lt;30</code>：11,357</li>
           </ul>
-          <p style="margin: 16px 0 10px; color: var(--ink-light);">本课程不以机器学习预测为主要教学目标。<code>readmitted</code> 用于练习条件判断、数据筛选、循环、函数、统计、分组、可视化、文件输出与综合分析。</p>
-
         </section>
+
         <section class="exercise" id="p5">
           <h2>5. IDS_mapping.csv</h2>
-
-          <p style="margin: 0 0 10px; color: var(--ink-light);">辅助编码说明文件，约 <strong>67 行 × 2 列</strong>。用于解释：</p>
+          <p style="margin: 0 0 10px; color: var(--ink-light);">编码说明文件，约 <strong>67 行 × 2 列</strong>，解释：</p>
           <ul class="tasks">
             <li><code>admission_type_id</code></li>
             <li><code>discharge_disposition_id</code></li>
@@ -148,12 +140,11 @@ encounter_id 3
     3: "Elective",
 }
 print(admission_type[1])  # Emergency</code></pre>
-
         </section>
-        <section class="exercise" id="p6">
-          <h2>6. 这份数据怎么用</h2>
 
-          <p style="margin: 0 0 10px; color: var(--ink-light);">这份数据不是医学诊断教材，也不是复杂机器学习模型的训练目标。它是整门课的统一数据主线：从一条病例逐步过渡到完整的 101,766 条记录。</p>
+        <section class="exercise" id="p6">
+          <h2>6. 课程使用路径</h2>
+          <p style="margin: 0 0 10px; color: var(--ink-light);">本数据作为课程统一数据主线，从少量病例逐步扩展到完整的 101,766 条记录：</p>
           <pre><code>一条病例
     ↓
 多条病例
@@ -171,12 +162,25 @@ pandas / 统计与可视化
 大模型 API
     ↓
 Web 平台</code></pre>
-          <div class="book-callout">
-            本数据仅用于 Python 编程、数据处理和软件开发教学。<br>
-            病例筛选规则、统计结果以及大模型生成内容，均不用于临床诊断、治疗决策或真实医疗活动。
-          </div>
-          <p class="practice-footer-note">下一页：<a href="sop01-syntax.html">实验1：Python 语法元素与基本数据类型</a></p>
+        </section>
 
+        <section class="exercise" id="p7">
+          <h2>7. 使用目的：糖尿病住院病例数据分析与智能报告平台</h2>
+          <p style="margin: 0 0 10px; color: var(--ink-light);">使用这份数据，逐步建成：</p>
+          <div class="book-callout">
+            <strong>糖尿病住院病例数据分析与智能报告平台</strong>
+          </div>
+          <p style="margin: 16px 0 10px; color: var(--ink-light);">平台围绕同一份住院记录数据，逐步具备：</p>
+          <ul class="tasks">
+            <li>读取与理解病例数据</li>
+            <li>数据质量检查与清洗</li>
+            <li>按条件筛选病例</li>
+            <li>统计分析与可视化</li>
+            <li>导出结果与报告</li>
+            <li>调用大模型生成自然语言分析摘要</li>
+            <li>通过 Web 页面交互使用上述功能</li>
+          </ul>
+          <p class="practice-footer-note">下一页：<a href="sop01-syntax.html">实验1：Python 语法元素与基本数据类型</a></p>
         </section>
       </article>
     </main>
