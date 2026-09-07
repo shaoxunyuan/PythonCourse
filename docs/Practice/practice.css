@@ -1,0 +1,152 @@
+/* 练习页：与 docs 讲义风格统一 */
+.book-shell.practice-page { grid-template-columns: 300px 1fr; }
+.practice-page .toc-scroll {
+  padding: 12px 18px;
+  overflow: visible;
+  max-height: none;
+}
+.practice-page .toc__title {
+  font-weight: 700;
+  color: var(--ink);
+  font-size: 13px;
+  padding: 10px 0;
+  margin: 0 0 10px;
+  border-bottom: 1px solid var(--border);
+}
+.practice-page .toc a { color: var(--ink); text-decoration: none !important; }
+.practice-page .toc a:hover { color: var(--accent-hover); }
+.practice-page .toc ul { list-style: none; margin: 0; padding: 0; }
+.practice-page .toc .lv1 {
+  display: block;
+  padding: 6px 0 4px;
+  font-weight: 700;
+  font-size: 14px;
+}
+.practice-page .toc .lv2 {
+  margin: 4px 0 12px 12px;
+  padding-left: 12px;
+  border-left: 2px solid rgba(231, 229, 228, 0.95);
+  display: grid;
+  gap: 2px;
+}
+.practice-page .toc .lv2 a {
+  display: flex;
+  gap: 8px;
+  padding: 5px 0;
+  color: var(--ink-light);
+  font-size: 12px;
+}
+.practice-page .toc .lv2 .n {
+  color: var(--ink-muted);
+  font-weight: 800;
+  min-width: 22px;
+}
+.practice-page .toc a.is-active { color: var(--accent-hover); font-weight: 700; }
+
+.practice-breadcrumb {
+  font-size: 13px;
+  color: var(--ink-muted);
+  margin-bottom: 10px;
+}
+.practice-breadcrumb a { color: var(--accent); }
+.practice-breadcrumb .sep { margin: 0 6px; color: var(--border); }
+
+.practice-lead {
+  color: var(--ink-light);
+  max-width: 52em;
+  margin-bottom: 22px;
+  line-height: 1.75;
+}
+
+.exercise {
+  border: 0;
+  border-radius: 0;
+  padding: 0;
+  margin: 26px 0 18px;
+  background: transparent;
+  scroll-margin-top: 20px;
+}
+.exercise .ex-kicker { display: none; }
+.exercise h2 {
+  font-size: 18px;
+  font-weight: 800;
+  margin: 0 0 10px;
+  color: var(--ink);
+}
+.exercise .goal {
+  font-size: 13px;
+  color: var(--ink-muted);
+  margin-bottom: 14px;
+  line-height: 1.6;
+}
+.exercise ol.tasks,
+.exercise ul.tasks {
+  margin: 0 0 14px 1.2em;
+  padding: 0;
+  color: var(--ink-light);
+  line-height: 1.65;
+}
+.exercise ol.tasks li,
+.exercise ul.tasks li { margin: 8px 0; }
+.exercise .starter-label {
+  font-size: 13px;
+  font-weight: 800;
+  color: var(--ink);
+  margin: 12px 0 6px;
+}
+
+details.ex-answer {
+  margin-top: 14px;
+  border-top: 1px dashed var(--border);
+  padding-top: 14px;
+}
+details.ex-answer summary {
+  cursor: pointer;
+  font-weight: 600;
+  color: var(--accent-hover);
+  font-size: 13px;
+  list-style-position: outside;
+}
+details.ex-answer summary::-webkit-details-marker { color: var(--accent); }
+details.ex-answer[open] summary { margin-bottom: 10px; }
+
+.book-main kbd {
+  font-family: ui-monospace, monospace;
+  font-size: 0.88em;
+  padding: 0.12em 0.45em;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  background: #f4f4f5;
+  color: var(--ink);
+}
+
+.practice-footer-note {
+  margin-top: 28px;
+  padding-top: 18px;
+  border-top: 1px solid var(--border);
+  font-size: 13px;
+  color: var(--ink-muted);
+  line-height: 1.6;
+}
+
+.copy-btn {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  border: 1px solid #e5e5e5;
+  background: #fff;
+  color: var(--ink);
+  border-radius: 6px;
+  padding: 4px 8px;
+  font-size: 12px;
+  cursor: pointer;
+}
+.copy-btn:hover { background: #f7f7f7; }
+.copy-btn[data-state="ok"] {
+  border-color: rgba(13, 148, 136, 0.35);
+  color: var(--accent-hover);
+}
+
+@media (max-width: 980px) {
+  .book-shell.practice-page { grid-template-columns: 1fr; }
+}

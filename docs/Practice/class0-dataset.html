@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Class0：数据集</title>
+  <link rel="stylesheet" href="../style.css">
+  <link rel="stylesheet" href="./practice.css">
+</head>
+<body>
+  <div class="book-shell practice-page">
+    <aside class="book-sidebar" aria-label="本页目录">
+      <div class="toc-scroll">
+        <div class="toc__title">目录</div>
+        <ul class="book-nav toc">
+          <li><a class="lv1" href="#p1">1. 数据文件</a></li>
+          <li><a class="lv1" href="#p2">2. 数据维度与一行含义</a></li>
+          <li><a class="lv1" href="#p3">3. 数据主要包含什么</a></li>
+          <li><a class="lv1" href="#p4">4. IDS_mapping.csv</a></li>
+          <li><a class="lv1" href="#p5">5. 这份数据在课程中的用途</a></li>
+        </ul>
+      </div>
+    </aside>
+
+    <main class="book-main">
+      <article class="article">
+        <div class="practice-breadcrumb">
+          <a href="./">Practice</a><span class="sep">/</span>Class0
+        </div>
+        <h1>Class0：数据集</h1>
+        <p class="practice-lead">本页不是正式编程实验，而是整个学期项目的数据背景介绍。开始 Class1 之前，先弄清：我们在处理什么数据、数据有多大、一行代表什么。</p>
+
+        <section class="exercise" id="p1">
+          <h2>1. 数据文件</h2>
+          <p style="margin: 0 0 10px; color: var(--ink-light);">课程数据存放在仓库的 <code>data/</code> 目录：</p>
+          <ul class="tasks">
+            <li><a href="https://github.com/shaoxunyuan/PythonCourse/blob/main/data/diabetic_data.csv"><code>diabetic_data.csv</code></a>：主数据，住院记录</li>
+            <li><a href="https://github.com/shaoxunyuan/PythonCourse/blob/main/data/IDS_mapping.csv"><code>IDS_mapping.csv</code></a>：辅助编码说明</li>
+          </ul>
+        </section>
+
+        <section class="exercise" id="p2">
+          <h2>2. 数据维度与一行含义</h2>
+          <p style="margin: 0 0 10px; color: var(--ink-light);"><code>diabetic_data.csv</code> 实际维度为 <strong>101,766 行 × 50 列</strong>。不同 <code>patient_nbr</code> 数量为 <strong>71,518</strong>。</p>
+          <div class="book-callout">
+            <strong>101,766 行并不代表 101,766 名患者。</strong><br>
+            一行表示一次住院记录（encounter），不是一名唯一患者。同一名患者可能多次住院。
+          </div>
+          <ul class="tasks">
+            <li><code>patient_nbr</code>：患者编号</li>
+            <li><code>encounter_id</code>：一次具体住院记录编号</li>
+          </ul>
+          <pre><code>患者 patient_nbr
+        ↓
+可能存在多次住院
+        ↓
+encounter_id 1
+encounter_id 2
+encounter_id 3
+……</code></pre>
+        </section>
+
+        <section class="exercise" id="p3">
+          <h2>3. 数据主要包含什么</h2>
+          <p style="margin: 0 0 10px; color: var(--ink-light);">50 个字段大致包括：患者基本信息、入院信息、医疗过程、诊断、检验、糖尿病相关药物、治疗变化，以及再入院字段 <code>readmitted</code>。</p>
+          <p style="margin: 16px 0 10px; color: var(--ink-light);"><code>readmitted</code> 主要取值与条数：</p>
+          <ul class="tasks">
+            <li><code>NO</code>：54,864</li>
+            <li><code>&gt;30</code>：35,545</li>
+            <li><code>&lt;30</code>：11,357</li>
+          </ul>
+          <p style="margin: 16px 0 10px; color: var(--ink-light);">本课程不以机器学习预测为主要目标。<code>readmitted</code> 主要用于练习条件判断、筛选、统计、可视化与综合分析。</p>
+        </section>
+
+        <section class="exercise" id="p4">
+          <h2>4. IDS_mapping.csv</h2>
+          <p style="margin: 0 0 10px; color: var(--ink-light);">这是辅助编码说明文件（约 67 行数据 × 2 列），用于解释 <code>admission_type_id</code>、<code>discharge_disposition_id</code>、<code>admission_source_id</code> 等数字编码。例如 <code>admission_type_id = 1</code> 对应 <code>Emergency</code>。</p>
+          <p style="margin: 16px 0 10px; color: var(--ink-light);">后续可用于练习字典、映射、文件读取、数据关联与转换。</p>
+        </section>
+
+        <section class="exercise" id="p5">
+          <h2>5. 这份数据在课程中的用途</h2>
+          <p style="margin: 0 0 10px; color: var(--ink-light);">它不是为了让你学医学诊断，也不是为了训练复杂机器学习模型，而是整门课的统一数据主线：从一条病例逐步过渡到完整真实数据、pandas、可视化、大模型 API 与 Web 平台。</p>
+          <div class="book-callout">
+            本数据仅用于 Python 编程、数据处理和软件开发教学。课程中的筛选规则、统计结果以及大模型生成内容，均不用于临床诊断、治疗决策或真实医疗活动。
+          </div>
+          <p class="practice-footer-note">下一步进入 <a href="class1-one-case.html">Class1：从一条病例理解 Python 程序</a>。</p>
+        </section>
+      </article>
+    </main>
+  </div>
+
+  <script>
+    (function () {
+      const links = Array.from(document.querySelectorAll('.toc a[href^="#"]'));
+      const idToLink = new Map();
+      links.forEach((a) => {
+        const id = decodeURIComponent(a.getAttribute('href').slice(1));
+        if (id) idToLink.set(id, a);
+      });
+      const headings = Array.from(document.querySelectorAll('h2[id], section[id]'))
+        .filter((h) => idToLink.has(h.id));
+      if (headings.length === 0) return;
+      const clear = () => links.forEach((a) => a.classList.remove('is-active'));
+      const setActive = (id) => { clear(); const a = idToLink.get(id); if (a) a.classList.add('is-active'); };
+      const initial = (location.hash && location.hash.slice(1)) || headings[0].id;
+      setActive(decodeURIComponent(initial));
+      const obs = new IntersectionObserver((entries) => {
+        const visible = entries.filter((e) => e.isIntersecting).sort((a, b) => (a.boundingClientRect.top - b.boundingClientRect.top));
+        if (visible.length > 0) setActive(visible[0].target.id);
+      }, { rootMargin: '-15% 0px -75% 0px', threshold: [0, 1] });
+      headings.forEach((h) => obs.observe(h));
+    })();
+  </script>
+</body>
+</html>

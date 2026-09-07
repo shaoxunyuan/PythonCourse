@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Practice · Python 高级应用</title>
+  <link rel="stylesheet" href="../style.css">
+  <style>
+    .practice-list { margin: 20px 0 0; padding: 0; list-style: none; display: grid; gap: 12px; max-width: 40em; }
+    .practice-list a {
+      display: block;
+      padding: 14px 16px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      background: var(--paper-elevated);
+      text-decoration: none !important;
+      color: inherit;
+      transition: border-color 0.15s;
+    }
+    .practice-list a:hover { border-color: var(--accent); }
+    .practice-list .pl-tit { font-weight: 700; color: var(--ink); margin-bottom: 6px; }
+    .practice-list .pl-desc { font-size: 13px; color: var(--ink-light); line-height: 1.5; }
+  </style>
+</head>
+<body>
+  <div class="book-shell">
+    <aside class="book-sidebar" aria-label="导航">
+      <div class="book-brand"><a href="https://github.com/shaoxunyuan/PythonCourse">Python 高级应用</a></div>
+      <ul class="book-nav">
+        <li><a href="class0-dataset.html">Class0：数据集</a></li>
+        <li><a href="class1-one-case.html">Class1：从一条病例理解 Python 程序</a></li>
+      </ul>
+    </aside>
+    <main class="book-main">
+      <h1>Practice</h1>
+      <ul class="practice-list">
+        <li>
+          <a href="class0-dataset.html">
+            <div class="pl-tit">Class0：数据集</div>
+            <div class="pl-desc">认识课程数据：规模、一行含义、主要字段，以及后续为什么一直用这份数据。</div>
+          </a>
+        </li>
+        <li>
+          <a href="class1-one-case.html">
+            <div class="pl-tit">Class1：从一条病例理解 Python 程序</div>
+            <div class="pl-desc">变量与类型、输入输出与 f-string；完成病例摘要程序，并做合法性检查。</div>
+          </a>
+        </li>
+      </ul>
+    </main>
+  </div>
+</body>
+</html>
