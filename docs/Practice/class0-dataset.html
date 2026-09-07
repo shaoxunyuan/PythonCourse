@@ -19,7 +19,7 @@
           <li><a class="lv1" href="#p3">3. 一行代表什么</a></li>
           <li><a class="lv1" href="#p4">4. 字段分类速览</a></li>
           <li><a class="lv1" href="#p5">5. IDS_mapping 长什么样</a></li>
-          <li><a class="lv1" href="#p6">6. 用这份数据认识 Python</a></li>
+          <li><a class="lv1" href="#p6">6. 用病例字段写 Python</a></li>
           <li><a class="lv1" href="#p7">7. 课程用途与声明</a></li>
         </ul>
       </div>
@@ -31,7 +31,7 @@
           <a href="./">Practice</a><span class="sep">/</span>Class0
         </div>
         <h1>Class0：数据集</h1>
-        <p class="practice-lead">先看真实数据长什么样，再理解一行、一列在程序里对应什么。本页会展示两个 CSV 的前几行，并用同一份病例数据引出后续要用到的 Python 语法元素。</p>
+        <p class="practice-lead">先看真实数据长什么样，再理解一行、一列在程序里对应什么。</p>
 
         <section class="exercise" id="p1">
           <h2>1. 数据文件在哪里</h2>
@@ -105,7 +105,7 @@ insulin = "Up"
 diabetesMed = "Yes"
 readmitted = "&gt;30"</code></pre>
 
-          <p style="margin: 16px 0 10px; color: var(--ink-light);">也可以看成一个“字典”（后续课程会正式学到）：字段名 → 值。</p>
+          <p style="margin: 16px 0 10px; color: var(--ink-light);">也可以写成字典：字段名对应值。</p>
           <pre><code class="language-python">case = {
     "encounter_id": 149190,
     "patient_nbr": 55629189,
@@ -138,12 +138,12 @@ encounter_id 1
 encounter_id 2
 encounter_id 3
 ……</code></pre>
-          <p style="margin: 16px 0 10px; color: var(--ink-light);">后面写筛选、统计时，要先想清楚：你数的是“人次/住院次数”，还是“人数”。</p>
+          <p style="margin: 16px 0 10px; color: var(--ink-light);">数数据时要分清：你数的是住院次数，还是患者人数。</p>
         </section>
 
         <section class="exercise" id="p4">
           <h2>4. 字段分类速览</h2>
-          <p style="margin: 0 0 10px; color: var(--ink-light);">50 个字段可以按用途分组理解（不必一次全背）：</p>
+          <p style="margin: 0 0 10px; color: var(--ink-light);">50 个字段可以按用途分组理解：</p>
           <ul class="tasks">
             <li><strong>基本信息</strong>：<code>race</code>、<code>gender</code>、<code>age</code>、<code>weight</code></li>
             <li><strong>入院相关</strong>：<code>admission_type_id</code>、<code>discharge_disposition_id</code>、<code>admission_source_id</code>、<code>time_in_hospital</code></li>
@@ -160,7 +160,7 @@ encounter_id 3
             <li><code>&gt;30</code>：35,545</li>
             <li><code>&lt;30</code>：11,357</li>
           </ul>
-          <p style="margin: 16px 0 10px; color: var(--ink-light);">注意：原始数据里常见 <code>?</code>，表示缺失或未知（例如部分行的 <code>weight</code>、<code>payer_code</code>）。后续清洗时会专门处理。</p>
+          <p style="margin: 16px 0 10px; color: var(--ink-light);">原始数据里常见 <code>?</code>，表示缺失或未知（例如部分行的 <code>weight</code>、<code>payer_code</code>）。</p>
         </section>
 
         <section class="exercise" id="p5">
@@ -184,7 +184,7 @@ encounter_id 3
               </tbody>
             </table>
           </div>
-          <p style="margin: 16px 0 10px; color: var(--ink-light);">因此，主表里 <code>admission_type_id = 1</code> 的含义是 <code>Emergency</code>。在 Python 里，这很适合做成<strong>字典映射</strong>：</p>
+          <p style="margin: 16px 0 10px; color: var(--ink-light);">因此，主表里 <code>admission_type_id = 1</code> 的含义是 <code>Emergency</code>。用字典可以这样查：</p>
           <pre><code class="language-python">admission_type = {
     1: "Emergency",
     2: "Urgent",
@@ -201,8 +201,8 @@ print(admission_type[code])   # Emergency</code></pre>
         </section>
 
         <section class="exercise" id="p6">
-          <h2>6. 用这份数据认识 Python 语法元素</h2>
-          <p style="margin: 0 0 10px; color: var(--ink-light);">不必背抽象定义。下面用真实字段对照后续会反复出现的语法点：</p>
+          <h2>6. 用病例字段写 Python</h2>
+          <p style="margin: 0 0 10px; color: var(--ink-light);">下面用真实字段直接对照几种常见写法：</p>
 
           <h3>6.1 变量、赋值、标识符</h3>
           <pre><code class="language-python">patient_nbr = 55629189
@@ -212,9 +212,9 @@ readmitted = "&gt;30"</code></pre>
 
           <h3>6.2 数据类型：数字 vs 文本</h3>
           <ul class="tasks">
-            <li><code>time_in_hospital</code>、<code>num_medications</code> → 更像 <code>int</code>（可加减）</li>
-            <li><code>gender</code>、<code>age</code>、<code>readmitted</code> → <code>str</code>（文本，不能直接 <code>+ 1</code>）</li>
-            <li><code>diabetesMed == "Yes"</code> 这类判断会引出 <code>bool</code></li>
+            <li><code>time_in_hospital</code>、<code>num_medications</code> 是 <code>int</code>，可以加减</li>
+            <li><code>gender</code>、<code>age</code>、<code>readmitted</code> 是 <code>str</code>，不能直接 <code>+ 1</code></li>
+            <li><code>diabetesMed == "Yes"</code> 的判断结果是 <code>bool</code></li>
           </ul>
           <pre><code class="language-python">print(type(3))            # &lt;class 'int'&gt;
 print(type("Female"))     # &lt;class 'str'&gt;
@@ -230,7 +230,7 @@ readmitted = "&lt;30"
 print(age)
 print(readmitted == "&lt;30")   # True</code></pre>
 
-          <h3>6.4 表达式、比较、条件（为后续筛选铺路）</h3>
+          <h3>6.4 表达式、比较、条件</h3>
           <pre><code class="language-python">stay = 3
 meds = 18
 long_stay = stay &gt;= 3
@@ -242,26 +242,20 @@ if early_readmit:
 else:
     print("不是 30 天内再入院")</code></pre>
 
-          <h3>6.5 列表：多条病例放在一起</h3>
-          <p style="margin: 0 0 10px; color: var(--ink-light);">Class1 先处理一条；再往后就会把多条记录放进列表循环处理。</p>
+          <h3>6.5 列表：多条记录放在一起</h3>
           <pre><code class="language-python">stays = [1, 3, 2, 2, 1]          # 前 5 行的 time_in_hospital
 print(len(stays))
-print(sum(stays) / len(stays))   # 平均住院天数（示意）</code></pre>
+print(sum(stays) / len(stays))   # 平均住院天数</code></pre>
 
           <h3>6.6 缺失值 <code>?</code> 也是数据的一部分</h3>
           <pre><code class="language-python">weight = "?"
 if weight == "?":
-    print("体重缺失，后续需要清洗或单独处理")</code></pre>
-
-          <div class="book-callout">
-            Class0 的目标：看见真实表格 → 知道一行是什么 → 知道字段在 Python 里大概属于什么类型。<br>
-            Class1 会正式练习：变量、类型、输入输出、f-string，并用一条病例生成摘要。
-          </div>
+    print("体重缺失")</code></pre>
         </section>
 
         <section class="exercise" id="p7">
           <h2>7. 课程用途与声明</h2>
-          <p style="margin: 0 0 10px; color: var(--ink-light);">这份数据是整门课的统一主线，不是医学诊断教材，也不是机器学习竞赛数据。学习路径大致是：一条病例 → 多条病例 → 文件与清洗 → pandas / 可视化 → 大模型 API → Web 平台。</p>
+          <p style="margin: 0 0 10px; color: var(--ink-light);">这份数据用于本课程的 Python 编程与数据处理练习，不是医学诊断教材。</p>
           <div class="book-callout">
             本数据仅用于 Python 编程、数据处理和软件开发教学。课程中的筛选规则、统计结果以及大模型生成内容，均不用于临床诊断、治疗决策或真实医疗活动。
           </div>
