@@ -62,18 +62,32 @@
 
 .meta-row {
   display: grid;
-  gap: 8px;
+  gap: 10px;
   margin: 0 0 18px;
   max-width: 52em;
   font-size: 13px;
   color: var(--ink-light);
+  line-height: 1.7;
+  word-break: keep-all;
+  overflow-wrap: anywhere;
+}
+
+.meta-row > div {
+  display: grid;
+  grid-template-columns: 4.5em 1fr;
+  gap: 0.6em;
+  align-items: start;
 }
 
 .meta-row strong {
   color: var(--ink);
   font-weight: 700;
-  min-width: 4.5em;
-  display: inline-block;
+  min-width: 0;
+  display: block;
+}
+
+.meta-row code {
+  white-space: nowrap;
 }
 
 .exercise h3 {
