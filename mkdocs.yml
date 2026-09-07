@@ -1,10 +1,9 @@
-site_name: Python 基本应用实验教程
-site_description: 《Python 基本应用》在线实验教程 —— 围绕真实病例数据，逐步建设数据分析与智能报告平台
+site_name: Python 高级应用实验教程
+site_description: 《Python 高级应用》在线实验教程 —— 围绕真实病例数据，逐步建设数据分析与智能报告平台
 site_author: PythonCourse
 
-# 推送到 GitHub 后，请将 repo_url / site_url 改为实际仓库地址
-repo_url: https://github.com/YOUR_USERNAME/PythonCourse
-site_url: https://YOUR_USERNAME.github.io/PythonCourse/
+repo_url: https://github.com/shaoxunyuan/PythonCourse
+site_url: https://shaoxunyuan.github.io/PythonCourse/
 edit_uri: ""
 
 theme:

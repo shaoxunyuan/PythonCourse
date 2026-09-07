@@ -18,10 +18,8 @@
 
 | 文件 | 说明 |
 |------|------|
-| [diabetic_data.csv](https://github.com/YOUR_USERNAME/PythonCourse/blob/main/data/diabetic_data.csv) | 主数据：住院记录 |
-| [IDS_mapping.csv](https://github.com/YOUR_USERNAME/PythonCourse/blob/main/data/IDS_mapping.csv) | 辅助编码说明 |
-
-> 推送到 GitHub 后，请将上方链接中的 `YOUR_USERNAME` 替换为实际仓库用户名；或直接在仓库 `data/` 目录下载。
+| [diabetic_data.csv](https://github.com/shaoxunyuan/PythonCourse/blob/main/data/diabetic_data.csv) | 主数据：住院记录 |
+| [IDS_mapping.csv](https://github.com/shaoxunyuan/PythonCourse/blob/main/data/IDS_mapping.csv) | 辅助编码说明 |
 
 ---
 

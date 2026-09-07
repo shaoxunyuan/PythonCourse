@@ -1,91 +1,75 @@
-# Python 基本应用实验教程
+南京中医药大学人工智能与信息技术学院
 
-《Python 基本应用》课程的在线实验教程网站。
+# Python 高级应用
 
-## 网站技术栈
+[![COURSE WEBSITE](https://img.shields.io/static/v1?style=flat-square&label=COURSE%20WEBSITE&message=LIVE&color=00c853&labelColor=333333&logo=github&logoColor=white)](https://shaoxunyuan.github.io/PythonCourse/)
+[![TUTORIAL](https://img.shields.io/static/v1?style=flat-square&label=TUTORIAL&message=LABS&color=008b8b&labelColor=333333)](https://shaoxunyuan.github.io/PythonCourse/)
+[![DATASET](https://img.shields.io/static/v1?style=flat-square&label=DATASET&message=SOP0&color=ff9800&labelColor=333333)](https://shaoxunyuan.github.io/PythonCourse/sop0-data/)
+
+> **教程入口：** 点击 [COURSE WEBSITE](https://shaoxunyuan.github.io/PythonCourse/) 进入在线实验教程。
+
+## 教程页面
+
+| 入口 | 链接 |
+|------|------|
+| **在线实验教程（主入口）** | [https://shaoxunyuan.github.io/PythonCourse/](https://shaoxunyuan.github.io/PythonCourse/) |
+| 课程介绍 | [课程说明](https://shaoxunyuan.github.io/PythonCourse/guide/course/) |
+| 认识课程数据 | [SOP0](https://shaoxunyuan.github.io/PythonCourse/sop0-data/) |
+| 实验 SOP1–SOP11 | [实验教程](https://shaoxunyuan.github.io/PythonCourse/labs/sop01/) |
+| 综合项目 | [项目说明](https://shaoxunyuan.github.io/PythonCourse/project/overview/) |
+| 原始数据下载 | [`data/`](data/) |
+
+## 课程简介
+
+本课程围绕一份真实住院记录数据，学习 Python 高级应用相关能力：数据处理、文件读写、pandas、可视化、大模型 API、Web 应用与在线部署。
+
+整个学期将逐步建设一个「Python 数据分析与智能报告平台」。
+
+**作业统一通过雨课堂提交。** 本仓库与课程网站只提供题目、要求、数据和教学内容，不接收在线提交。
+
+## 课程数据概况
+
+课程数据存放在 [`data/`](data/) 目录：
+
+| 文件 | 说明 |
+|------|------|
+| [`diabetic_data.csv`](data/diabetic_data.csv) | 主数据：住院记录 |
+| [`IDS_mapping.csv`](data/IDS_mapping.csv) | 辅助编码说明 |
+
+**`diabetic_data.csv`**
+
+- 规模：**101,766 行 × 50 列**
+- 不同患者编号（`patient_nbr`）：**71,518**
+- 一行表示一次住院记录（`encounter`），不是一名唯一患者
+- 同一患者可能有多次住院（`encounter_id`）
+
+**`readmitted` 字段分布（教学用分类字段）**
+
+| 取值 | 条数 |
+|------|------|
+| `NO` | 54,864 |
+| `>30` | 35,545 |
+| `<30` | 11,357 |
+
+更完整说明请进入教程页：
+
+➡️ [SOP0：认识我们的课程数据](https://shaoxunyuan.github.io/PythonCourse/sop0-data/)
+
+## 学习路径
 
 ```text
-GitHub Repository
-        ↓
-Markdown 课程内容
-        ↓
-MkDocs Material
-        ↓
-自动生成 HTML
-        ↓
-GitHub Actions
-        ↓
-GitHub Pages
+一条病例
+  → 多条病例 / 列表与字典
+  → 条件判断 / 循环 / 函数
+  → CSV / JSON / 文件处理
+  → 完整真实数据与清洗
+  → pandas 与可视化
+  → 大模型 API 生成摘要
+  → Web 平台与在线部署
 ```
 
-学生通过浏览器访问课程网站，阅读知识点、示例代码、实验要求与作业题目。
+## 重要声明
 
-## 本站提供什么
+本数据仅用于 Python 编程、数据处理和软件开发教学。
 
-1. 课程知识点
-2. 教师讲授内容
-3. 示例代码
-4. 实验要求与题目
-5. 课后作业题目
-6. 实验数据说明与数据下载入口
-
-## 本站不提供什么
-
-1. 学生答案填写
-2. 在线作业提交
-3. 文件上传
-4. 在线评分
-5. 作业批改
-
-**所有作业和实验结果统一提交到「雨课堂」。**
-
-## 本地预览
-
-```bash
-pip install -r requirements.txt
-mkdocs serve
-```
-
-浏览器打开提示的本地地址即可预览。正式提交前建议执行：
-
-```bash
-mkdocs build
-```
-
-## 目录结构
-
-```text
-PythonCourse/
-├── README.md
-├── mkdocs.yml
-├── requirements.txt
-├── .gitignore
-├── data/                  # 课程原始数据（勿重复复制到 docs/assets）
-├── docs/                  # Markdown 课程内容
-│   ├── index.md
-│   ├── sop0-data.md
-│   ├── guide/
-│   ├── labs/
-│   ├── project/
-│   └── assets/
-└── .github/workflows/     # GitHub Pages 自动部署
-```
-
-## 部署说明
-
-1. 将本仓库推送到 GitHub
-2. 修改 `mkdocs.yml` 中的 `repo_url` 与 `site_url` 为实际地址
-3. 仓库 Settings → Pages → Build and deployment → Source → **GitHub Actions**
-4. 推送到 `main` / `master` 后，Actions 会自动构建并发布
-
-## 数据说明
-
-课程使用 `data/` 目录中的真实住院记录数据（`diabetic_data.csv` 与 `IDS_mapping.csv`）作为贯穿全学期的项目主线。
-
-本数据仅用于 Python 编程、数据处理和软件开发教学，不用于临床诊断或真实医疗活动。
-
-## 安全提醒
-
-- 禁止将真实 API Key、Token、Secret 写入公开代码
-- 使用环境变量或 `.env`（已在 `.gitignore` 中忽略）
-- 公开示例请使用 `YOUR_API_KEY` 或 `os.getenv("API_KEY")`
+课程中的病例筛选规则、统计结果以及大模型生成内容，均不用于临床诊断、治疗决策或真实医疗活动。
