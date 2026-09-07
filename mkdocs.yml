@@ -1,0 +1,97 @@
+site_name: Python 基本应用实验教程
+site_description: 《Python 基本应用》在线实验教程 —— 围绕真实病例数据，逐步建设数据分析与智能报告平台
+site_author: PythonCourse
+
+# 推送到 GitHub 后，请将 repo_url / site_url 改为实际仓库地址
+repo_url: https://github.com/YOUR_USERNAME/PythonCourse
+site_url: https://YOUR_USERNAME.github.io/PythonCourse/
+edit_uri: ""
+
+theme:
+  name: material
+  language: zh
+  palette:
+    - scheme: default
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/brightness-7
+        name: 切换到深色模式
+    - scheme: slate
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/brightness-4
+        name: 切换到浅色模式
+  features:
+    - navigation.tabs
+    - navigation.sections
+    - navigation.top
+    - navigation.indexes
+    - content.code.copy
+    - content.code.annotate
+    - search.suggest
+    - search.highlight
+    - toc.follow
+  icon:
+    repo: fontawesome/brands/github
+
+plugins:
+  - search:
+      lang:
+        - zh
+        - en
+
+markdown_extensions:
+  - admonition
+  - attr_list
+  - def_list
+  - footnotes
+  - md_in_html
+  - tables
+  - toc:
+      permalink: true
+  - pymdownx.details
+  - pymdownx.superfences
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.tabbed:
+      alternate_style: true
+  - pymdownx.tasklist:
+      custom_checkbox: true
+  - pymdownx.emoji:
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
+
+nav:
+  - 首页: index.md
+  - 课程说明:
+      - 课程介绍: guide/course.md
+      - 环境准备: guide/environment.md
+      - 作业提交说明: guide/submission.md
+  - 数据集:
+      - SOP0：认识我们的课程数据: sop0-data.md
+      - 数据使用说明: guide/dataset.md
+  - 实验教程:
+      - SOP1：待完善: labs/sop01.md
+      - SOP2：待完善: labs/sop02.md
+      - SOP3：待完善: labs/sop03.md
+      - SOP4：待完善: labs/sop04.md
+      - SOP5：待完善: labs/sop05.md
+      - SOP6：待完善: labs/sop06.md
+      - SOP7：待完善: labs/sop07.md
+      - SOP8：待完善: labs/sop08.md
+      - SOP9：待完善: labs/sop09.md
+      - SOP10：待完善: labs/sop10.md
+      - SOP11：待完善: labs/sop11.md
+  - 综合项目:
+      - 项目说明: project/overview.md
+      - 项目进度: project/progress.md
+      - 最终要求: project/final.md
+
+extra:
+  generator: false
