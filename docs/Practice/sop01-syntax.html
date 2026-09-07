@@ -23,6 +23,7 @@
               <a href="#p1-4"><span class="n">1.4</span>比较与逻辑判断</a>
               <a href="#p1-5"><span class="n">1.5</span>输入、输出与 f-string</a>
               <a href="#p1-6"><span class="n">1.6</span>综合：病例摘要</a>
+              <a href="#p1-7"><span class="n">1.7</span>输入合法性检查</a>
             </div>
           </li>
           <li>
@@ -44,22 +45,30 @@
         <h1>实验1：Python 语法元素与基本数据类型</h1>
 
         <p class="practice-lead">
-          用课程中的一条住院病例，把真实信息写成 Python 变量，并完成输入、计算与摘要输出。
-          每一小段代码尽量短，方便「复制 → 运行 → 核对输出」。
+          用课程中的一条住院病例，把真实信息写成 Python 变量，并完成输入、计算、摘要输出与合法性检查。
         </p>
 
         <div class="meta-row">
-          <div><strong>本课目标</strong>会用变量保存病例字段，分清 <code>int</code> / <code>str</code> / <code>bool</code>，能用 <code>input()</code> 与 f-string 输出病例摘要</div>
-          <div><strong>数据字段</strong><code>patient_id</code>、<code>age</code>、<code>gender</code>、<code>time_in_hospital</code>、<code>num_medications</code>、<code>readmitted</code></div>
-          <div><strong>练习方式</strong>按步骤在本地 Python 环境逐段运行；先完成第 1 部分练习，再做第 2 部分任务</div>
+          <div><strong>本课目标</strong>会用变量保存病例字段，分清 <code>int</code> / <code>str</code> / <code>bool</code>，能用 <code>input()</code> 与 f-string 输出摘要，并能检查非法输入</div>
+          <div><strong>数据字段</strong><code>patient_id</code>、<code>age</code>、<code>gender</code>、<code>time_in_hospital</code>、<code>num_medications</code>、<code>readmitted</code>（与 <code>diabetic_data.csv</code> 含义一致）</div>
+          <div><strong>练习方式</strong>按 1.1～1.7 顺序运行；做完练习再完成第 2 部分任务</div>
         </div>
 
         <section class="exercise" id="p1">
           <h2>1. 练习</h2>
-          <p style="margin: 0 0 10px; color: var(--ink-light);">下面按知识点拆成若干小步。建议每完成一步，先看输出是否符合检查点，再进入下一步。</p>
+          <p style="margin: 0 0 10px; color: var(--ink-light);">第 2 部分任务所需能力，都会在下面练习中出现：字段变量、类型转换、<code>type()</code>、加减计算、再入院中文判断、完整摘要输出、负数检查、合法取值检查、重新输入。</p>
 
           <h3 id="p1-1">1.1 变量与一条病例</h3>
-          <p style="margin: 0 0 10px; color: var(--ink-light);">先把一条病例写成若干变量。左边是名字（标识符），右边是值，中间的 <code>=</code> 是赋值。</p>
+          <p style="margin: 0 0 10px; color: var(--ink-light);">一条住院记录里有很多字段。先用变量把其中 6 个常用字段保存下来：</p>
+          <ul class="tasks">
+            <li><code>patient_id</code>：患者编号</li>
+            <li><code>age</code>：年龄组（课程数据里类似 <code>[70-80)</code>）</li>
+            <li><code>gender</code>：性别</li>
+            <li><code>time_in_hospital</code>：本次住院天数</li>
+            <li><code>num_medications</code>：药物种数</li>
+            <li><code>readmitted</code>：再入院标记（<code>NO</code> / <code>&gt;30</code> / <code>&lt;30</code>）</li>
+          </ul>
+          <p style="margin: 16px 0 10px; color: var(--ink-light);">写法：左边是名字（标识符），右边是值，中间的 <code>=</code> 是赋值。</p>
 
           <div class="step-label">Step 1 / 创建一条病例的基本变量</div>
           <pre><code class="language-python">patient_id = 12345
@@ -77,10 +86,13 @@ print(time_in_hospital)
 print(num_medications)
 print(readmitted)</code></pre>
 
-          <div class="check-point"><strong>检查点：</strong>应依次看到 <code>12345</code>、<code>[70-80)</code>、<code>Female</code>、<code>8</code>、<code>18</code>、<code>&lt;30</code>。</div>
+          <div class="step-label">Step 3 / 用一句话同时打印多个字段</div>
+          <pre><code class="language-python">print(patient_id, gender, time_in_hospital, readmitted)</code></pre>
+
+          <div class="check-point"><strong>检查点：</strong>应能看到 <code>12345</code>、<code>[70-80)</code>、<code>Female</code>、<code>8</code>、<code>18</code>、<code>&lt;30</code>。如果某变量名拼错，Python 会报 <code>NameError</code>。</div>
 
           <h3 id="p1-2">1.2 查看类型 type()</h3>
-          <p style="margin: 0 0 10px; color: var(--ink-light);">不同类型的值，能做的运算不同。先用 <code>type()</code> 看清每个字段属于什么类型。</p>
+          <p style="margin: 0 0 10px; color: var(--ink-light);">不同类型能做的事情不同：整数可以加减，字符串适合保存文本。先用 <code>type()</code> 看清每个字段。</p>
 
           <div class="step-label">Step 1 / 查看各字段类型</div>
           <pre><code class="language-python">print(type(patient_id))
@@ -92,67 +104,120 @@ print(type(readmitted))</code></pre>
 
           <div class="check-point"><strong>检查点：</strong>编号、住院天数、药物种数应为 <code>&lt;class 'int'&gt;</code>；年龄组、性别、再入院标记应为 <code>&lt;class 'str'&gt;</code>。</div>
 
-          <div class="step-label">Step 2 / 做类型转换</div>
+          <div class="step-label">Step 2 / 尝试类型转换</div>
           <pre><code class="language-python">print(int("8"))
 print(str(12345))
-print(float("3.5"))</code></pre>
+print(float("3.5"))
+print(type(int("8")))
+print(type(str(12345)))</code></pre>
 
-          <div class="check-point"><strong>检查点：</strong>分别得到整数 <code>8</code>、字符串 <code>'12345'</code>、浮点数 <code>3.5</code>。</div>
+          <div class="step-label">Step 3 / 看清：input 读到的内容默认是字符串</div>
+          <pre><code class="language-python">x = "8"
+print(type(x))      # str
+y = int(x)
+print(type(y))      # int
+print(y + 1)        # 9</code></pre>
+
+          <div class="check-point"><strong>检查点：</strong><code>int("8")</code> 得到整数后才能做 <code>+ 1</code>。后面用 <code>input()</code> 读住院天数时，必须先 <code>int(...)</code>，否则无法可靠计算。</div>
 
           <h3 id="p1-3">1.3 类型决定运算</h3>
-          <p style="margin: 0 0 10px; color: var(--ink-light);">同样是“加 1”，对整数和字符串结果完全不同：一个可以算，一个会报错。</p>
+          <p style="margin: 0 0 10px; color: var(--ink-light);">任务 A 要求输出“若再住 1 天”的结果，这依赖整数加法。先确认哪些字段能算，哪些不能。</p>
 
           <div class="step-label">Step 1 / 整数可以做算术运算</div>
-          <pre><code class="language-python">print(time_in_hospital + 1)
+          <pre><code class="language-python">print(time_in_hospital + 1)     # 若再住 1 天
 print(num_medications * 2)
-print(num_medications / 2)</code></pre>
+print(num_medications / 2)
+print(num_medications // 2)     # 整除
+print(num_medications % 2)      # 余数</code></pre>
 
-          <div class="step-label">Step 2 / 字符串可以拼接，但不能直接加整数</div>
+          <div class="step-label">Step 2 / 把“再住 1 天”存成新变量</div>
+          <pre><code class="language-python">stay_plus_one = time_in_hospital + 1
+print(stay_plus_one)
+print(type(stay_plus_one))</code></pre>
+
+          <div class="step-label">Step 3 / 字符串可以拼接，但不能直接加整数</div>
           <pre><code class="language-python">print(age + " 年龄段")
 print(gender + " / " + readmitted)
 # print(age + 1)   # 去掉注释后会报错，可自行验证</code></pre>
 
-          <div class="check-point"><strong>检查点：</strong><code>time_in_hospital + 1</code> 得到 <code>9</code>；<code>age + " 年龄段"</code> 得到文本拼接结果。若对字符串直接 <code>+ 1</code>，应出现类型错误。</div>
+          <div class="check-point"><strong>检查点：</strong><code>time_in_hospital + 1</code> 得到 <code>9</code>。若对 <code>age</code> 直接 <code>+ 1</code>，应出现类型错误。任务 A 的“若再住1天”就是这里的加法。</div>
 
           <h3 id="p1-4">1.4 比较与逻辑判断</h3>
-          <p style="margin: 0 0 10px; color: var(--ink-light);">比较运算的结果是 <code>bool</code>（<code>True</code> / <code>False</code>），常用于后续筛选病例。</p>
+          <p style="margin: 0 0 10px; color: var(--ink-light);">任务里要把 <code>readmitted == "&lt;30"</code> 转成中文“是/否”。比较结果是 <code>bool</code>（<code>True</code> / <code>False</code>）。</p>
 
           <div class="step-label">Step 1 / 比较运算</div>
           <pre><code class="language-python">print(time_in_hospital &gt;= 7)
 print(num_medications &gt; 10)
 print(gender == "Female")
-print(readmitted == "&lt;30")</code></pre>
+print(readmitted == "&lt;30")
+print(readmitted == "NO")</code></pre>
 
-          <div class="step-label">Step 2 / 逻辑运算 and / or / not</div>
+          <div class="step-label">Step 2 / 把判断结果存成 bool 变量</div>
           <pre><code class="language-python">long_stay = time_in_hospital &gt;= 7
 early_readmit = readmitted == "&lt;30"
-print(long_stay and early_readmit)
+print(long_stay, type(long_stay))
+print(early_readmit, type(early_readmit))</code></pre>
+
+          <div class="step-label">Step 3 / 转成中文“是/否”</div>
+          <pre><code class="language-python">if readmitted == "&lt;30":
+    flag = "是"
+else:
+    flag = "否"
+print(flag)</code></pre>
+
+          <div class="step-label">Step 4 / 等价写法（三元表达式）</div>
+          <pre><code class="language-python">flag = "是" if readmitted == "&lt;30" else "否"
+print(flag)</code></pre>
+
+          <div class="step-label">Step 5 / 逻辑运算 and / or / not</div>
+          <pre><code class="language-python">print(long_stay and early_readmit)
 print(long_stay or early_readmit)
 print(not early_readmit)</code></pre>
 
-          <div class="check-point"><strong>检查点：</strong>对本例数据，<code>time_in_hospital &gt;= 7</code> 与 <code>readmitted == "&lt;30"</code> 均为 <code>True</code>，因此 <code>and</code> 结果也为 <code>True</code>。</div>
+          <div class="check-point"><strong>检查点：</strong>当 <code>readmitted = "&lt;30"</code> 时，<code>flag</code> 应为“是”；改为 <code>NO</code> 或 <code>&gt;30</code> 后，应为“否”。</div>
 
           <h3 id="p1-5">1.5 输入、输出与 f-string</h3>
-          <p style="margin: 0 0 10px; color: var(--ink-light);"><code>input()</code> 读到的内容默认是字符串；需要计算的数字要先 <code>int()</code> / <code>float()</code>。f-string 适合把变量嵌进输出文本。</p>
+          <p style="margin: 0 0 10px; color: var(--ink-light);">任务要求交互输入。注意：<code>input()</code> 返回的是字符串；需要计算的数字必须先转换。</p>
 
-          <div class="step-label">Step 1 / 先练习固定值的 f-string 输出</div>
+          <div class="step-label">Step 1 / 用 f-string 输出固定值</div>
           <pre><code class="language-python">patient_id = 12345
+age = "[70-80)"
+gender = "Female"
 time_in_hospital = 8
-print(f"患者编号：{patient_id}")
-print(f"本次住院：{time_in_hospital} 天")</code></pre>
+num_medications = 18
+flag = "是"
+stay_plus_one = time_in_hospital + 1
 
-          <div class="step-label">Step 2 / 用 input 读入，并转换为整数</div>
+print(f"患者编号：{patient_id}")
+print(f"年龄组：{age}")
+print(f"性别：{gender}")
+print(f"本次住院：{time_in_hospital} 天")
+print(f"若再住1天：{stay_plus_one} 天")
+print(f"使用药物：{num_medications} 种")
+print(f"30天内再入院：{flag}")</code></pre>
+
+          <div class="check-point"><strong>检查点：</strong>输出格式应与任务 A 的示例一致（字段齐全，含“若再住1天”）。</div>
+
+          <div class="step-label">Step 2 / 用 input 读入两个数值字段</div>
           <pre><code class="language-python">patient_id = int(input("患者编号："))
 time_in_hospital = int(input("住院天数："))
 print(type(patient_id), type(time_in_hospital))
-print(f"患者编号：{patient_id}，住院 {time_in_hospital} 天")</code></pre>
+print(f"患者编号：{patient_id}，住院 {time_in_hospital} 天")
+print(f"若再住1天：{time_in_hospital + 1} 天")</code></pre>
 
-          <div class="check-point"><strong>检查点：</strong>输入数字后，<code>type(...)</code> 应显示 <code>&lt;class 'int'&gt;</code>；输出中应出现你刚输入的编号与天数。</div>
+          <div class="step-label">Step 3 / 文本字段保持字符串即可</div>
+          <pre><code class="language-python">age = input("年龄组（如 [70-80)）：")
+gender = input("性别：")
+readmitted = input("再入院标记（NO / &gt;30 / &lt;30）：")
+print(type(age), type(gender), type(readmitted))
+print(age, gender, readmitted)</code></pre>
+
+          <div class="check-point"><strong>检查点：</strong>数值字段转换后类型为 <code>int</code>；文本字段为 <code>str</code>。若输入字母却强制 <code>int(...)</code>，会报 <code>ValueError</code>（下一节处理）。</div>
 
           <h3 id="p1-6">1.6 综合：输入一条病例并输出摘要</h3>
-          <p style="margin: 0 0 10px; color: var(--ink-light);">把前面知识点串起来：读入 6 个字段 → 转换类型 → 判断是否 30 天内再入院 → 输出摘要。</p>
+          <p style="margin: 0 0 10px; color: var(--ink-light);">把前面内容串起来，形成与任务 A 对应的完整流程：读入 6 个字段 → 转换 → 判断 → 计算“再住 1 天” → 输出摘要。</p>
 
-          <div class="step-label">Step 1 / 完整示例（可直接运行）</div>
+          <div class="step-label">Step 1 / 完整示例（对应任务 A）</div>
           <pre><code class="language-python">patient_id = int(input("患者编号："))
 age = input("年龄组（如 [70-80)）：")
 gender = input("性别：")
@@ -160,14 +225,16 @@ time_in_hospital = int(input("住院天数："))
 num_medications = int(input("药物种数："))
 readmitted = input("再入院标记（NO / &gt;30 / &lt;30）：")
 
-print(type(patient_id), type(age), type(time_in_hospital))
+print(type(patient_id), type(age), type(time_in_hospital), type(num_medications))
 
+stay_plus_one = time_in_hospital + 1
 flag = "是" if readmitted == "&lt;30" else "否"
 
 print(f"患者编号：{patient_id}")
 print(f"年龄组：{age}")
 print(f"性别：{gender}")
 print(f"本次住院：{time_in_hospital} 天")
+print(f"若再住1天：{stay_plus_one} 天")
 print(f"使用药物：{num_medications} 种")
 print(f"30天内再入院：{flag}")</code></pre>
 
@@ -179,15 +246,101 @@ Female
 18
 &lt;30</code></pre>
 
-          <div class="check-point"><strong>检查点：</strong>摘要中应出现“30天内再入院：是”；若最后一行输入 <code>NO</code>，则应显示“否”。</div>
+          <div class="check-point"><strong>检查点：</strong>摘要应包含性别与“若再住1天：9 天”；再入院显示“是”。把最后一行改成 <code>NO</code> 再跑一次，应显示“否”。</div>
+
+          <h3 id="p1-7">1.7 输入合法性检查</h3>
+          <p style="margin: 0 0 10px; color: var(--ink-light);">任务 B 要求：非法输入要提示原因，并重新输入直到合法。下面分别练习三类检查。</p>
+
+          <div class="step-label">Step 1 / 检查非负数（住院天数、药物种数）</div>
+          <pre><code class="language-python">time_in_hospital = int(input("住院天数："))
+while time_in_hospital &lt; 0:
+    print("住院天数不能为负数")
+    time_in_hospital = int(input("请重新输入住院天数："))
+print("合法住院天数：", time_in_hospital)</code></pre>
+
+          <div class="step-label">Step 2 / 检查整数转换是否成功</div>
+          <pre><code class="language-python">while True:
+    text = input("患者编号：")
+    try:
+        patient_id = int(text)
+        break
+    except ValueError:
+        print("患者编号必须是整数，请重新输入")
+print("合法患者编号：", patient_id, type(patient_id))</code></pre>
+
+          <div class="step-label">Step 3 / 检查 readmitted 只能是三种取值</div>
+          <pre><code class="language-python">allowed = {"NO", "&gt;30", "&lt;30"}
+readmitted = input("再入院标记（NO / &gt;30 / &lt;30）：")
+while readmitted not in allowed:
+    print("再入院标记只能是 NO / &gt;30 / &lt;30")
+    readmitted = input("请重新输入再入院标记：")
+print("合法标记：", readmitted)</code></pre>
+
+          <div class="step-label">Step 4 / 把检查拼进一条完整流程（对应任务 B 骨架）</div>
+          <pre><code class="language-python">allowed = {"NO", "&gt;30", "&lt;30"}
+
+while True:
+    try:
+        patient_id = int(input("患者编号："))
+        break
+    except ValueError:
+        print("患者编号必须是整数，请重新输入")
+
+age = input("年龄组（如 [70-80)）：")
+gender = input("性别：")
+
+while True:
+    try:
+        time_in_hospital = int(input("住院天数："))
+        if time_in_hospital &lt; 0:
+            print("住院天数不能为负数")
+            continue
+        break
+    except ValueError:
+        print("住院天数必须是整数，请重新输入")
+
+while True:
+    try:
+        num_medications = int(input("药物种数："))
+        if num_medications &lt; 0:
+            print("药物种数不能为负数")
+            continue
+        break
+    except ValueError:
+        print("药物种数必须是整数，请重新输入")
+
+readmitted = input("再入院标记（NO / &gt;30 / &lt;30）：")
+while readmitted not in allowed:
+    print("再入院标记只能是 NO / &gt;30 / &lt;30")
+    readmitted = input("请重新输入再入院标记：")
+
+stay_plus_one = time_in_hospital + 1
+flag = "是" if readmitted == "&lt;30" else "否"
+
+print(f"患者编号：{patient_id}")
+print(f"年龄组：{age}")
+print(f"性别：{gender}")
+print(f"本次住院：{time_in_hospital} 天")
+print(f"若再住1天：{stay_plus_one} 天")
+print(f"使用药物：{num_medications} 种")
+print(f"30天内再入院：{flag}")</code></pre>
+
+          <div class="step-label">Step 5 / 建议故意输入错误，观察提示</div>
+          <ul class="tasks">
+            <li>住院天数输入 <code>-1</code>，应提示不能为负并要求重输</li>
+            <li>患者编号输入 <code>abc</code>，应提示必须是整数</li>
+            <li>再入院标记输入 <code>yes</code>，应提示只能是三种合法取值</li>
+          </ul>
+
+          <div class="check-point"><strong>检查点：</strong>错误输入不会直接崩溃结束；修正后仍能输出完整摘要。这正是任务 B 的核心要求。</div>
         </section>
 
         <section class="exercise" id="p2">
           <h2>2. 任务</h2>
-          <p style="margin: 0 0 10px; color: var(--ink-light);">在完成第 1 部分练习后，基于糖尿病住院病例字段独立完成下列任务。字段含义与课程数据 <code>diabetic_data.csv</code> 一致。</p>
+          <p style="margin: 0 0 10px; color: var(--ink-light);">在完成第 1 部分练习后，基于糖尿病住院病例字段独立完成下列任务。字段含义与 <code>diabetic_data.csv</code> 一致。</p>
 
           <h3 id="p2-1">2.1 任务 A：病例摘要程序</h3>
-          <p style="margin: 0 0 10px; color: var(--ink-light);">编写一个可运行的 <code>.py</code> 程序。</p>
+          <p style="margin: 0 0 10px; color: var(--ink-light);">对应练习 1.1～1.6。编写一个可运行的 <code>.py</code> 程序。</p>
 
           <p style="margin: 16px 0 10px; color: var(--ink-light);"><strong>输入（用 input 依次读入）：</strong></p>
           <ul class="tasks">
@@ -204,7 +357,7 @@ Female
             <li>编号、住院天数、药物种数必须转为 <code>int</code></li>
             <li>至少用 <code>type()</code> 打印一次关键变量类型</li>
             <li>若 <code>readmitted == "&lt;30"</code>，摘要中显示“是”，否则显示“否”</li>
-            <li>额外计算并输出：若再住 1 天，总住院天数是多少（<code>time_in_hospital + 1</code>）</li>
+            <li>计算并输出：若再住 1 天，总住院天数是多少（<code>time_in_hospital + 1</code>）</li>
           </ul>
 
           <p style="margin: 16px 0 10px; color: var(--ink-light);"><strong>输出格式示例：</strong></p>
@@ -217,7 +370,7 @@ Female
 30天内再入院：是</code></pre>
 
           <h3 id="p2-2">2.2 任务 B：合法性检查</h3>
-          <p style="margin: 0 0 10px; color: var(--ink-light);">在任务 A 基础上增加输入检查。全部字段合法后，再输出摘要。</p>
+          <p style="margin: 0 0 10px; color: var(--ink-light);">对应练习 1.7。在任务 A 基础上增加输入检查。全部字段合法后，再输出摘要。</p>
 
           <p style="margin: 16px 0 10px; color: var(--ink-light);"><strong>检查规则：</strong></p>
           <ul class="tasks">
