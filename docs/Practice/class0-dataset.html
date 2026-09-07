@@ -6,6 +6,7 @@
   <title>Class0：数据集</title>
   <link rel="stylesheet" href="../style.css">
   <link rel="stylesheet" href="./practice.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css" crossorigin="anonymous" referrerpolicy="no-referrer">
 </head>
 <body>
   <div class="book-shell practice-page">
@@ -13,11 +14,13 @@
       <div class="toc-scroll">
         <div class="toc__title">目录</div>
         <ul class="book-nav toc">
-          <li><a class="lv1" href="#p1">1. 数据文件</a></li>
-          <li><a class="lv1" href="#p2">2. 数据维度与一行含义</a></li>
-          <li><a class="lv1" href="#p3">3. 数据主要包含什么</a></li>
-          <li><a class="lv1" href="#p4">4. IDS_mapping.csv</a></li>
-          <li><a class="lv1" href="#p5">5. 这份数据在课程中的用途</a></li>
+          <li><a class="lv1" href="#p1">1. 数据文件在哪里</a></li>
+          <li><a class="lv1" href="#p2">2. 数据长什么样</a></li>
+          <li><a class="lv1" href="#p3">3. 一行代表什么</a></li>
+          <li><a class="lv1" href="#p4">4. 字段分类速览</a></li>
+          <li><a class="lv1" href="#p5">5. IDS_mapping 长什么样</a></li>
+          <li><a class="lv1" href="#p6">6. 用这份数据认识 Python</a></li>
+          <li><a class="lv1" href="#p7">7. 课程用途与声明</a></li>
         </ul>
       </div>
     </aside>
@@ -28,27 +31,104 @@
           <a href="./">Practice</a><span class="sep">/</span>Class0
         </div>
         <h1>Class0：数据集</h1>
-        <p class="practice-lead">本页不是正式编程实验，而是整个学期项目的数据背景介绍。开始 Class1 之前，先弄清：我们在处理什么数据、数据有多大、一行代表什么。</p>
+        <p class="practice-lead">先看真实数据长什么样，再理解一行、一列在程序里对应什么。本页会展示两个 CSV 的前几行，并用同一份病例数据引出后续要用到的 Python 语法元素。</p>
 
         <section class="exercise" id="p1">
-          <h2>1. 数据文件</h2>
-          <p style="margin: 0 0 10px; color: var(--ink-light);">课程数据存放在仓库的 <code>data/</code> 目录：</p>
+          <h2>1. 数据文件在哪里</h2>
+          <p style="margin: 0 0 10px; color: var(--ink-light);">课程数据在仓库根目录的 <code>data/</code> 中：</p>
           <ul class="tasks">
-            <li><a href="https://github.com/shaoxunyuan/PythonCourse/blob/main/data/diabetic_data.csv"><code>diabetic_data.csv</code></a>：主数据，住院记录</li>
-            <li><a href="https://github.com/shaoxunyuan/PythonCourse/blob/main/data/IDS_mapping.csv"><code>IDS_mapping.csv</code></a>：辅助编码说明</li>
+            <li><a href="https://github.com/shaoxunyuan/PythonCourse/blob/main/data/diabetic_data.csv"><code>diabetic_data.csv</code></a>：主数据，住院记录（约 19 MB）</li>
+            <li><a href="https://github.com/shaoxunyuan/PythonCourse/blob/main/data/IDS_mapping.csv"><code>IDS_mapping.csv</code></a>：数字编码的文字说明</li>
           </ul>
+          <p style="margin: 16px 0 10px; color: var(--ink-light);">CSV 就是用逗号分隔的表格文本。第一行通常是<strong>列名（表头）</strong>，后面每一行是一条记录。</p>
         </section>
 
         <section class="exercise" id="p2">
-          <h2>2. 数据维度与一行含义</h2>
-          <p style="margin: 0 0 10px; color: var(--ink-light);"><code>diabetic_data.csv</code> 实际维度为 <strong>101,766 行 × 50 列</strong>。不同 <code>patient_nbr</code> 数量为 <strong>71,518</strong>。</p>
+          <h2>2. 数据长什么样</h2>
+          <p style="margin: 0 0 10px; color: var(--ink-light);"><code>diabetic_data.csv</code> 共有 <strong>101,766 行数据 × 50 列</strong>。下面先看<strong>关键列</strong>的前 5 行，方便横向浏览；完整 50 列可在 GitHub 打开原文件查看。</p>
+          <p class="table-caption">表 1 · diabetic_data.csv 前 5 行（节选关键字段）</p>
+          <div class="table-scroll">
+            <table>
+              <thead>
+                <tr>
+                  <th>encounter_id</th>
+                  <th>patient_nbr</th>
+                  <th>race</th>
+                  <th>gender</th>
+                  <th>age</th>
+                  <th>admission_type_id</th>
+                  <th>time_in_hospital</th>
+                  <th>num_medications</th>
+                  <th>diag_1</th>
+                  <th>insulin</th>
+                  <th>diabetesMed</th>
+                  <th>readmitted</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>2278392</td><td>8222157</td><td>Caucasian</td><td>Female</td><td>[0-10)</td>
+                  <td>6</td><td>1</td><td>1</td><td>250.83</td><td>No</td><td>No</td><td>NO</td>
+                </tr>
+                <tr>
+                  <td>149190</td><td>55629189</td><td>Caucasian</td><td>Female</td><td>[10-20)</td>
+                  <td>1</td><td>3</td><td>18</td><td>276</td><td>Up</td><td>Yes</td><td>&gt;30</td>
+                </tr>
+                <tr>
+                  <td>64410</td><td>86047875</td><td>AfricanAmerican</td><td>Female</td><td>[20-30)</td>
+                  <td>1</td><td>2</td><td>13</td><td>648</td><td>No</td><td>Yes</td><td>NO</td>
+                </tr>
+                <tr>
+                  <td>500364</td><td>82442376</td><td>Caucasian</td><td>Male</td><td>[30-40)</td>
+                  <td>1</td><td>2</td><td>16</td><td>8</td><td>Up</td><td>Yes</td><td>NO</td>
+                </tr>
+                <tr>
+                  <td>16680</td><td>42519267</td><td>Caucasian</td><td>Male</td><td>[40-50)</td>
+                  <td>1</td><td>1</td><td>8</td><td>197</td><td>Steady</td><td>Yes</td><td>NO</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <p style="margin: 16px 0 10px; color: var(--ink-light);">把第 2 行（较完整的一例）写成 Python 变量，你会更清楚“一行数据”在程序里如何落地：</p>
+          <pre><code class="language-python"># 来自 diabetic_data.csv 的第 2 条住院记录（节选）
+encounter_id = 149190
+patient_nbr = 55629189
+race = "Caucasian"
+gender = "Female"
+age = "[10-20)"
+admission_type_id = 1
+time_in_hospital = 3
+num_medications = 18
+diag_1 = "276"
+insulin = "Up"
+diabetesMed = "Yes"
+readmitted = "&gt;30"</code></pre>
+
+          <p style="margin: 16px 0 10px; color: var(--ink-light);">也可以看成一个“字典”（后续课程会正式学到）：字段名 → 值。</p>
+          <pre><code class="language-python">case = {
+    "encounter_id": 149190,
+    "patient_nbr": 55629189,
+    "gender": "Female",
+    "age": "[10-20)",
+    "time_in_hospital": 3,
+    "num_medications": 18,
+    "readmitted": "&gt;30",
+}
+print(case["gender"])
+print(case["time_in_hospital"] + 1)</code></pre>
+        </section>
+
+        <section class="exercise" id="p3">
+          <h2>3. 一行代表什么</h2>
+          <p style="margin: 0 0 10px; color: var(--ink-light);">全表不同 <code>patient_nbr</code> 约 <strong>71,518</strong> 个。因此：</p>
           <div class="book-callout">
-            <strong>101,766 行并不代表 101,766 名患者。</strong><br>
-            一行表示一次住院记录（encounter），不是一名唯一患者。同一名患者可能多次住院。
+            <strong>101,766 行 ≠ 101,766 名患者。</strong><br>
+            一行 = 一次住院记录（encounter）。同一患者可能有多次住院。
           </div>
           <ul class="tasks">
-            <li><code>patient_nbr</code>：患者编号</li>
-            <li><code>encounter_id</code>：一次具体住院记录编号</li>
+            <li><code>patient_nbr</code>：患者编号（人）</li>
+            <li><code>encounter_id</code>：本次住院编号（事件）</li>
           </ul>
           <pre><code>患者 patient_nbr
         ↓
@@ -58,29 +138,130 @@ encounter_id 1
 encounter_id 2
 encounter_id 3
 ……</code></pre>
+          <p style="margin: 16px 0 10px; color: var(--ink-light);">后面写筛选、统计时，要先想清楚：你数的是“人次/住院次数”，还是“人数”。</p>
         </section>
 
-        <section class="exercise" id="p3">
-          <h2>3. 数据主要包含什么</h2>
-          <p style="margin: 0 0 10px; color: var(--ink-light);">50 个字段大致包括：患者基本信息、入院信息、医疗过程、诊断、检验、糖尿病相关药物、治疗变化，以及再入院字段 <code>readmitted</code>。</p>
-          <p style="margin: 16px 0 10px; color: var(--ink-light);"><code>readmitted</code> 主要取值与条数：</p>
+        <section class="exercise" id="p4">
+          <h2>4. 字段分类速览</h2>
+          <p style="margin: 0 0 10px; color: var(--ink-light);">50 个字段可以按用途分组理解（不必一次全背）：</p>
+          <ul class="tasks">
+            <li><strong>基本信息</strong>：<code>race</code>、<code>gender</code>、<code>age</code>、<code>weight</code></li>
+            <li><strong>入院相关</strong>：<code>admission_type_id</code>、<code>discharge_disposition_id</code>、<code>admission_source_id</code>、<code>time_in_hospital</code></li>
+            <li><strong>医疗过程</strong>：<code>num_lab_procedures</code>、<code>num_procedures</code>、<code>num_medications</code>、<code>number_outpatient</code>、<code>number_emergency</code>、<code>number_inpatient</code></li>
+            <li><strong>诊断</strong>：<code>diag_1</code>、<code>diag_2</code>、<code>diag_3</code>、<code>number_diagnoses</code></li>
+            <li><strong>检验</strong>：<code>max_glu_serum</code>、<code>A1Cresult</code></li>
+            <li><strong>药物</strong>：如 <code>metformin</code>、<code>glipizide</code>、<code>insulin</code> 等</li>
+            <li><strong>治疗变化</strong>：<code>change</code>、<code>diabetesMed</code></li>
+            <li><strong>再入院</strong>：<code>readmitted</code>（<code>NO</code> / <code>&gt;30</code> / <code>&lt;30</code>）</li>
+          </ul>
+          <p style="margin: 16px 0 10px; color: var(--ink-light);"><code>readmitted</code> 实际分布：</p>
           <ul class="tasks">
             <li><code>NO</code>：54,864</li>
             <li><code>&gt;30</code>：35,545</li>
             <li><code>&lt;30</code>：11,357</li>
           </ul>
-          <p style="margin: 16px 0 10px; color: var(--ink-light);">本课程不以机器学习预测为主要目标。<code>readmitted</code> 主要用于练习条件判断、筛选、统计、可视化与综合分析。</p>
-        </section>
-
-        <section class="exercise" id="p4">
-          <h2>4. IDS_mapping.csv</h2>
-          <p style="margin: 0 0 10px; color: var(--ink-light);">这是辅助编码说明文件（约 67 行数据 × 2 列），用于解释 <code>admission_type_id</code>、<code>discharge_disposition_id</code>、<code>admission_source_id</code> 等数字编码。例如 <code>admission_type_id = 1</code> 对应 <code>Emergency</code>。</p>
-          <p style="margin: 16px 0 10px; color: var(--ink-light);">后续可用于练习字典、映射、文件读取、数据关联与转换。</p>
+          <p style="margin: 16px 0 10px; color: var(--ink-light);">注意：原始数据里常见 <code>?</code>，表示缺失或未知（例如部分行的 <code>weight</code>、<code>payer_code</code>）。后续清洗时会专门处理。</p>
         </section>
 
         <section class="exercise" id="p5">
-          <h2>5. 这份数据在课程中的用途</h2>
-          <p style="margin: 0 0 10px; color: var(--ink-light);">它不是为了让你学医学诊断，也不是为了训练复杂机器学习模型，而是整门课的统一数据主线：从一条病例逐步过渡到完整真实数据、pandas、可视化、大模型 API 与 Web 平台。</p>
+          <h2>5. IDS_mapping 长什么样</h2>
+          <p style="margin: 0 0 10px; color: var(--ink-light);"><code>IDS_mapping.csv</code> 用于解释主表里的数字编码字段。文件里用空行分隔了三组映射：入院类型、出院去向、入院来源。</p>
+          <p class="table-caption">表 2 · admission_type_id 映射（文件开头部分）</p>
+          <div class="table-scroll">
+            <table>
+              <thead>
+                <tr><th>admission_type_id</th><th>description</th></tr>
+              </thead>
+              <tbody>
+                <tr><td>1</td><td>Emergency</td></tr>
+                <tr><td>2</td><td>Urgent</td></tr>
+                <tr><td>3</td><td>Elective</td></tr>
+                <tr><td>4</td><td>Newborn</td></tr>
+                <tr><td>5</td><td>Not Available</td></tr>
+                <tr><td>6</td><td>NULL</td></tr>
+                <tr><td>7</td><td>Trauma Center</td></tr>
+                <tr><td>8</td><td>Not Mapped</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p style="margin: 16px 0 10px; color: var(--ink-light);">因此，主表里 <code>admission_type_id = 1</code> 的含义是 <code>Emergency</code>。在 Python 里，这很适合做成<strong>字典映射</strong>：</p>
+          <pre><code class="language-python">admission_type = {
+    1: "Emergency",
+    2: "Urgent",
+    3: "Elective",
+    4: "Newborn",
+    5: "Not Available",
+    6: "NULL",
+    7: "Trauma Center",
+    8: "Not Mapped",
+}
+
+code = 1
+print(admission_type[code])   # Emergency</code></pre>
+        </section>
+
+        <section class="exercise" id="p6">
+          <h2>6. 用这份数据认识 Python 语法元素</h2>
+          <p style="margin: 0 0 10px; color: var(--ink-light);">不必背抽象定义。下面用真实字段对照后续会反复出现的语法点：</p>
+
+          <h3>6.1 变量、赋值、标识符</h3>
+          <pre><code class="language-python">patient_nbr = 55629189
+time_in_hospital = 3
+readmitted = "&gt;30"</code></pre>
+          <p style="margin: 0 0 10px; color: var(--ink-light);">左边是标识符（变量名），右边是值，<code>=</code> 是赋值。</p>
+
+          <h3>6.2 数据类型：数字 vs 文本</h3>
+          <ul class="tasks">
+            <li><code>time_in_hospital</code>、<code>num_medications</code> → 更像 <code>int</code>（可加减）</li>
+            <li><code>gender</code>、<code>age</code>、<code>readmitted</code> → <code>str</code>（文本，不能直接 <code>+ 1</code>）</li>
+            <li><code>diabetesMed == "Yes"</code> 这类判断会引出 <code>bool</code></li>
+          </ul>
+          <pre><code class="language-python">print(type(3))            # &lt;class 'int'&gt;
+print(type("Female"))     # &lt;class 'str'&gt;
+print(type(True))         # &lt;class 'bool'&gt;
+
+print(3 + 1)              # 4
+# print("[10-20)" + 1)    # 报错：类型不匹配</code></pre>
+
+          <h3>6.3 字符串与特殊符号</h3>
+          <p style="margin: 0 0 10px; color: var(--ink-light);"><code>age</code> 写成 <code>"[10-20)"</code>，<code>readmitted</code> 写成 <code>"&lt;30"</code> 或 <code>"&gt;30"</code>。尖括号、中括号都是字符串内容的一部分，不是数学比较符。</p>
+          <pre><code class="language-python">age = "[10-20)"
+readmitted = "&lt;30"
+print(age)
+print(readmitted == "&lt;30")   # True</code></pre>
+
+          <h3>6.4 表达式、比较、条件（为后续筛选铺路）</h3>
+          <pre><code class="language-python">stay = 3
+meds = 18
+long_stay = stay &gt;= 3
+many_meds = meds &gt; 10
+early_readmit = (readmitted == "&lt;30")
+
+if early_readmit:
+    print("30 天内再入院")
+else:
+    print("不是 30 天内再入院")</code></pre>
+
+          <h3>6.5 列表：多条病例放在一起</h3>
+          <p style="margin: 0 0 10px; color: var(--ink-light);">Class1 先处理一条；再往后就会把多条记录放进列表循环处理。</p>
+          <pre><code class="language-python">stays = [1, 3, 2, 2, 1]          # 前 5 行的 time_in_hospital
+print(len(stays))
+print(sum(stays) / len(stays))   # 平均住院天数（示意）</code></pre>
+
+          <h3>6.6 缺失值 <code>?</code> 也是数据的一部分</h3>
+          <pre><code class="language-python">weight = "?"
+if weight == "?":
+    print("体重缺失，后续需要清洗或单独处理")</code></pre>
+
+          <div class="book-callout">
+            Class0 的目标：看见真实表格 → 知道一行是什么 → 知道字段在 Python 里大概属于什么类型。<br>
+            Class1 会正式练习：变量、类型、输入输出、f-string，并用一条病例生成摘要。
+          </div>
+        </section>
+
+        <section class="exercise" id="p7">
+          <h2>7. 课程用途与声明</h2>
+          <p style="margin: 0 0 10px; color: var(--ink-light);">这份数据是整门课的统一主线，不是医学诊断教材，也不是机器学习竞赛数据。学习路径大致是：一条病例 → 多条病例 → 文件与清洗 → pandas / 可视化 → 大模型 API → Web 平台。</p>
           <div class="book-callout">
             本数据仅用于 Python 编程、数据处理和软件开发教学。课程中的筛选规则、统计结果以及大模型生成内容，均不用于临床诊断、治疗决策或真实医疗活动。
           </div>
@@ -92,13 +273,42 @@ encounter_id 3
 
   <script>
     (function () {
+      document.querySelectorAll('pre > code').forEach((code) => {
+        const pre = code.parentElement;
+        if (!pre || pre.querySelector('.copy-btn')) return;
+        const btn = document.createElement('button');
+        btn.className = 'copy-btn';
+        btn.type = 'button';
+        btn.textContent = '复制';
+        btn.addEventListener('click', async () => {
+          try {
+            await navigator.clipboard.writeText(code.innerText);
+            btn.dataset.state = 'ok';
+            btn.textContent = '已复制';
+            setTimeout(() => { delete btn.dataset.state; btn.textContent = '复制'; }, 1200);
+          } catch (e) {
+            const range = document.createRange();
+            range.selectNodeContents(code);
+            const sel = window.getSelection();
+            sel.removeAllRanges();
+            sel.addRange(range);
+            btn.textContent = '请 Ctrl+C';
+            setTimeout(() => { btn.textContent = '复制'; }, 1200);
+          }
+        });
+        pre.appendChild(btn);
+      });
+    })();
+  </script>
+  <script>
+    (function () {
       const links = Array.from(document.querySelectorAll('.toc a[href^="#"]'));
       const idToLink = new Map();
       links.forEach((a) => {
         const id = decodeURIComponent(a.getAttribute('href').slice(1));
         if (id) idToLink.set(id, a);
       });
-      const headings = Array.from(document.querySelectorAll('h2[id], section[id]'))
+      const headings = Array.from(document.querySelectorAll('section[id]'))
         .filter((h) => idToLink.has(h.id));
       if (headings.length === 0) return;
       const clear = () => links.forEach((a) => a.classList.remove('is-active'));
@@ -112,5 +322,8 @@ encounter_id 3
       headings.forEach((h) => obs.observe(h));
     })();
   </script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/python.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script>hljs.highlightAll();</script>
 </body>
 </html>
