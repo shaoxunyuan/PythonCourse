@@ -194,10 +194,47 @@ print(f"30天内再入院：{flag}")</code></pre>
         <section class="exercise" id="p9">
           <h2>九、作业</h2>
 
-          <h3>作业 1</h3>
-          <p style="margin: 0 0 10px; color: var(--ink-light);">编写程序：交互输入一条病例，输出完整摘要（含 30 天内再入院的中文“是/否”）。</p>
-          <h3>作业 2</h3>
-          <p style="margin: 0 0 10px; color: var(--ink-light);">在作业 1 基础上增加合法性检查：住院天数与药物数量非负；再入院标记只能是指定三种取值。</p>
+          <h3>作业 1：病例摘要程序</h3>
+          <p style="margin: 0 0 10px; color: var(--ink-light);">编写一个可运行的 Python 程序，完成下面要求。</p>
+          <p style="margin: 16px 0 10px; color: var(--ink-light);"><strong>输入要求</strong>（使用 <code>input()</code>，按提示依次读入）：</p>
+          <ul class="tasks">
+            <li><code>patient_id</code>：患者编号（整数）</li>
+            <li><code>age</code>：年龄组（文本，例如 <code>[70-80)</code>）</li>
+            <li><code>gender</code>：性别（文本，例如 <code>Female</code> / <code>Male</code>）</li>
+            <li><code>time_in_hospital</code>：住院天数（整数）</li>
+            <li><code>num_medications</code>：药物种数（整数）</li>
+            <li><code>readmitted</code>：再入院标记（文本，取值为 <code>NO</code> / <code>&gt;30</code> / <code>&lt;30</code>）</li>
+          </ul>
+          <p style="margin: 16px 0 10px; color: var(--ink-light);"><strong>处理要求：</strong></p>
+          <ul class="tasks">
+            <li>编号、住院天数、药物种数必须转换为 <code>int</code></li>
+            <li>用 <code>type()</code> 至少打印一次关键变量的类型，确认转换成功</li>
+            <li>根据 <code>readmitted</code> 得到中文结果：若为 <code>&lt;30</code> 则显示“是”，否则显示“否”</li>
+          </ul>
+          <p style="margin: 16px 0 10px; color: var(--ink-light);"><strong>输出要求</strong>（使用 f-string，格式与下面一致或等价清晰）：</p>
+          <pre><code>患者编号：12345
+年龄组：[70-80)
+性别：Female
+本次住院：8 天
+使用药物：18 种
+30天内再入院：是</code></pre>
+
+          <h3>作业 2：带合法性检查的病例摘要程序</h3>
+          <p style="margin: 0 0 10px; color: var(--ink-light);">在作业 1 的基础上增加输入检查。程序在输出摘要前，必须先确认输入合法。</p>
+          <p style="margin: 16px 0 10px; color: var(--ink-light);"><strong>检查规则：</strong></p>
+          <ul class="tasks">
+            <li><code>time_in_hospital</code> 不能为负数</li>
+            <li><code>num_medications</code> 不能为负数</li>
+            <li><code>patient_id</code>、<code>time_in_hospital</code>、<code>num_medications</code> 必须能成功转为整数；若输入无法转换，给出提示</li>
+            <li><code>readmitted</code> 只能是 <code>NO</code>、<code>&gt;30</code>、<code>&lt;30</code> 三者之一；其他取值视为非法</li>
+          </ul>
+          <p style="margin: 16px 0 10px; color: var(--ink-light);"><strong>交互要求：</strong></p>
+          <ul class="tasks">
+            <li>发现非法输入时，打印明确错误原因（例如：“住院天数不能为负数”）</li>
+            <li>要求重新输入该字段，直到合法为止</li>
+            <li>全部字段合法后，再输出与作业 1 相同格式的病例摘要</li>
+          </ul>
+          <p style="margin: 16px 0 10px; color: var(--ink-light);"><strong>提交内容建议：</strong>可运行的 <code>.py</code> 源文件；如有必要，附上一段简短运行说明（输入示例与对应输出）。</p>
 
         </section>
         <section class="exercise" id="p10">
