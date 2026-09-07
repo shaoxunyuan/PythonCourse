@@ -3,19 +3,19 @@
 # Python 高级应用
 
 [![COURSE WEBSITE](https://img.shields.io/static/v1?style=flat-square&label=COURSE%20WEBSITE&message=LIVE&color=00c853&labelColor=333333&logo=github&logoColor=white)](https://shaoxunyuan.github.io/PythonCourse/)
-[![TUTORIAL](https://img.shields.io/static/v1?style=flat-square&label=TUTORIAL&message=LABS&color=008b8b&labelColor=333333)](https://shaoxunyuan.github.io/PythonCourse/)
+[![TUTORIAL](https://img.shields.io/static/v1?style=flat-square&label=TUTORIAL&message=LABS&color=008b8b&labelColor=333333)](https://shaoxunyuan.github.io/PythonCourse/labs/)
 [![DATASET](https://img.shields.io/static/v1?style=flat-square&label=DATASET&message=SOP0&color=ff9800&labelColor=333333)](https://shaoxunyuan.github.io/PythonCourse/sop0-data/)
 
-> **教程入口：** 点击 [COURSE WEBSITE](https://shaoxunyuan.github.io/PythonCourse/) 进入在线实验教程。
+> **教程入口：** 点击 [TUTORIAL](https://shaoxunyuan.github.io/PythonCourse/labs/) 先进入实验目录，再点击对应实验开始练习。
 
 ## 教程页面
 
 | 入口 | 链接 |
 |------|------|
-| **在线实验教程（主入口）** | [https://shaoxunyuan.github.io/PythonCourse/](https://shaoxunyuan.github.io/PythonCourse/) |
-| 课程介绍 | [课程说明](https://shaoxunyuan.github.io/PythonCourse/guide/course/) |
+| **实验教程目录（推荐）** | [https://shaoxunyuan.github.io/PythonCourse/labs/](https://shaoxunyuan.github.io/PythonCourse/labs/) |
+| 课程网站首页 | [https://shaoxunyuan.github.io/PythonCourse/](https://shaoxunyuan.github.io/PythonCourse/) |
 | 认识课程数据 | [SOP0](https://shaoxunyuan.github.io/PythonCourse/sop0-data/) |
-| 实验 SOP1–SOP11 | [实验教程](https://shaoxunyuan.github.io/PythonCourse/labs/sop01/) |
+| 课程说明 | [课程介绍](https://shaoxunyuan.github.io/PythonCourse/guide/course/) |
 | 综合项目 | [项目说明](https://shaoxunyuan.github.io/PythonCourse/project/overview/) |
 | 原始数据下载 | [`data/`](data/) |
 

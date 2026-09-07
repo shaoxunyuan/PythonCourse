@@ -76,6 +76,7 @@ nav:
       - SOP0：认识我们的课程数据: sop0-data.md
       - 数据使用说明: guide/dataset.md
   - 实验教程:
+      - labs/index.md
       - SOP1：待完善: labs/sop01.md
       - SOP2：待完善: labs/sop02.md
       - SOP3：待完善: labs/sop03.md
