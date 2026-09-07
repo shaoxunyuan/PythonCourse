@@ -3,187 +3,43 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SOP2：Python 数据结构与病例组织</title>
+  <title>实验2：组合数据类型</title>
   <link rel="stylesheet" href="../style.css">
   <link rel="stylesheet" href="./practice.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css" crossorigin="anonymous" referrerpolicy="no-referrer">
 </head>
 <body>
   <div class="book-shell practice-page">
-    <aside class="book-sidebar" aria-label="本页目录">
+    <aside class="book-sidebar" aria-label="导航">
       <div class="toc-scroll">
-        <div class="toc__title">目录</div>
-        <ul class="book-nav toc">
-          <li><a class="lv1" href="#p1">1. 从独立变量到字典</a></li>
-          <li><a class="lv1" href="#p2">2. list / tuple / set / dict</a></li>
-          <li><a class="lv1" href="#p3">3. list of dict</a></li>
-          <li><a class="lv1" href="#p4">4. 核心实验</a></li>
-          <li><a class="lv1" href="#p5">5. 进阶任务</a></li>
-          <li><a class="lv1" href="#p6">6. 作业</a></li>
-        </ul>
-        <div class="toc__title" style="margin-top:18px;">全部实验</div>
+
+        <div class="toc__title">全部实验</div>
         <ul class="book-nav">
         <li><a href="sop00-dataset.html">SOP0：认识课程数据</a></li>
-        <li><a href="sop01-syntax.html">SOP1：Python 语法元素与病例信息处理</a></li>
-        <li><a href="sop02-structures.html" class="is-active">SOP2：Python 数据结构与病例组织</a></li>
-        <li><a href="sop03-control.html">SOP3：程序控制结构与病例规则筛选</a></li>
-        <li><a href="sop04-functions.html">SOP4：函数与病例处理工具箱</a></li>
-        <li><a href="sop05-dynamic.html">SOP5：动态函数与可配置病例规则</a></li>
-        <li><a href="sop06-files.html">SOP6：文件操作与数据格式转换</a></li>
-        <li><a href="sop07-quality.html">SOP7：真实病例数据读取、检查与清洗</a></li>
-        <li><a href="sop08-pandas.html">SOP8：pandas 综合数据处理与病例分析</a></li>
-        <li><a href="sop09-api.html">SOP9：网络请求、大模型 API 与智能报告</a></li>
-        <li><a href="sop10-web.html">SOP10：Python Web 应用与交互式分析平台</a></li>
-        <li><a href="sop11-project.html">SOP11：完整项目集成、测试与交付</a></li>
+        <li><a href="sop01-syntax.html">实验1：Python 语法元素与基本数据类型</a></li>
+        <li><a href="sop02-structures.html" class="is-active">实验2：组合数据类型</a></li>
+        <li><a href="sop03-control.html">实验3：程序控制结构</a></li>
+        <li><a href="sop04-functions.html">实验4：函数与模块化</a></li>
+        <li><a href="sop05-dynamic.html">实验5：函数进阶与动态函数</a></li>
+        <li><a href="sop06-files.html">实验6：文件与数据格式化</a></li>
+        <li><a href="sop07-pandas-clean.html">实验7：pandas 与真实数据清洗</a></li>
+        <li><a href="sop08-analysis.html">实验8：综合数据分析与可视化</a></li>
+        <li><a href="sop09-api.html">实验9：网络、API 与大模型</a></li>
+        <li><a href="sop10-platform.html">实验10：Web 应用与项目集成</a></li>
         </ul>
       </div>
     </aside>
-
     <main class="book-main">
       <article class="article">
         <div class="practice-breadcrumb">
-          <a href="./">Practice</a><span class="sep">/</span>SOP2
+          <a href="./">Practice</a><span class="sep">/</span>实验2
         </div>
-        <h1>SOP2：Python 数据结构与病例组织</h1>
+        <h1>实验2：组合数据类型</h1>
 
-        <p class="practice-lead">病例字段越来越多、患者越来越多以后，怎样组织数据？完成后你将得到「病例数据模型」：能用数据结构表示多名患者与多条病例。</p>
+        <p class="practice-lead">表示一名患者和一组病例 · 病例集合</p>
 
-        <section class="exercise" id="p1">
-          <h2>1. 从独立变量到字典</h2>
-
-          <pre><code class="language-python">patient = {
-    "patient_id": 12345,
-    "age": "[70-80)",
-    "gender": "Female",
-    "time_in_hospital": 8,
-    "num_medications": 18,
-    "readmitted": "&lt;30",
-}
-print(patient["gender"])
-patient["num_medications"] += 1</code></pre>
-
-        </section>
-        <section class="exercise" id="p2">
-          <h2>2. list / tuple / set / dict</h2>
-
-          <ul class="tasks">
-            <li><code>list</code>：有序、可变，适合一组病例</li>
-            <li><code>tuple</code>：有序、不可变，适合固定组合</li>
-            <li><code>dict</code>：键值对，适合一条病例的多字段</li>
-            <li><code>set</code>：不重复集合，适合去重患者编号</li>
-          </ul>
-          <pre><code class="language-python">ids = [12345, 12345, 67890]
-print(set(ids))
-print(ids[0], ids[-1], ids[:2])</code></pre>
-
-        </section>
-        <section class="exercise" id="p3">
-          <h2>3. list of dict</h2>
-
-          <pre><code class="language-python">patients = [
-    {"patient_id": 1, "time_in_hospital": 3, "readmitted": "NO"},
-    {"patient_id": 2, "time_in_hospital": 8, "readmitted": "&lt;30"},
-    {"patient_id": 3, "time_in_hospital": 5, "readmitted": "&gt;30"},
-]
-
-# 增加
-patients.append({"patient_id": 4, "time_in_hospital": 2, "readmitted": "NO"})
-# 查询
-one = [p for p in patients if p["patient_id"] == 2][0]
-# 排序
-patients.sort(key=lambda p: p["time_in_hospital"], reverse=True)
-# 统计
-avg = sum(p["time_in_hospital"] for p in patients) / len(patients)</code></pre>
-
-        </section>
-        <section class="exercise" id="p4">
-          <h2>4. 核心实验</h2>
-
-          <ul class="tasks">
-            <li>把 SOP1 的独立变量改写成一个 <code>patient</code> 字典</li>
-            <li>建立 <code>patients = [{...}, {...}, ...]</code></li>
-            <li>完成增加、删除、修改、按编号查询、字段提取、排序与简单统计</li>
-          </ul>
-
-        </section>
-        <section class="exercise" id="p5">
-          <h2>5. 进阶任务</h2>
-
-          <pre><code class="language-python">patient = {
-    "basic": {"patient_id": 1, "gender": "Female", "age": "[70-80)"},
-    "hospital": {"time_in_hospital": 8, "num_medications": 18},
-    "meds": {"insulin": "Up", "diabetesMed": "Yes"},
-}</code></pre>
-          <p style="margin: 0 0 10px; color: var(--ink-light);">用嵌套字典表示：基本信息 / 住院信息 / 用药信息，并完成读取与修改。</p>
-
-        </section>
-        <section class="exercise" id="p6">
-          <h2>6. 作业</h2>
-
-          <h3>作业 1</h3>
-          <p style="margin: 0 0 10px; color: var(--ink-light);">实现病例列表的增删改查，并按住院天数排序输出。</p>
-          <h3>作业 2</h3>
-          <p style="margin: 0 0 10px; color: var(--ink-light);">统计 <code>readmitted</code> 三类取值的人数，并找出药物数量最多的病例。</p>
-
-        </section>
       </article>
     </main>
   </div>
-
-  <script>
-    (function () {
-      const links = Array.from(document.querySelectorAll('.toc a[href^="#"]'));
-      const idToLink = new Map();
-      links.forEach((a) => {
-        const id = decodeURIComponent(a.getAttribute('href').slice(1));
-        if (id) idToLink.set(id, a);
-      });
-      const headings = Array.from(document.querySelectorAll('section[id]'))
-        .filter((h) => idToLink.has(h.id));
-      if (headings.length === 0) return;
-      const clear = () => links.forEach((a) => a.classList.remove('is-active'));
-      const setActive = (id) => { clear(); const a = idToLink.get(id); if (a) a.classList.add('is-active'); };
-      const initial = (location.hash && location.hash.slice(1)) || headings[0].id;
-      setActive(decodeURIComponent(initial));
-      const obs = new IntersectionObserver((entries) => {
-        const visible = entries.filter((e) => e.isIntersecting).sort((a, b) => (a.boundingClientRect.top - b.boundingClientRect.top));
-        if (visible.length > 0) setActive(visible[0].target.id);
-      }, { rootMargin: '-15% 0px -75% 0px', threshold: [0, 1] });
-      headings.forEach((h) => obs.observe(h));
-    })();
-  </script>
-
-  <script>
-    (function () {
-      document.querySelectorAll('pre > code').forEach((code) => {
-        const pre = code.parentElement;
-        if (!pre || pre.querySelector('.copy-btn')) return;
-        const btn = document.createElement('button');
-        btn.className = 'copy-btn';
-        btn.type = 'button';
-        btn.textContent = '复制';
-        btn.addEventListener('click', async () => {
-          try {
-            await navigator.clipboard.writeText(code.innerText);
-            btn.dataset.state = 'ok';
-            btn.textContent = '已复制';
-            setTimeout(() => { delete btn.dataset.state; btn.textContent = '复制'; }, 1200);
-          } catch (e) {
-            const range = document.createRange();
-            range.selectNodeContents(code);
-            const sel = window.getSelection();
-            sel.removeAllRanges();
-            sel.addRange(range);
-            btn.textContent = '请 Ctrl+C';
-            setTimeout(() => { btn.textContent = '复制'; }, 1200);
-          }
-        });
-        pre.appendChild(btn);
-      });
-    })();
-  </script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/python.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-  <script>hljs.highlightAll();</script>
+  <script src="./split.js"></script>
 </body>
 </html>
