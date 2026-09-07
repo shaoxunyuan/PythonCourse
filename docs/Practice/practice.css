@@ -43,6 +43,47 @@
 }
 .practice-page .toc a.is-active { color: var(--accent-hover); font-weight: 700; }
 
+.step-label {
+  font-size: 12px;
+  font-weight: 800;
+  color: var(--accent-hover);
+  margin: 14px 0 6px;
+  letter-spacing: 0.02em;
+}
+
+.check-point {
+  margin: 12px 0 16px;
+  padding: 10px 12px;
+  border-left: 3px solid var(--accent);
+  color: var(--ink);
+  font-size: 14px;
+  line-height: 1.65;
+}
+
+.meta-row {
+  display: grid;
+  gap: 8px;
+  margin: 0 0 18px;
+  max-width: 52em;
+  font-size: 13px;
+  color: var(--ink-light);
+}
+
+.meta-row strong {
+  color: var(--ink);
+  font-weight: 700;
+  min-width: 4.5em;
+  display: inline-block;
+}
+
+.exercise h3 {
+  font-size: 15px;
+  font-weight: 800;
+  margin: 22px 0 8px;
+  color: var(--ink);
+  scroll-margin-top: 20px;
+}
+
 .practice-breadcrumb {
   font-size: 13px;
   color: var(--ink-muted);
