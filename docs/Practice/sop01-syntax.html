@@ -37,6 +37,15 @@
             <div class="lv2">
               <a href="#p2-1"><span class="n">2.1</span>任务 A：病例信息处理器 V0.1</a>
               <a href="#p2-2"><span class="n">2.2</span>任务 B：字段与表达式分析</a>
+              <a href="#p2-3"><span class="n">2.3</span>进阶任务（自愿）</a>
+            </div>
+          </li>
+          <li>
+            <a class="lv1" href="#p3">3. 实验结果与作业</a>
+            <div class="lv2">
+              <a href="#p3-1"><span class="n">3.1</span>本次实验结果要求</a>
+              <a href="#p3-2"><span class="n">3.2</span>作业</a>
+              <a href="#p3-3"><span class="n">3.3</span>实验提交</a>
             </div>
           </li>
         </ul>
@@ -62,7 +71,7 @@
           </div>
           <div>
             <strong>练习方式</strong>
-            <span>按 1.1～1.13 顺序完成练习，再完成第 2 部分任务</span>
+            <span>本地输入并运行代码，观察结果后完成第 2 部分任务，再通过雨课堂填写实验记录</span>
           </div>
         </div>
 
@@ -350,9 +359,19 @@ print(type("True"))   # str</code></pre>
 
         <section class="exercise" id="p2">
           <h2>2. 任务</h2>
+          <p style="margin: 0 0 16px; color: var(--ink-light);">请亲自输入代码、运行程序、观察结果，并完成「病例信息处理器 V0.1」。完成后，根据实际运行结果填写雨课堂中的结构化实验记录。</p>
 
           <h3 id="p2-1">2.1 任务 A：病例信息处理器 V0.1</h3>
-          <p style="margin: 0 0 10px; color: var(--ink-light);">对应练习 1.1～1.11。编写可运行的 <code>.py</code> 程序，完成单条病例摘要。</p>
+          <p style="margin: 0 0 10px; color: var(--ink-light);">对应练习 1.1～1.11。请在本地完成「病例信息处理器 V0.1」，并根据程序的实际运行结果完成雨课堂中的实验记录。</p>
+
+          <p style="margin: 16px 0 10px; color: var(--ink-light);"><strong>建议输入：</strong></p>
+          <pre><code class="language-python">patient_id = 10001
+gender = "Female"
+age_group = "[70-80)"
+time_in_hospital = 8
+num_medications = 18
+number_inpatient = 2
+readmitted = "&lt;30"</code></pre>
 
           <p style="margin: 16px 0 10px; color: var(--ink-light);"><strong>至少包含字段：</strong></p>
           <ul class="tasks">
@@ -391,10 +410,10 @@ print(type("True"))   # str</code></pre>
 30天内再次入院：True
 ==============================</code></pre>
 
-          <p style="margin: 16px 0 10px; color: var(--ink-light);">本任务不要求使用 <code>while</code>、<code>try</code>、<code>except</code>、循环输入。</p>
+          <p style="margin: 16px 0 10px; color: var(--ink-light);">本任务可使用固定值或 <code>input()</code> 读入；正式主线优先使用比较表达式得到 <code>bool</code> 结果。</p>
 
           <h3 id="p2-2">2.2 任务 B：病例字段与表达式分析</h3>
-          <p style="margin: 0 0 10px; color: var(--ink-light);">对应练习 1.3～1.8。给定下列变量，编写程序完成分析并输出结果。</p>
+          <p style="margin: 0 0 10px; color: var(--ink-light);">对应练习 1.3～1.8。在本地运行下列分析，记录结果，用于完成雨课堂题目。</p>
 
           <pre><code class="language-python">patient_id = 12345
 age_group = "[70-80)"
@@ -416,9 +435,107 @@ readmitted = "&lt;30"</code></pre>
             <li>使用 f-string 整理最终结果</li>
           </ul>
 
-          <div class="check-point">
-            <strong>提交建议：</strong>两个可运行的 <code>.py</code> 文件（或一个文件中清晰分出任务 A / 任务 B）；可附运行输出文本。
-          </div>
+          <h3 id="p2-3">2.3 进阶任务（自愿）</h3>
+          <p style="margin: 0 0 10px; color: var(--ink-light);">将 <code>gender</code> 的输入 <code>female</code> / <code>Female</code> / <code> FEMALE</code> 统一为 <code>Female</code>。若雨课堂有对应题目，请填写你使用的关键代码（约 1～3 行）。</p>
+        </section>
+
+        <section class="exercise" id="p3">
+          <h2>3. 实验结果与作业</h2>
+
+          <h3 id="p3-1">3.1 本次实验结果要求</h3>
+          <p style="margin: 0 0 10px; color: var(--ink-light);">完成本次实验后，你应该能够：</p>
+          <ul class="tasks">
+            <li>正确创建和使用变量</li>
+            <li>区分 <code>int</code>、<code>float</code>、<code>str</code>、<code>bool</code>、<code>None</code></li>
+            <li>使用 <code>type()</code> 查看数据类型</li>
+            <li>完成基本类型转换</li>
+            <li>完成数值计算</li>
+            <li>完成比较表达式</li>
+            <li>理解比较结果为什么是 <code>bool</code></li>
+            <li>使用 <code>input()</code> 和 <code>print()</code></li>
+            <li>使用 f-string 输出格式清晰的结果</li>
+            <li>在本地完成「病例信息处理器 V0.1」</li>
+          </ul>
+          <p style="margin: 16px 0 10px; color: var(--ink-light);">请根据程序的实际运行结果，完成雨课堂中的实验记录。</p>
+
+          <h3 id="p3-2">3.2 作业</h3>
+          <p style="margin: 0 0 10px; color: var(--ink-light);">本次实验主要关注基础语法与运行结果，因此采用结构化实验记录的方式完成提交。请先在本地实际运行，再按雨课堂题目作答。</p>
+
+          <p style="margin: 16px 0 8px; color: var(--ink-light);"><strong>题目1：变量与数据类型</strong></p>
+          <p style="margin: 0 0 10px; color: var(--ink-light);">给定下列变量，填写各自的数据类型：</p>
+          <pre><code class="language-python">patient_id = 10001
+age_group = "[70-80)"
+time_in_hospital = 8
+average = 2.25
+early_readmit = True</code></pre>
+          <ul class="tasks">
+            <li><code>patient_id</code>：________</li>
+            <li><code>age_group</code>：________</li>
+            <li><code>time_in_hospital</code>：________</li>
+            <li><code>average</code>：________</li>
+            <li><code>early_readmit</code>：________</li>
+          </ul>
+          <p style="margin: 12px 0 10px; color: var(--ink-light);">补充解释（任选其一，用 1～3 句话回答）：为什么 <code>age_group = "[70-80)"</code> 属于 <code>str</code>？或为什么 <code>True</code> 与 <code>"True"</code> 不是同一种数据？</p>
+
+          <p style="margin: 16px 0 8px; color: var(--ink-light);"><strong>题目2：表达式运行结果</strong></p>
+          <p style="margin: 0 0 10px; color: var(--ink-light);">在 Python 中实际运行：</p>
+          <pre><code class="language-python">a = "8"
+b = 8
+c = 8.0</code></pre>
+          <p style="margin: 0 0 10px; color: var(--ink-light);">填写下列结果：</p>
+          <ul class="tasks">
+            <li><code>a + "1"</code> 的结果：________</li>
+            <li><code>b + 1</code> 的结果：________</li>
+            <li><code>c + 1</code> 的结果：________</li>
+            <li><code>int(a) + 1</code> 的结果：________</li>
+            <li><code>str(b) + "1"</code> 的结果：________</li>
+          </ul>
+          <p style="margin: 12px 0 10px; color: var(--ink-light);">解释：为什么 <code>"8" + "1"</code> 和 <code>8 + 1</code> 结果不同？（1～3 句话）</p>
+
+          <p style="margin: 16px 0 8px; color: var(--ink-light);"><strong>题目3：关键代码填写</strong></p>
+          <pre><code class="language-python">num_medications = 18
+time_in_hospital = 8</code></pre>
+          <ul class="tasks">
+            <li>写出一行 Python 代码，计算平均每日药物数量：____________________________</li>
+            <li>使用 f-string 输出「平均每日药物数量：2.25」：____________________________</li>
+            <li>补充解释：为什么 <code>18 / 8</code> 的结果属于 <code>float</code>？（1～3 句话）</li>
+          </ul>
+
+          <p style="margin: 16px 0 8px; color: var(--ink-light);"><strong>题目4：病例信息处理结果</strong></p>
+          <p style="margin: 0 0 10px; color: var(--ink-light);">在本地完成「病例信息处理器 V0.1」后，根据实际运行结果填写（建议输入见任务 A）：</p>
+          <ul class="tasks">
+            <li>患者编号：________</li>
+            <li>性别：________</li>
+            <li>年龄组：________</li>
+            <li>住院时间：________</li>
+            <li>药物数量：________</li>
+            <li>平均每日药物数量：________</li>
+            <li>长住院：________</li>
+            <li>30天内再次入院：________</li>
+          </ul>
+          <p style="margin: 12px 0 10px; color: var(--ink-light);">也可在雨课堂长文本题中粘贴程序最终文字输出。</p>
+
+          <p style="margin: 16px 0 8px; color: var(--ink-light);"><strong>题目5：错误分析</strong></p>
+          <pre><code class="language-python">stay_days = input("请输入住院天数：")
+print(stay_days + 1)</code></pre>
+          <ul class="tasks">
+            <li>这段代码为什么可能报错？</li>
+            <li><code>input()</code> 得到的数据是什么类型？</li>
+            <li>应该怎样修改？请填写关键代码：<code>stay_days = </code>____________________________</li>
+          </ul>
+
+          <h3 id="p3-3">3.3 实验提交</h3>
+          <p style="margin: 0 0 10px; color: var(--ink-light);">请先在自己的 Python 环境中完成本次实验的代码练习，并实际运行程序、观察结果。</p>
+          <p style="margin: 0 0 10px; color: var(--ink-light);">完成实验后，请按照雨课堂中的题目填写实验记录。</p>
+          <p style="margin: 0 0 10px; color: var(--ink-light);">本次实验主要记录：</p>
+          <ul class="tasks">
+            <li>变量和数据类型判断</li>
+            <li>指定表达式的运行结果</li>
+            <li>少量关键代码</li>
+            <li>病例信息处理器的最终文字输出</li>
+            <li>对典型运行结果或错误的简短解释</li>
+          </ul>
+          <p style="margin: 16px 0 10px; color: var(--ink-light);">请按照雨课堂发布的要求完成提交。</p>
         </section>
       </article>
     </main>
