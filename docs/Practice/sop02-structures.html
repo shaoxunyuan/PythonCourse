@@ -37,9 +37,16 @@
           <li>
             <a class="lv1" href="#p2">2. 任务</a>
             <div class="lv2">
-              <a href="#p2-1"><span class="n">2.1</span>病例数据模型 V0.2</a>
-              <a href="#p2-2"><span class="n">2.2</span>进阶挑战</a>
-              <a href="#p2-3"><span class="n">2.3</span>实验提交</a>
+              <a href="#p2-1"><span class="n">2.1</span>任务 A：病例数据模型 V0.2</a>
+              <a href="#p2-2"><span class="n">2.2</span>任务 B：数据结构选择</a>
+            </div>
+          </li>
+          <li>
+            <a class="lv1" href="#p3">3. 实验结果与作业</a>
+            <div class="lv2">
+              <a href="#p3-1"><span class="n">3.1</span>本次实验结果要求</a>
+              <a href="#p3-2"><span class="n">3.2</span>作业</a>
+              <a href="#p3-3"><span class="n">3.3</span>实验提交</a>
             </div>
           </li>
         </ul>
@@ -64,8 +71,8 @@
             <span>V0.2 病例数据模型。字段与 <code>diabetic_data.csv</code> 含义一致</span>
           </div>
           <div>
-            <strong>练习与提交</strong>
-            <span>本地完成练习与 V0.2，按雨课堂结构化实验记录提交关键结果与代码片段</span>
+            <strong>练习方式</strong>
+            <span>本地输入并运行代码，观察结果后完成第 2 部分任务，再通过雨课堂填写实验记录</span>
           </div>
         </div>
 
@@ -529,9 +536,10 @@ print("&lt;30" in status)</code></pre>
 
         <section class="exercise" id="p2">
           <h2>2. 任务</h2>
+          <p style="margin: 0 0 16px; color: var(--ink-light);">请亲自输入代码、运行程序、观察结果，并完成「病例数据模型 V0.2」。完成后，根据实际运行结果填写雨课堂中的结构化实验记录。</p>
 
-          <h3 id="p2-1">2.1 病例数据模型 V0.2</h3>
-          <p style="margin: 0 0 10px; color: var(--ink-light);">对应练习 1.3～1.14。请先在自己的 Python 环境中完成本地实验，实际运行并核对结果。本次重点关注数据结构的组织和访问。</p>
+          <h3 id="p2-1">2.1 任务 A：病例数据模型 V0.2</h3>
+          <p style="margin: 0 0 10px; color: var(--ink-light);">对应练习 1.3～1.14。请在本地完成「病例数据模型 V0.2」，并根据程序的实际运行结果完成雨课堂中的实验记录。</p>
 
           <p style="margin: 16px 0 10px; color: var(--ink-light);"><strong>本地需要完成：</strong></p>
           <ul class="tasks">
@@ -544,7 +552,7 @@ print("&lt;30" in status)</code></pre>
             <li>确认能够：读取一条病例、读取字段、修改字段、添加字段、删除字段、增加病例、读取指定病例中的指定字段</li>
           </ul>
 
-          <p style="margin: 16px 0 10px; color: var(--ink-light);"><strong>访问与修改示例要求：</strong></p>
+          <p style="margin: 16px 0 10px; color: var(--ink-light);"><strong>访问与修改要求：</strong></p>
           <ul class="tasks">
             <li>输出病例总数、第一条病例、第二条病例的患者编号、第三条病例的住院时间、最后一条病例的再次入院状态</li>
             <li>修改某条病例的住院时间与药物数量；临时增加测试字段后再删除</li>
@@ -552,96 +560,117 @@ print("&lt;30" in status)</code></pre>
             <li>建立 <code>readmission_status</code> 集合，验证 <code>"&lt;30" in readmission_status</code></li>
           </ul>
 
-          <p style="margin: 16px 0 10px; color: var(--ink-light);">完成本地运行后，将关键结果与关键代码整理到雨课堂实验记录中。本节任务可在本地完成，无需上传完整 Python 程序文件。</p>
-
-          <h3 id="p2-2">2.2 进阶挑战</h3>
-          <p style="margin: 0 0 10px; color: var(--ink-light);">进阶任务为选做，可在本地完成后按雨课堂要求择要填写。</p>
-
-          <p style="margin: 16px 0 10px; color: var(--ink-light);"><strong>挑战 1：嵌套病例</strong></p>
+          <h3 id="p2-2">2.2 任务 B：数据结构选择</h3>
+          <p style="margin: 0 0 10px; color: var(--ink-light);">对应练习 1.11。在本地思考并记录结果，用于完成雨课堂题目。每个理由用 1～2 句话说明。</p>
           <ul class="tasks">
-            <li>将病例重组为含 <code>demographic</code>、<code>hospital</code> 的嵌套字典</li>
-            <li>读取 <code>gender</code> 与 <code>time_in_hospital</code></li>
+            <li>一条患者病例的完整字段：适合使用 ________；理由：____________________________</li>
+            <li>多条患者病例：适合使用 ________；理由：____________________________</li>
+            <li>一个固定年龄范围：适合使用 ________；理由：____________________________</li>
+            <li>所有不重复的 readmitted 状态：适合使用 ________；理由：____________________________</li>
+          </ul>
+        </section>
+
+        <section class="exercise" id="p3">
+          <h2>3. 实验结果与作业</h2>
+
+          <h3 id="p3-1">3.1 本次实验结果要求</h3>
+          <p style="margin: 0 0 10px; color: var(--ink-light);">完成本次实验后，你应该能够：</p>
+          <ul class="tasks">
+            <li>创建 list，使用索引和切片访问 list</li>
+            <li>完成 list 的基本增删改</li>
+            <li>创建 tuple，理解 tuple 的基本特点</li>
+            <li>创建 dict，使用键和 <code>get()</code> 访问</li>
+            <li>使用 <code>keys()</code>、<code>values()</code>、<code>items()</code>、<code>update()</code></li>
+            <li>创建 set，完成去重和成员判断</li>
+            <li>比较 list、tuple、dict、set 的基本区别</li>
+            <li>使用 dict 表示一条病例</li>
+            <li>使用 list of dict 表示多条病例</li>
+            <li>在本地完成「病例数据模型 V0.2」</li>
+          </ul>
+          <p style="margin: 16px 0 10px; color: var(--ink-light);">请根据程序的实际运行结果，完成雨课堂中的实验记录。</p>
+
+          <h3 id="p3-2">3.2 作业</h3>
+          <p style="margin: 0 0 10px; color: var(--ink-light);">本次实验主要关注组合数据类型与运行结果，因此采用结构化实验记录的方式完成提交。请先在本地实际运行，再按雨课堂题目作答。</p>
+
+          <p style="margin: 16px 0 8px; color: var(--ink-light);"><strong>题目1：数据结构选择</strong></p>
+          <p style="margin: 0 0 10px; color: var(--ink-light);">从 list / tuple / dict / set 中选择合适结构，并用 1～2 句话说明理由：</p>
+          <ul class="tasks">
+            <li>一条病例的完整字段：________；理由：____________________________</li>
+            <li>多条病例：________；理由：____________________________</li>
+            <li>固定年龄范围：________；理由：____________________________</li>
+            <li>所有不重复的 readmitted 状态：________；理由：____________________________</li>
           </ul>
 
-          <p style="margin: 16px 0 10px; color: var(--ink-light);"><strong>挑战 2：固定数据使用 tuple</strong></p>
+          <p style="margin: 16px 0 8px; color: var(--ink-light);"><strong>题目2：list 操作</strong></p>
+          <pre><code class="language-python">stay_days = [3, 5, 8, 4, 10]</code></pre>
           <ul class="tasks">
-            <li>建立 <code>age_range = (70, 80)</code>，读取上下界</li>
-            <li>尝试修改 tuple，观察结果，并用 1～2 句话说明为何某些数据适合 tuple</li>
+            <li>第一个值：________</li>
+            <li>最后一个值：________</li>
+            <li>前 3 个值：________</li>
+            <li>列表长度：________</li>
+            <li>最大值：________</li>
+            <li>最小值：________</li>
+            <li>所有数值之和：________</li>
+            <li>向末尾增加 <code>6</code> 的关键代码：____________________________</li>
+            <li>将第二个元素改为 <code>7</code> 的关键代码：____________________________</li>
+            <li>修改后的列表结果：____________________________</li>
           </ul>
 
-          <p style="margin: 16px 0 10px; color: var(--ink-light);"><strong>挑战 3：比较不同数据结构</strong></p>
+          <p style="margin: 16px 0 8px; color: var(--ink-light);"><strong>题目3：dict 操作</strong></p>
+          <pre><code class="language-python">patient = {
+    "patient_id": 10001,
+    "gender": "Female",
+    "age_group": "[70-80)",
+    "time_in_hospital": 8,
+    "num_medications": 18,
+    "readmitted": "&lt;30"
+}</code></pre>
           <ul class="tasks">
-            <li>一条病例的完整字段；10 条病例；一个固定年龄范围；所有可能的 readmitted 状态</li>
-            <li>分别选择 list / tuple / dict / set，并用 1～2 句话说明理由</li>
+            <li>获取患者编号：关键代码 ________；运行结果 ________</li>
+            <li>获取住院时间：关键代码 ________；运行结果 ________</li>
+            <li>将住院时间改为 9：关键代码 ____________________________</li>
+            <li>增加 <code>number_inpatient = 2</code>：关键代码 ____________________________</li>
+            <li>使用 <code>get()</code> 查询 <code>weight</code>：关键代码 ________；运行结果 ________</li>
+            <li>查看所有字段名：关键代码 ____________________________</li>
+            <li>查看所有字段值：关键代码 ____________________________</li>
           </ul>
 
-          <h3 id="p2-3">2.3 实验提交</h3>
-          <p style="margin: 0 0 10px; color: var(--ink-light);">请先在自己的 Python 环境中完成本次实验的各项练习，并完成「病例数据模型 V0.2」。运行代码并确认结果后，请按照雨课堂中的题目填写实验记录。</p>
+          <p style="margin: 16px 0 8px; color: var(--ink-light);"><strong>题目4：tuple 与 set</strong></p>
+          <pre><code class="language-python">age_range = (70, 80)
+status = {"NO", "&gt;30", "&lt;30", "NO", "&lt;30"}</code></pre>
+          <ul class="tasks">
+            <li><code>age_range</code> 的数据类型：________；<code>age_range[0]</code>：________；<code>age_range[1]</code>：________</li>
+            <li>尝试 <code>age_range[0] = 60</code> 后的现象（一句话）：____________________________</li>
+            <li>集合最终元素数量：________；重复值处理结果：____________________________</li>
+            <li><code>"&lt;30" in status</code> 的结果：________；该结果的数据类型：________</li>
+          </ul>
 
-          <p style="margin: 16px 0 10px; color: var(--ink-light);">本次实验主要记录：</p>
+          <p style="margin: 16px 0 8px; color: var(--ink-light);"><strong>题目5：多条病例与关键代码</strong></p>
+          <p style="margin: 0 0 10px; color: var(--ink-light);">在本地建立至少 5 条病例的 <code>patients</code>（无需粘贴全部病例代码），根据实际运行结果填写：</p>
+          <ul class="tasks">
+            <li><code>patients</code> 最外层类型：________；每条病例类型：________；病例总数：________</li>
+            <li>第一条 <code>patient_id</code>：________；第三条 <code>time_in_hospital</code>：________；最后一条 <code>readmitted</code>：________</li>
+            <li>访问第三条住院时间的关键代码：____________________________</li>
+            <li>修改第二条药物数量的关键代码：____________________________</li>
+            <li>增加一条新病例的关键代码：____________________________</li>
+            <li>填写一条完整病例的 <code>dict</code> 代码（约 7～12 行）</li>
+          </ul>
+          <p style="margin: 12px 0 10px; color: var(--ink-light);">解释题（任选其一，用 1～3 句话回答）：为什么一条病例适合使用 dict 组织？或为什么多条病例可以使用 list of dict 进行组织？</p>
+
+          <h3 id="p3-3">3.3 实验提交</h3>
+          <p style="margin: 0 0 10px; color: var(--ink-light);">请先在自己的 Python 环境中完成本次实验的代码练习，并实际运行程序、观察结果。</p>
+          <p style="margin: 0 0 10px; color: var(--ink-light);">完成实验后，请按照雨课堂中的题目填写实验记录。</p>
+          <p style="margin: 0 0 10px; color: var(--ink-light);">本次实验主要记录：</p>
           <ul class="tasks">
             <li>数据结构的选择结果</li>
             <li>list 的操作结果</li>
-            <li>dict 的关键代码</li>
+            <li>dict 的关键代码与运行结果</li>
             <li>tuple 和 set 的运行结果</li>
             <li>多条病例的数据结构结果</li>
-            <li>少量关键代码片段</li>
+            <li>少量关键代码片段与一条完整病例字典</li>
             <li>对数据结构选择的简短解释</li>
           </ul>
-
-          <p style="margin: 16px 0 10px; color: var(--ink-light);">本次实验无需上传 Python 程序文件或运行截图。请按照雨课堂发布的要求完成提交。本站仅提供实验内容、任务说明与记录提纲。</p>
-
-          <p style="margin: 16px 0 10px; color: var(--ink-light);"><strong>实验记录提纲（对照雨课堂题目准备）</strong></p>
-
-          <p style="margin: 16px 0 10px; color: var(--ink-light);"><strong>记录 1：数据结构选择</strong></p>
-          <ul class="tasks">
-            <li>一条患者病例的完整字段 → 选择结构 + 理由（1～2 句）</li>
-            <li>多条患者病例 → 选择结构 + 理由（1～2 句）</li>
-            <li>一个固定年龄范围 → 选择结构 + 理由（1～2 句）</li>
-            <li>所有不重复的 readmitted 状态 → 选择结构 + 理由（1～2 句）</li>
-          </ul>
-
-          <p style="margin: 16px 0 10px; color: var(--ink-light);"><strong>记录 2：list 操作</strong>（给定 <code>stay_days = [3, 5, 8, 4, 10]</code>，本地运行后填写）</p>
-          <ul class="tasks">
-            <li>第一个值、最后一个值、前 3 个值、列表长度、最大值、最小值、所有数值之和</li>
-            <li>向末尾增加 <code>6</code> 的关键代码；将第二个元素改为 <code>7</code> 的关键代码；修改后的列表结果</li>
-          </ul>
-
-          <p style="margin: 16px 0 10px; color: var(--ink-light);"><strong>记录 3：dict 操作</strong>（给定病例字典，填写关键代码与运行结果）</p>
-          <ul class="tasks">
-            <li>获取患者编号、获取住院时间</li>
-            <li>将住院时间改为 <code>9</code>；增加 <code>number_inpatient = 2</code></li>
-            <li>使用 <code>get()</code> 查询 <code>weight</code></li>
-            <li>查看所有字段名、所有字段值</li>
-          </ul>
-
-          <p style="margin: 16px 0 10px; color: var(--ink-light);"><strong>记录 4：tuple 与 set</strong></p>
-          <ul class="tasks">
-            <li><code>age_range = (70, 80)</code>：数据类型、<code>age_range[0]</code>、<code>age_range[1]</code>；尝试 <code>age_range[0] = 60</code> 后的现象（一句话）</li>
-            <li><code>status = {"NO", "&gt;30", "&lt;30", "NO", "&lt;30"}</code>：最终元素数量、重复值处理结果；<code>"&lt;30" in status</code> 的结果及其数据类型</li>
-          </ul>
-
-          <p style="margin: 16px 0 10px; color: var(--ink-light);"><strong>记录 5：多条病例</strong>（本地建立至少 5 条病例的 <code>patients</code>；无需粘贴全部病例代码）</p>
-          <ul class="tasks">
-            <li><code>patients</code> 最外层类型、每条病例类型、病例总数</li>
-            <li>第一条 <code>patient_id</code>、第三条 <code>time_in_hospital</code>、最后一条 <code>readmitted</code></li>
-            <li>访问第三条住院时间、修改第二条药物数量、增加一条新病例的关键代码</li>
-          </ul>
-
-          <p style="margin: 16px 0 10px; color: var(--ink-light);"><strong>记录 6：关键结构代码</strong></p>
-          <ul class="tasks">
-            <li>填写一条完整病例的 <code>dict</code> 代码（约 7～12 行），至少包含上述 7 个字段</li>
-          </ul>
-
-          <p style="margin: 16px 0 10px; color: var(--ink-light);"><strong>解释题（至少一道，用 1～3 句话回答）</strong></p>
-          <ul class="tasks">
-            <li>为什么一条病例适合使用 dict 组织？</li>
-            <li>或：为什么多条病例可以使用 list of dict 进行组织？</li>
-          </ul>
-
-          <div class="check-point">
-            <strong>提交说明：</strong>在本地完成代码运行，通过雨课堂记录关键结果。可提交运行结果、变量值、数据类型、关键表达式、关键代码片段、一个完整病例字典，以及 1～3 句话的简短解释。请按雨课堂发布的要求提交。
-          </div>
+          <p style="margin: 16px 0 10px; color: var(--ink-light);">请按照雨课堂发布的要求完成提交。</p>
         </section>
       </article>
     </main>
