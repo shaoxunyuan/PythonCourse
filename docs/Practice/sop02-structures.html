@@ -6,13 +6,38 @@
   <title>实验2：组合数据类型</title>
   <link rel="stylesheet" href="../style.css">
   <link rel="stylesheet" href="./practice.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css" crossorigin="anonymous" referrerpolicy="no-referrer">
 </head>
 <body>
   <div class="book-shell practice-page">
-    <aside class="book-sidebar" aria-label="导航">
+    <aside class="book-sidebar" aria-label="本页目录">
       <div class="toc-scroll">
+        <div class="toc__title">目录</div>
+        <ul class="book-nav toc">
+          <li>
+            <a class="lv1" href="#p1">1. 练习</a>
+            <div class="lv2">
+              <a href="#p1-1"><span class="n">1.1</span>从变量到字典</a>
+              <a href="#p1-2"><span class="n">1.2</span>列表 list</a>
+              <a href="#p1-3"><span class="n">1.3</span>元组与集合</a>
+              <a href="#p1-4"><span class="n">1.4</span>病例列表 list of dict</a>
+              <a href="#p1-5"><span class="n">1.5</span>增删改查</a>
+              <a href="#p1-6"><span class="n">1.6</span>提取、排序与统计</a>
+              <a href="#p1-7"><span class="n">1.7</span>嵌套字典</a>
+              <a href="#p1-8"><span class="n">1.8</span>综合：病例集合</a>
+            </div>
+          </li>
+          <li>
+            <a class="lv1" href="#p2">2. 任务</a>
+            <div class="lv2">
+              <a href="#p2-1"><span class="n">2.1</span>任务 A：病例集合管理</a>
+              <a href="#p2-2"><span class="n">2.2</span>任务 B：嵌套结构与统计</a>
+            </div>
+          </li>
+        </ul>
       </div>
     </aside>
+
     <main class="book-main">
       <article class="article">
         <div class="practice-breadcrumb">
@@ -20,11 +45,394 @@
         </div>
         <h1>实验2：组合数据类型</h1>
 
-        <p class="practice-lead">表示一名患者和一组病例 · 病例集合</p>
+        <p class="practice-lead">
+          在实验1中，一条病例用多个独立变量保存。字段变多、病例变多以后，用 list / dict 等组合类型组织数据更清晰。
+        </p>
 
+        <div class="meta-row">
+          <div>
+            <strong>本课目标</strong>
+            <span>会用字典表示一条病例；会用列表保存多条病例；能完成增删改查、排序与简单统计；能使用嵌套字典</span>
+          </div>
+          <div>
+            <strong>数据字段</strong>
+            <span><code>patient_id</code>、<code>age</code>、<code>gender</code>、<code>time_in_hospital</code>、<code>num_medications</code>、<code>readmitted</code><br>与 <code>diabetic_data.csv</code> 含义一致</span>
+          </div>
+          <div>
+            <strong>练习方式</strong>
+            <span>按 1.1～1.8 顺序运行；做完练习再完成第 2 部分任务</span>
+          </div>
+        </div>
+
+        <section class="exercise" id="p1">
+          <h2>1. 练习</h2>
+
+          <h3 id="p1-1">1.1 从变量到字典</h3>
+          <p style="margin: 0 0 10px; color: var(--ink-light);">字典用「键 → 值」保存一条病例的多个字段，字段名就是键。</p>
+
+          <div class="step-label">Step 1 / 用字典表示一条病例</div>
+          <pre><code class="language-python">patient = {
+    "patient_id": 12345,
+    "age": "[70-80)",
+    "gender": "Female",
+    "time_in_hospital": 8,
+    "num_medications": 18,
+    "readmitted": "&lt;30",
+}
+print(patient)
+print(type(patient))</code></pre>
+
+          <div class="step-label">Step 2 / 读取与修改字段</div>
+          <pre><code class="language-python">print(patient["gender"])
+print(patient["time_in_hospital"])
+
+patient["num_medications"] += 1
+patient["readmitted"] = "NO"
+print(patient)</code></pre>
+
+          <div class="step-label">Step 3 / 查看全部键、全部值</div>
+          <pre><code class="language-python">print(patient.keys())
+print(patient.values())
+print("gender" in patient)
+print(patient.get("insulin", "未知"))  # 键不存在时返回默认值</code></pre>
+
+          <div class="check-point"><strong>检查点：</strong><code>type(patient)</code> 为 <code>&lt;class 'dict'&gt;</code>；修改后 <code>num_medications</code> 变为 <code>19</code>，<code>readmitted</code> 变为 <code>NO</code>。</div>
+
+          <h3 id="p1-2">1.2 列表 list</h3>
+          <p style="margin: 0 0 10px; color: var(--ink-light);">列表有序、可变，适合保存一组数值或一组病例。</p>
+
+          <div class="step-label">Step 1 / 创建列表并按位置访问</div>
+          <pre><code class="language-python">stays = [1, 3, 2, 2, 1]   # 前几条记录的住院天数示意
+print(stays)
+print(stays[0], stays[-1])
+print(stays[:3])           # 切片：前 3 个</code></pre>
+
+          <div class="step-label">Step 2 / 增删与长度</div>
+          <pre><code class="language-python">stays.append(8)
+print(stays)
+print(len(stays))
+stays.remove(3)            # 删除第一个值为 3 的元素
+print(stays)</code></pre>
+
+          <div class="step-label">Step 3 / 简单统计</div>
+          <pre><code class="language-python">print(sum(stays))
+print(sum(stays) / len(stays))
+print(max(stays), min(stays))</code></pre>
+
+          <div class="check-point"><strong>检查点：</strong>能正确打印长度、求和与平均值。列表下标从 <code>0</code> 开始。</div>
+
+          <h3 id="p1-3">1.3 元组与集合</h3>
+          <p style="margin: 0 0 10px; color: var(--ink-light);"><code>tuple</code> 有序且不可变，适合固定组合；<code>set</code> 元素不重复，适合去重。</p>
+
+          <div class="step-label">Step 1 / 元组：固定字段组合</div>
+          <pre><code class="language-python">record = (12345, "Female", 8)
+print(record[0], record[1])
+# record[0] = 1   # 去掉注释会报错：元组不可修改</code></pre>
+
+          <div class="step-label">Step 2 / 集合：患者编号去重</div>
+          <pre><code class="language-python">ids = [12345, 12345, 67890, 12345, 99999]
+unique_ids = set(ids)
+print(unique_ids)
+print(len(ids), len(unique_ids))</code></pre>
+
+          <div class="check-point"><strong>检查点：</strong><code>len(ids)</code> 为 5，去重后 <code>len(unique_ids)</code> 为 3。这对应课程数据里「住院次数」与「患者人数」的区别。</div>
+
+          <h3 id="p1-4">1.4 病例列表 list of dict</h3>
+          <p style="margin: 0 0 10px; color: var(--ink-light);">多条病例的常用组织方式：列表里每个元素是一个病例字典。</p>
+
+          <div class="step-label">Step 1 / 创建多条病例</div>
+          <pre><code class="language-python">patients = [
+    {
+        "patient_id": 1,
+        "age": "[50-60)",
+        "gender": "Female",
+        "time_in_hospital": 3,
+        "num_medications": 10,
+        "readmitted": "NO",
+    },
+    {
+        "patient_id": 2,
+        "age": "[70-80)",
+        "gender": "Female",
+        "time_in_hospital": 8,
+        "num_medications": 18,
+        "readmitted": "&lt;30",
+    },
+    {
+        "patient_id": 3,
+        "age": "[40-50)",
+        "gender": "Male",
+        "time_in_hospital": 5,
+        "num_medications": 12,
+        "readmitted": "&gt;30",
+    },
+]
+print(len(patients))
+print(patients[0]["gender"])
+print(patients[1]["readmitted"])</code></pre>
+
+          <div class="step-label">Step 2 / 遍历每条病例</div>
+          <pre><code class="language-python">for p in patients:
+    print(p["patient_id"], p["time_in_hospital"], p["readmitted"])</code></pre>
+
+          <div class="check-point"><strong>检查点：</strong>列表长度为 3；第二条病例的 <code>readmitted</code> 为 <code>&lt;30</code>。</div>
+
+          <h3 id="p1-5">1.5 增删改查</h3>
+          <p style="margin: 0 0 10px; color: var(--ink-light);">病例集合需要支持增加、删除、修改，以及按编号查询。</p>
+
+          <div class="step-label">Step 1 / 增加一条病例</div>
+          <pre><code class="language-python">patients.append({
+    "patient_id": 4,
+    "age": "[60-70)",
+    "gender": "Male",
+    "time_in_hospital": 2,
+    "num_medications": 7,
+    "readmitted": "NO",
+})
+print(len(patients))</code></pre>
+
+          <div class="step-label">Step 2 / 按 patient_id 查询</div>
+          <pre><code class="language-python">target_id = 2
+found = None
+for p in patients:
+    if p["patient_id"] == target_id:
+        found = p
+        break
+print(found)</code></pre>
+
+          <div class="step-label">Step 3 / 修改查询到的病例</div>
+          <pre><code class="language-python">if found is not None:
+    found["num_medications"] += 2
+    print(found)</code></pre>
+
+          <div class="step-label">Step 4 / 按编号删除</div>
+          <pre><code class="language-python">patients = [p for p in patients if p["patient_id"] != 4]
+print(len(patients))
+for p in patients:
+    print(p["patient_id"])</code></pre>
+
+          <div class="check-point"><strong>检查点：</strong>增加后长度为 4；删除 <code>patient_id=4</code> 后长度为 3；编号 2 的药物种数已增加 2。</div>
+
+          <h3 id="p1-6">1.6 提取、排序与统计</h3>
+          <p style="margin: 0 0 10px; color: var(--ink-light);">从病例集合中提取某一列、按住院天数排序，并统计 <code>readmitted</code> 分布。</p>
+
+          <div class="step-label">Step 1 / 提取住院天数列表</div>
+          <pre><code class="language-python"># 先准备一份稳定的演示数据
+patients = [
+    {"patient_id": 1, "time_in_hospital": 3, "num_medications": 10, "readmitted": "NO"},
+    {"patient_id": 2, "time_in_hospital": 8, "num_medications": 18, "readmitted": "&lt;30"},
+    {"patient_id": 3, "time_in_hospital": 5, "num_medications": 12, "readmitted": "&gt;30"},
+    {"patient_id": 4, "time_in_hospital": 8, "num_medications": 9, "readmitted": "NO"},
+]
+stays = [p["time_in_hospital"] for p in patients]
+meds = [p["num_medications"] for p in patients]
+print(stays)
+print(meds)</code></pre>
+
+          <div class="step-label">Step 2 / 按住院天数从大到小排序</div>
+          <pre><code class="language-python">patients_sorted = sorted(patients, key=lambda p: p["time_in_hospital"], reverse=True)
+for p in patients_sorted:
+    print(p["patient_id"], p["time_in_hospital"])</code></pre>
+
+          <div class="step-label">Step 3 / 统计 readmitted 三类人数</div>
+          <pre><code class="language-python">counts = {"NO": 0, "&gt;30": 0, "&lt;30": 0}
+for p in patients:
+    key = p["readmitted"]
+    if key in counts:
+        counts[key] += 1
+print(counts)</code></pre>
+
+          <div class="step-label">Step 4 / 找出药物种数最多的病例</div>
+          <pre><code class="language-python">max_med_patient = max(patients, key=lambda p: p["num_medications"])
+print(max_med_patient)</code></pre>
+
+          <div class="check-point"><strong>检查点：</strong><code>counts</code> 中 <code>NO</code> 为 2；药物种数最多的病例 <code>patient_id</code> 为 2。</div>
+
+          <h3 id="p1-7">1.7 嵌套字典</h3>
+          <p style="margin: 0 0 10px; color: var(--ink-light);">可以把一条病例拆成「基本信息 / 住院信息 / 用药信息」三层结构，便于分类管理。</p>
+
+          <div class="step-label">Step 1 / 建立嵌套病例</div>
+          <pre><code class="language-python">patient = {
+    "basic": {
+        "patient_id": 2,
+        "age": "[70-80)",
+        "gender": "Female",
+    },
+    "hospital": {
+        "time_in_hospital": 8,
+        "num_medications": 18,
+        "readmitted": "&lt;30",
+    },
+    "meds": {
+        "insulin": "Up",
+        "diabetesMed": "Yes",
+    },
+}
+print(patient["basic"]["gender"])
+print(patient["hospital"]["time_in_hospital"])
+print(patient["meds"]["insulin"])</code></pre>
+
+          <div class="step-label">Step 2 / 修改嵌套字段</div>
+          <pre><code class="language-python">patient["hospital"]["num_medications"] += 1
+patient["meds"]["insulin"] = "Steady"
+print(patient["hospital"])
+print(patient["meds"])</code></pre>
+
+          <div class="step-label">Step 3 / 嵌套病例放进列表</div>
+          <pre><code class="language-python">nested_patients = [patient]
+nested_patients.append({
+    "basic": {"patient_id": 5, "age": "[30-40)", "gender": "Male"},
+    "hospital": {"time_in_hospital": 4, "num_medications": 11, "readmitted": "NO"},
+    "meds": {"insulin": "No", "diabetesMed": "Yes"},
+})
+for p in nested_patients:
+    print(p["basic"]["patient_id"], p["hospital"]["readmitted"])</code></pre>
+
+          <div class="check-point"><strong>检查点：</strong>能正确读取 <code>basic / hospital / meds</code> 下的字段；列表中有 2 条嵌套病例。</div>
+
+          <h3 id="p1-8">1.8 综合：病例集合</h3>
+          <p style="margin: 0 0 10px; color: var(--ink-light);">把前面能力串起来：维护一份病例列表，完成查询、统计与摘要输出。</p>
+
+          <div class="step-label">Step 1 / 完整示例</div>
+          <pre><code class="language-python">patients = [
+    {"patient_id": 1, "age": "[50-60)", "gender": "Female",
+     "time_in_hospital": 3, "num_medications": 10, "readmitted": "NO"},
+    {"patient_id": 2, "age": "[70-80)", "gender": "Female",
+     "time_in_hospital": 8, "num_medications": 18, "readmitted": "&lt;30"},
+    {"patient_id": 3, "age": "[40-50)", "gender": "Male",
+     "time_in_hospital": 5, "num_medications": 12, "readmitted": "&gt;30"},
+]
+
+# 增加
+patients.append({
+    "patient_id": 4, "age": "[60-70)", "gender": "Male",
+    "time_in_hospital": 2, "num_medications": 7, "readmitted": "NO",
+})
+
+# 查询并修改
+for p in patients:
+    if p["patient_id"] == 3:
+        p["time_in_hospital"] += 1
+
+# 排序后输出摘要
+patients_sorted = sorted(patients, key=lambda p: p["time_in_hospital"], reverse=True)
+for p in patients_sorted:
+    flag = "是" if p["readmitted"] == "&lt;30" else "否"
+    print(
+        f"编号{p['patient_id']} | 住院{p['time_in_hospital']}天 | "
+        f"药物{p['num_medications']}种 | 30天内再入院：{flag}"
+    )
+
+# 统计
+counts = {"NO": 0, "&gt;30": 0, "&lt;30": 0}
+for p in patients:
+    counts[p["readmitted"]] += 1
+print("readmitted 分布：", counts)
+print("平均住院天数：", sum(p["time_in_hospital"] for p in patients) / len(patients))</code></pre>
+
+          <div class="check-point"><strong>检查点：</strong>按住院天数降序打印；编号 3 的住院天数已加 1；能看到三类 <code>readmitted</code> 计数与平均住院天数。</div>
+        </section>
+
+        <section class="exercise" id="p2">
+          <h2>2. 任务</h2>
+          <p style="margin: 0 0 10px; color: var(--ink-light);">字段含义与 <code>diabetic_data.csv</code> 一致。可自行构造至少 5 条病例数据完成任务。</p>
+
+          <h3 id="p2-1">2.1 任务 A：病例集合管理</h3>
+          <p style="margin: 0 0 10px; color: var(--ink-light);">对应练习 1.1～1.6、1.8。编写可运行的 <code>.py</code> 程序。</p>
+
+          <p style="margin: 16px 0 10px; color: var(--ink-light);"><strong>要求：</strong></p>
+          <ul class="tasks">
+            <li>用字典表示单条病例，字段至少包含：<code>patient_id</code>、<code>age</code>、<code>gender</code>、<code>time_in_hospital</code>、<code>num_medications</code>、<code>readmitted</code></li>
+            <li>用列表保存不少于 5 条病例</li>
+            <li>实现：增加 1 条、按 <code>patient_id</code> 查询 1 条、修改该条的 <code>num_medications</code>、删除 1 条</li>
+            <li>按 <code>time_in_hospital</code> 从大到小排序后，用 f-string 打印每条摘要</li>
+            <li>统计并打印 <code>readmitted</code> 三类人数，以及平均住院天数</li>
+          </ul>
+
+          <p style="margin: 16px 0 10px; color: var(--ink-light);"><strong>摘要格式示例：</strong></p>
+          <pre><code>编号2 | 年龄组[70-80) | Female | 住院8天 | 药物18种 | 30天内再入院：是</code></pre>
+
+          <h3 id="p2-2">2.2 任务 B：嵌套结构与统计</h3>
+          <p style="margin: 0 0 10px; color: var(--ink-light);">对应练习 1.7。在任务 A 基础上，改用嵌套字典组织病例。</p>
+
+          <p style="margin: 16px 0 10px; color: var(--ink-light);"><strong>结构要求：</strong></p>
+          <ul class="tasks">
+            <li><code>basic</code>：<code>patient_id</code>、<code>age</code>、<code>gender</code></li>
+            <li><code>hospital</code>：<code>time_in_hospital</code>、<code>num_medications</code>、<code>readmitted</code></li>
+            <li><code>meds</code>：至少包含 <code>insulin</code>、<code>diabetesMed</code></li>
+          </ul>
+
+          <p style="margin: 16px 0 10px; color: var(--ink-light);"><strong>处理要求：</strong></p>
+          <ul class="tasks">
+            <li>建立不少于 5 条嵌套病例的列表</li>
+            <li>按编号查询并修改其中一条的 <code>hospital["num_medications"]</code> 与 <code>meds["insulin"]</code></li>
+            <li>统计 <code>readmitted</code> 三类人数</li>
+            <li>找出 <code>num_medications</code> 最大的病例，打印其 <code>patient_id</code>、药物种数与 <code>insulin</code></li>
+            <li>用 <code>set</code> 统计不同 <code>patient_id</code> 的数量，并与列表长度一起打印</li>
+          </ul>
+
+          <div class="check-point">
+            <strong>提交建议：</strong>两个可运行的 <code>.py</code> 文件（或一个文件中清晰分出任务 A / 任务 B）；可附运行输出截图或文本。
+          </div>
+        </section>
       </article>
     </main>
   </div>
+
+  <script>
+    (function () {
+      document.querySelectorAll('pre > code').forEach((code) => {
+        const pre = code.parentElement;
+        if (!pre || pre.querySelector('.copy-btn')) return;
+        const btn = document.createElement('button');
+        btn.className = 'copy-btn';
+        btn.type = 'button';
+        btn.textContent = '复制';
+        btn.addEventListener('click', async () => {
+          try {
+            await navigator.clipboard.writeText(code.innerText);
+            btn.dataset.state = 'ok';
+            btn.textContent = '已复制';
+            setTimeout(() => { delete btn.dataset.state; btn.textContent = '复制'; }, 1200);
+          } catch (e) {
+            const range = document.createRange();
+            range.selectNodeContents(code);
+            const sel = window.getSelection();
+            sel.removeAllRanges();
+            sel.addRange(range);
+            btn.textContent = '请 Ctrl+C';
+            setTimeout(() => { btn.textContent = '复制'; }, 1200);
+          }
+        });
+        pre.appendChild(btn);
+      });
+    })();
+  </script>
+  <script>
+    (function () {
+      const links = Array.from(document.querySelectorAll('.toc a[href^="#"]'));
+      const idToLink = new Map();
+      links.forEach((a) => {
+        const id = decodeURIComponent(a.getAttribute('href').slice(1));
+        if (id) idToLink.set(id, a);
+      });
+      const headings = Array.from(document.querySelectorAll('h2[id], h3[id], section[id]'))
+        .filter((h) => idToLink.has(h.id));
+      if (headings.length === 0) return;
+      const clear = () => links.forEach((a) => a.classList.remove('is-active'));
+      const setActive = (id) => { clear(); const a = idToLink.get(id); if (a) a.classList.add('is-active'); };
+      const initial = (location.hash && location.hash.slice(1)) || headings[0].id;
+      setActive(decodeURIComponent(initial));
+      const obs = new IntersectionObserver((entries) => {
+        const visible = entries.filter((e) => e.isIntersecting).sort((a, b) => (a.boundingClientRect.top - b.boundingClientRect.top));
+        if (visible.length > 0) setActive(visible[0].target.id);
+      }, { rootMargin: '-15% 0px -75% 0px', threshold: [0, 1] });
+      headings.forEach((h) => obs.observe(h));
+    })();
+  </script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/python.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script>hljs.highlightAll();</script>
   <script src="./split.js"></script>
 </body>
 </html>
