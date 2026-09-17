@@ -69,14 +69,14 @@
   color: var(--ink-light);
   line-height: 1.7;
   word-break: keep-all;
-  overflow-wrap: anywhere;
+  overflow-wrap: break-word;
 }
 
 .meta-row > div {
   display: grid;
-  grid-template-columns: 4.5em 1fr;
+  grid-template-columns: 5em 1fr;
   gap: 0.6em;
-  align-items: start;
+  align-items: baseline;
 }
 
 .meta-row strong {
@@ -84,9 +84,14 @@
   font-weight: 700;
   min-width: 0;
   display: block;
+  white-space: nowrap;
 }
 
 .meta-row code {
+  white-space: nowrap;
+}
+
+.nobr {
   white-space: nowrap;
 }
 
@@ -111,6 +116,8 @@
   max-width: 52em;
   margin-bottom: 22px;
   line-height: 1.75;
+  word-break: keep-all;
+  overflow-wrap: break-word;
 }
 
 .exercise {
