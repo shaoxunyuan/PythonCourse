@@ -6,25 +6,653 @@
   <title>实验3：程序控制结构</title>
   <link rel="stylesheet" href="../style.css">
   <link rel="stylesheet" href="./practice.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css" crossorigin="anonymous" referrerpolicy="no-referrer">
 </head>
 <body>
   <div class="book-shell practice-page">
-    <aside class="book-sidebar" aria-label="导航">
+    <aside class="book-sidebar" aria-label="本页目录">
       <div class="toc-scroll">
+        <div class="toc__title">目录</div>
+        <ul class="book-nav toc">
+          <li>
+            <a class="lv1" href="#p1">1. 练习</a>
+            <div class="lv2">
+              <a href="#p1-1"><span class="n">1.1</span>为什么需要控制结构</a>
+              <a href="#p1-2"><span class="n">1.2</span>什么是程序控制结构</a>
+              <a href="#p1-3"><span class="n">1.3</span>if / else 条件判断</a>
+              <a href="#p1-4"><span class="n">1.4</span>if / elif / else 多分支</a>
+              <a href="#p1-5"><span class="n">1.5</span>跟随练习：条件判断</a>
+              <a href="#p1-6"><span class="n">1.6</span>for：遍历列表</a>
+              <a href="#p1-7"><span class="n">1.7</span>for：遍历病例列表</a>
+              <a href="#p1-8"><span class="n">1.8</span>range() 与计数</a>
+              <a href="#p1-9"><span class="n">1.9</span>跟随练习：for</a>
+              <a href="#p1-10"><span class="n">1.10</span>while 循环</a>
+              <a href="#p1-11"><span class="n">1.11</span>break 与 continue</a>
+              <a href="#p1-12"><span class="n">1.12</span>组合：筛选与统计</a>
+              <a href="#p1-13"><span class="n">1.13</span>综合：病例规则处理器 V0.3</a>
+              <a href="#p1-14"><span class="n">1.14</span>常见错误</a>
+            </div>
+          </li>
+          <li>
+            <a class="lv1" href="#p2">2. 任务</a>
+            <div class="lv2">
+              <a href="#p2-1"><span class="n">2.1</span>任务 A：病例规则处理器 V0.3</a>
+              <a href="#p2-2"><span class="n">2.2</span>任务 B：规则与流程分析</a>
+            </div>
+          </li>
+          <li>
+            <a class="lv1" href="#p3">3. 实验结果与作业</a>
+            <div class="lv2">
+              <a href="#p3-1"><span class="n">3.1</span>本次实验结果要求</a>
+              <a href="#p3-2"><span class="n">3.2</span>作业</a>
+              <a href="#p3-3"><span class="n">3.3</span>实验提交</a>
+            </div>
+          </li>
+        </ul>
       </div>
     </aside>
+
     <main class="book-main">
       <article class="article">
         <div class="practice-breadcrumb">
           <a href="./">Practice</a><span class="sep">/</span>实验3
         </div>
         <h1>实验3：程序控制结构</h1>
+        <p class="practice-lead">数据已经组织成 list of dict。本节学习如何让程序自动判断、重复处理、筛选与统计病例，并完成「病例规则处理器 V0.3」。</p>
 
-        <p class="practice-lead">自动筛选、统计病例 · 规则处理</p>
+        <div class="meta-row">
+          <div>
+            <strong>本课目标</strong>
+            <span>掌握 <code>if</code> / <code>elif</code> / <code>else</code>、<code>for</code>、<code>while</code>、<code>break</code> / <code>continue</code>；能对病例列表做筛选、计数与简单统计</span>
+          </div>
+          <div>
+            <strong>项目阶段</strong>
+            <span>V0.3 病例规则处理。字段与 <code>diabetic_data.csv</code> 含义一致</span>
+          </div>
+          <div>
+            <strong>练习方式</strong>
+            <span>本地输入并运行代码，观察结果后完成第 2 部分任务，再通过雨课堂填写实验记录</span>
+          </div>
+        </div>
 
+        <section class="exercise" id="p1">
+          <h2>1. 练习</h2>
+
+          <h3 id="p1-1">1.1 为什么需要控制结构</h3>
+          <p style="margin: 0 0 10px; color: var(--ink-light);">上一节已经能够用 list of dict 表示多条病例：</p>
+          <pre><code class="language-python">patients = [
+    {"patient_id": 10001, "gender": "Female", "time_in_hospital": 8, "readmitted": "&lt;30"},
+    {"patient_id": 10002, "gender": "Male", "time_in_hospital": 4, "readmitted": "NO"},
+    {"patient_id": 10003, "gender": "Female", "time_in_hospital": 10, "readmitted": "&gt;30"}
+]</code></pre>
+          <p style="margin: 16px 0 10px; color: var(--ink-light);">如果只有 3 条病例，可以手工写 <code>patients[0]</code>、<code>patients[1]</code>、<code>patients[2]</code>。若有 100 条病例，并要回答：</p>
+          <ul class="tasks">
+            <li>哪些病例住院时间 ≥ 7 天？</li>
+            <li>有多少人 30 天内再入院？</li>
+            <li>女性患者的平均住院天数是多少？</li>
+          </ul>
+          <p style="margin: 16px 0 10px; color: var(--ink-light);">就需要程序能够：根据条件做判断，并对列表中的每一条病例重复处理。本节回答三个问题：</p>
+          <ul class="tasks">
+            <li>如何根据规则给出不同结果？</li>
+            <li>如何自动逐条处理病例？</li>
+            <li>如何一边遍历一边筛选、计数与统计？</li>
+          </ul>
+
+          <h3 id="p1-2">1.2 什么是程序控制结构</h3>
+          <p style="margin: 0 0 10px; color: var(--ink-light);">默认情况下，程序按书写顺序逐行执行。控制结构改变执行路径：有的语句只在条件成立时运行，有的语句会重复运行。</p>
+
+          <div class="table-scroll">
+            <table>
+              <thead>
+                <tr>
+                  <th>结构</th>
+                  <th>主要作用</th>
+                  <th>病例场景示例</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>if / elif / else</code></td>
+                  <td>按条件分支</td>
+                  <td>判断是否长住院、是否早期再入院</td>
+                </tr>
+                <tr>
+                  <td><code>for</code></td>
+                  <td>按序列逐项重复</td>
+                  <td>遍历全部病例并逐条检查</td>
+                </tr>
+                <tr>
+                  <td><code>while</code></td>
+                  <td>在条件成立时重复</td>
+                  <td>重复输入直到得到合法住院天数</td>
+                </tr>
+                <tr>
+                  <td><code>break / continue</code></td>
+                  <td>提前结束或跳过本轮</td>
+                  <td>找到目标后停止；跳过无效记录</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="check-point"><strong>结论：</strong>条件负责“要不要做”，循环负责“做多少次”。二者常一起使用。</div>
+
+          <h3 id="p1-3">1.3 if / else 条件判断</h3>
+          <p style="margin: 0 0 10px; color: var(--ink-light);"><code>if</code> 根据布尔表达式决定是否执行某段代码。缩进表示从属关系。</p>
+
+          <div class="step-label">Step 1 / 单分支 if</div>
+          <pre><code class="language-python">time_in_hospital = 8
+if time_in_hospital &gt;= 7:
+    print("长住院")</code></pre>
+
+          <div class="step-label">Step 2 / if / else 双分支</div>
+          <pre><code class="language-python">readmitted = "&lt;30"
+if readmitted == "&lt;30":
+    print("30天内再次入院")
+else:
+    print("非30天内再入院")</code></pre>
+
+          <div class="step-label">Step 3 / 条件来自比较与逻辑运算</div>
+          <pre><code class="language-python">time_in_hospital = 8
+number_inpatient = 2
+if time_in_hospital &gt;= 7 and number_inpatient &gt;= 2:
+    print("需要重点关注")
+else:
+    print("常规随访")</code></pre>
+
+          <div class="check-point"><strong>检查点：</strong>条件表达式的结果是 <code>bool</code>。冒号后面的代码块必须缩进。</div>
+
+          <h3 id="p1-4">1.4 if / elif / else 多分支</h3>
+          <p style="margin: 0 0 10px; color: var(--ink-light);">多种互斥情况可用 <code>elif</code> 串联。程序按顺序检查，命中第一个成立的分支后不再继续。</p>
+
+          <div class="step-label">Step 1 / 按再入院状态分类</div>
+          <pre><code class="language-python">readmitted = "&gt;30"
+if readmitted == "&lt;30":
+    level = "早期再入院"
+elif readmitted == "&gt;30":
+    level = "延迟再入院"
+elif readmitted == "NO":
+    level = "未再入院"
+else:
+    level = "未知状态"
+print(level)</code></pre>
+
+          <div class="step-label">Step 2 / 按住院天数分级</div>
+          <pre><code class="language-python">stay = 4
+if stay &gt;= 10:
+    stay_level = "很长"
+elif stay &gt;= 7:
+    stay_level = "较长"
+elif stay &gt;= 4:
+    stay_level = "中等"
+else:
+    stay_level = "较短"
+print(stay_level)</code></pre>
+
+          <div class="check-point"><strong>检查点：</strong><code>stay = 4</code> 时，结果为「中等」。分支顺序会影响结果，应先写更具体或优先级更高的条件。</div>
+
+          <h3 id="p1-5">1.5 跟随练习：条件判断</h3>
+          <p style="margin: 0 0 10px; color: var(--ink-light);">给定变量，自行完成下列判断（不提供完整答案）：</p>
+          <pre><code class="language-python">gender = "Female"
+time_in_hospital = 8
+num_medications = 18
+readmitted = "&lt;30"</code></pre>
+          <ul class="tasks">
+            <li>若住院时间 ≥ 7，输出「长住院」，否则输出「非长住院」</li>
+            <li>若 <code>readmitted == "&lt;30"</code>，输出「早期再入院」</li>
+            <li>用 <code>if / elif / else</code> 把再入院状态分为三类</li>
+            <li>若同时满足「长住院」且「药物数量 ≥ 15」，输出「高负担病例」</li>
+          </ul>
+
+          <h3 id="p1-6">1.6 for：遍历列表</h3>
+          <p style="margin: 0 0 10px; color: var(--ink-light);"><code>for</code> 用于按顺序取出序列中的每一个元素并重复处理。</p>
+
+          <div class="step-label">Step 1 / 遍历数值列表</div>
+          <pre><code class="language-python">stay_days = [3, 5, 8, 4, 10]
+for days in stay_days:
+    print(days)</code></pre>
+
+          <div class="step-label">Step 2 / 遍历时做判断</div>
+          <pre><code class="language-python">stay_days = [3, 5, 8, 4, 10]
+for days in stay_days:
+    if days &gt;= 7:
+        print(days, "长住院")</code></pre>
+
+          <div class="step-label">Step 3 / 累加统计</div>
+          <pre><code class="language-python">stay_days = [3, 5, 8, 4, 10]
+total = 0
+for days in stay_days:
+    total = total + days
+print(total)
+print(total / len(stay_days))</code></pre>
+
+          <div class="check-point"><strong>检查点：</strong>总和为 <code>30</code>，平均值为 <code>6.0</code>。<code>for</code> 变量名可自定，例如 <code>days</code>、<code>p</code>、<code>patient</code>。</div>
+
+          <h3 id="p1-7">1.7 for：遍历病例列表</h3>
+          <p style="margin: 0 0 10px; color: var(--ink-light);">对 list of dict，循环变量通常是一条病例字典。</p>
+
+          <div class="step-label">Step 1 / 建立病例列表</div>
+          <pre><code class="language-python">patients = [
+    {"patient_id": 10001, "gender": "Female", "time_in_hospital": 8, "num_medications": 18, "readmitted": "&lt;30"},
+    {"patient_id": 10002, "gender": "Male", "time_in_hospital": 4, "num_medications": 12, "readmitted": "NO"},
+    {"patient_id": 10003, "gender": "Female", "time_in_hospital": 10, "num_medications": 21, "readmitted": "&gt;30"},
+    {"patient_id": 10004, "gender": "Male", "time_in_hospital": 6, "num_medications": 15, "readmitted": "NO"},
+    {"patient_id": 10005, "gender": "Female", "time_in_hospital": 9, "num_medications": 20, "readmitted": "&lt;30"}
+]</code></pre>
+
+          <div class="step-label">Step 2 / 逐条输出关键字段</div>
+          <pre><code class="language-python">for p in patients:
+    print(p["patient_id"], p["time_in_hospital"], p["readmitted"])</code></pre>
+
+          <div class="step-label">Step 3 / 筛选长住院病例</div>
+          <pre><code class="language-python">long_stay_patients = []
+for p in patients:
+    if p["time_in_hospital"] &gt;= 7:
+        long_stay_patients.append(p)
+print(len(long_stay_patients))
+print(long_stay_patients[0]["patient_id"])</code></pre>
+
+          <div class="check-point"><strong>检查点：</strong>长住院病例有 3 条；第一条筛选结果的编号为 <code>10001</code>。</div>
+
+          <h3 id="p1-8">1.8 range() 与计数</h3>
+          <p style="margin: 0 0 10px; color: var(--ink-light);"><code>range()</code> 生成一段整数序列，常与 <code>for</code> 配合完成固定次数循环，或按索引访问列表。</p>
+
+          <div class="step-label">Step 1 / range 基本用法</div>
+          <pre><code class="language-python">for i in range(5):
+    print(i)
+
+for i in range(1, 6):
+    print(i)</code></pre>
+
+          <div class="step-label">Step 2 / 按索引遍历病例</div>
+          <pre><code class="language-python">for i in range(len(patients)):
+    print(i, patients[i]["patient_id"])</code></pre>
+
+          <div class="step-label">Step 3 / 计数器</div>
+          <pre><code class="language-python">early_count = 0
+for p in patients:
+    if p["readmitted"] == "&lt;30":
+        early_count += 1
+print(early_count)</code></pre>
+
+          <div class="check-point"><strong>检查点：</strong>早期再入院人数为 <code>2</code>。<code>early_count += 1</code> 等价于 <code>early_count = early_count + 1</code>。</div>
+
+          <h3 id="p1-9">1.9 跟随练习：for</h3>
+          <p style="margin: 0 0 10px; color: var(--ink-light);">使用上一节的 <code>patients</code>，自行完成（不提供完整答案）：</p>
+          <ul class="tasks">
+            <li>输出所有女性患者的 <code>patient_id</code></li>
+            <li>统计住院时间 ≥ 7 的病例数量</li>
+            <li>统计 <code>readmitted == "NO"</code> 的病例数量</li>
+            <li>计算全部病例的平均住院天数</li>
+            <li>把药物数量 ≥ 18 的病例收集到新列表 <code>high_meds</code></li>
+          </ul>
+
+          <h3 id="p1-10">1.10 while 循环</h3>
+          <p style="margin: 0 0 10px; color: var(--ink-light);"><code>while</code> 在条件为真时反复执行。适合“事先不知道循环几次，但知道停止条件”的场景。</p>
+
+          <div class="step-label">Step 1 / 基本 while</div>
+          <pre><code class="language-python">i = 0
+while i &lt; 3:
+    print(i)
+    i += 1</code></pre>
+
+          <div class="step-label">Step 2 / 输入校验（示意）</div>
+          <pre><code class="language-python"># 下面示例用于理解 while；课堂练习可用固定值代替反复输入
+stay_days = -1
+while stay_days &lt; 0:
+    stay_days = int(input("请输入非负住院天数："))
+print("住院天数：", stay_days)</code></pre>
+
+          <div class="step-label">Step 3 / while 与列表处理</div>
+          <pre><code class="language-python">stay_days = [3, 5, 8, 4, 10]
+i = 0
+while i &lt; len(stay_days):
+    if stay_days[i] &gt;= 7:
+        print(stay_days[i])
+    i += 1</code></pre>
+
+          <div class="check-point"><strong>检查点：</strong>遍历已知列表时，通常优先使用 <code>for</code>；需要按条件反复尝试时，更适合 <code>while</code>。</div>
+
+          <h3 id="p1-11">1.11 break 与 continue</h3>
+          <p style="margin: 0 0 10px; color: var(--ink-light);"><code>break</code> 立刻结束整个循环；<code>continue</code> 跳过本轮剩余语句，进入下一轮。</p>
+
+          <div class="step-label">Step 1 / break：找到后停止</div>
+          <pre><code class="language-python">target = None
+for p in patients:
+    if p["readmitted"] == "&lt;30":
+        target = p
+        break
+print(target["patient_id"])</code></pre>
+
+          <div class="step-label">Step 2 / continue：跳过不符合条件的记录</div>
+          <pre><code class="language-python">for p in patients:
+    if p["time_in_hospital"] &lt; 7:
+        continue
+    print(p["patient_id"], p["time_in_hospital"])</code></pre>
+
+          <div class="check-point"><strong>检查点：</strong><code>break</code> 后通常只保留第一个命中对象；<code>continue</code> 后仍会继续处理后续病例。</div>
+
+          <h3 id="p1-12">1.12 组合：筛选与统计</h3>
+          <p style="margin: 0 0 10px; color: var(--ink-light);">把条件判断与循环组合，即可完成规则处理中的常见任务。</p>
+
+          <div class="step-label">Step 1 / 多条件筛选</div>
+          <pre><code class="language-python">focus = []
+for p in patients:
+    if p["time_in_hospital"] &gt;= 7 and p["readmitted"] == "&lt;30":
+        focus.append(p)
+print(len(focus))
+for p in focus:
+    print(p["patient_id"])</code></pre>
+
+          <div class="step-label">Step 2 / 分组计数</div>
+          <pre><code class="language-python">count_lt30 = 0
+count_gt30 = 0
+count_no = 0
+for p in patients:
+    if p["readmitted"] == "&lt;30":
+        count_lt30 += 1
+    elif p["readmitted"] == "&gt;30":
+        count_gt30 += 1
+    elif p["readmitted"] == "NO":
+        count_no += 1
+print(count_lt30, count_gt30, count_no)</code></pre>
+
+          <div class="step-label">Step 3 / 条件求和与平均</div>
+          <pre><code class="language-python">female_total = 0
+female_count = 0
+for p in patients:
+    if p["gender"] == "Female":
+        female_total += p["time_in_hospital"]
+        female_count += 1
+print(female_count)
+print(female_total / female_count)</code></pre>
+
+          <div class="check-point"><strong>检查点：</strong>女性病例 3 人；女性平均住院天数为 <code>9.0</code>。先计数再求平均，避免除以 0。</div>
+
+          <h3 id="p1-13">1.13 综合：病例规则处理器 V0.3</h3>
+          <p style="margin: 0 0 10px; color: var(--ink-light);">将本节知识组合为可运行程序：对病例列表执行规则判断、筛选与统计。</p>
+
+          <div class="step-label">Step 1 / 完整示例</div>
+          <pre><code class="language-python">patients = [
+    {"patient_id": 10001, "gender": "Female", "age_group": "[70-80)", "time_in_hospital": 8, "num_medications": 18, "number_inpatient": 2, "readmitted": "&lt;30"},
+    {"patient_id": 10002, "gender": "Male", "age_group": "[60-70)", "time_in_hospital": 4, "num_medications": 12, "number_inpatient": 0, "readmitted": "NO"},
+    {"patient_id": 10003, "gender": "Female", "age_group": "[80-90)", "time_in_hospital": 10, "num_medications": 21, "number_inpatient": 3, "readmitted": "&gt;30"},
+    {"patient_id": 10004, "gender": "Male", "age_group": "[50-60)", "time_in_hospital": 6, "num_medications": 15, "number_inpatient": 1, "readmitted": "NO"},
+    {"patient_id": 10005, "gender": "Female", "age_group": "[70-80)", "time_in_hospital": 9, "num_medications": 20, "number_inpatient": 2, "readmitted": "&lt;30"}
+]
+
+long_stay = []
+early_readmit = []
+attention = []
+
+for p in patients:
+    if p["time_in_hospital"] &gt;= 7:
+        long_stay.append(p)
+    if p["readmitted"] == "&lt;30":
+        early_readmit.append(p)
+    if p["time_in_hospital"] &gt;= 7 and p["number_inpatient"] &gt;= 2:
+        attention.append(p)
+
+total_stay = 0
+for p in patients:
+    total_stay += p["time_in_hospital"]
+avg_stay = total_stay / len(patients)
+
+print("==============================")
+print("病例规则处理摘要")
+print("==============================")
+print(f"病例总数：{len(patients)}")
+print(f"长住院人数：{len(long_stay)}")
+print(f"早期再入院人数：{len(early_readmit)}")
+print(f"重点关注人数：{len(attention)}")
+print(f"平均住院天数：{avg_stay}")
+print("长住院编号：")
+for p in long_stay:
+    print(p["patient_id"])
+print("==============================")</code></pre>
+
+          <div class="step-label">Step 2 / 项目升级对照</div>
+          <ul class="tasks">
+            <li>实验1：多个变量 → 病例信息处理器 V0.1</li>
+            <li>实验2：dict + list → 病例数据模型 V0.2</li>
+            <li>本节：条件 + 循环 → 自动规则处理 → 病例规则处理器 V0.3</li>
+          </ul>
+
+          <div class="step-label">Step 3 / 拓展阅读（非必会）</div>
+          <pre><code class="language-python"># 下面是一种更紧凑的写法，看懂即可
+# ids = [p["patient_id"] for p in patients if p["time_in_hospital"] &gt;= 7]</code></pre>
+
+          <h3 id="p1-14">1.14 常见错误</h3>
+
+          <p style="margin: 0 0 10px; color: var(--ink-light);"><strong>错误 1：</strong>忘记冒号或缩进不正确。</p>
+          <pre><code class="language-python"># if time_in_hospital &gt;= 7   # 缺少冒号
+# print("长住院")            # 应缩进到 if 内部</code></pre>
+
+          <p style="margin: 16px 0 10px; color: var(--ink-light);"><strong>错误 2：</strong>用 <code>=</code> 做比较。</p>
+          <pre><code class="language-python">readmitted = "&lt;30"
+# if readmitted = "&lt;30":   # 错误：这是赋值
+if readmitted == "&lt;30":
+    print("早期再入院")</code></pre>
+
+          <p style="margin: 16px 0 10px; color: var(--ink-light);"><strong>错误 3：</strong><code>while</code> 忘记更新循环变量，导致死循环。</p>
+          <pre><code class="language-python">i = 0
+while i &lt; 3:
+    print(i)
+    i += 1   # 不要漏掉这一步</code></pre>
+
+          <p style="margin: 16px 0 10px; color: var(--ink-light);"><strong>错误 4：</strong>在空列表上求平均。</p>
+          <pre><code class="language-python">selected = []
+# print(sum_days / len(selected))  # 可能 ZeroDivisionError
+if len(selected) &gt; 0:
+    print(sum_days / len(selected))
+else:
+    print("没有符合条件的病例")</code></pre>
+
+          <p style="margin: 16px 0 10px; color: var(--ink-light);"><strong>错误 5：</strong>修改正在遍历的列表本身（高级场景易出错）。初学阶段建议：遍历原列表，把结果追加到新列表。</p>
+          <pre><code class="language-python">result = []
+for p in patients:
+    if p["time_in_hospital"] &gt;= 7:
+        result.append(p)</code></pre>
+
+          <p style="margin: 16px 0 10px; color: var(--ink-light);">现在已经能对病例列表自动筛选与统计。若同样的规则要在多处重复使用，或希望把“判断长住院”“统计再入院”整理成可复用工具，需要进一步学习函数与模块化。这些问题将在后续实验中继续展开。</p>
+        </section>
+
+        <section class="exercise" id="p2">
+          <h2>2. 任务</h2>
+          <p style="margin: 0 0 16px; color: var(--ink-light);">请亲自输入代码、运行程序、观察结果，并完成「病例规则处理器 V0.3」。完成后，根据实际运行结果填写雨课堂中的结构化实验记录。</p>
+
+          <h3 id="p2-1">2.1 任务 A：病例规则处理器 V0.3</h3>
+          <p style="margin: 0 0 10px; color: var(--ink-light);">对应练习 1.3～1.13。请在本地完成「病例规则处理器 V0.3」，并根据程序的实际运行结果完成雨课堂中的实验记录。</p>
+
+          <p style="margin: 16px 0 10px; color: var(--ink-light);"><strong>数据要求：</strong></p>
+          <ul class="tasks">
+            <li>建立至少 5 条病例的 list of dict：<code>patients</code></li>
+            <li>每条至少包含：<code>patient_id</code>、<code>gender</code>、<code>age_group</code>、<code>time_in_hospital</code>、<code>num_medications</code>、<code>number_inpatient</code>、<code>readmitted</code></li>
+          </ul>
+
+          <p style="margin: 16px 0 10px; color: var(--ink-light);"><strong>功能要求：</strong></p>
+          <ul class="tasks">
+            <li>使用 <code>if / elif / else</code> 完成至少一类分级判断（例如再入院状态或住院天数级别）</li>
+            <li>使用 <code>for</code> 遍历全部病例</li>
+            <li>筛选住院时间 ≥ 7 的病例，并统计数量</li>
+            <li>统计早期再入院（<code>readmitted == "&lt;30"</code>）人数</li>
+            <li>筛选同时满足「长住院」且「既往住院次数 ≥ 2」的重点关注病例</li>
+            <li>计算全部病例的平均住院天数</li>
+            <li>使用 f-string 输出规则处理摘要</li>
+            <li>程序可以正常运行</li>
+          </ul>
+
+          <p style="margin: 16px 0 10px; color: var(--ink-light);"><strong>输出格式参考：</strong></p>
+          <pre><code>==============================
+病例规则处理摘要
+==============================
+病例总数：5
+长住院人数：3
+早期再入院人数：2
+重点关注人数：3
+平均住院天数：7.4
+长住院编号：
+10001
+10003
+10005
+==============================</code></pre>
+
+          <h3 id="p2-2">2.2 任务 B：规则与流程分析</h3>
+          <p style="margin: 0 0 10px; color: var(--ink-light);">对应练习 1.2、1.10、1.11。在本地思考并记录结果，用于完成雨课堂题目。每个理由用 1～2 句话说明。</p>
+          <ul class="tasks">
+            <li>判断一条病例是否长住院：适合使用 ________；理由：____________________________</li>
+            <li>逐条检查全部病例：适合使用 ________；理由：____________________________</li>
+            <li>反复输入直到住院天数合法：适合使用 ________；理由：____________________________</li>
+            <li>找到第一个早期再入院病例后停止：适合配合 ________；理由：____________________________</li>
+          </ul>
+        </section>
+
+        <section class="exercise" id="p3">
+          <h2>3. 实验结果与作业</h2>
+
+          <h3 id="p3-1">3.1 本次实验结果要求</h3>
+          <p style="margin: 0 0 10px; color: var(--ink-light);">完成本次实验后，你应该能够：</p>
+          <ul class="tasks">
+            <li>使用 <code>if / else</code> 完成双分支判断</li>
+            <li>使用 <code>if / elif / else</code> 完成多分支判断</li>
+            <li>使用 <code>for</code> 遍历 list 与 list of dict</li>
+            <li>使用计数器完成统计</li>
+            <li>使用 <code>range()</code> 理解按次数 / 按索引循环</li>
+            <li>理解 <code>while</code> 的基本用法</li>
+            <li>理解 <code>break</code> 与 <code>continue</code> 的作用</li>
+            <li>完成病例筛选、计数与简单平均统计</li>
+            <li>组合条件与循环写出规则处理程序</li>
+            <li>在本地完成「病例规则处理器 V0.3」</li>
+          </ul>
+          <p style="margin: 16px 0 10px; color: var(--ink-light);">请根据程序的实际运行结果，完成雨课堂中的实验记录。</p>
+
+          <h3 id="p3-2">3.2 作业</h3>
+          <p style="margin: 0 0 10px; color: var(--ink-light);">本次实验主要关注程序控制结构与运行结果，因此采用结构化实验记录的方式完成提交。请先在本地实际运行，再按雨课堂题目作答。</p>
+
+          <p style="margin: 16px 0 8px; color: var(--ink-light);"><strong>题目1：控制结构选择</strong></p>
+          <p style="margin: 0 0 10px; color: var(--ink-light);">从 if / for / while / break / continue 中选择合适结构，并用 1～2 句话说明理由：</p>
+          <ul class="tasks">
+            <li>判断一条病例是否长住院：________；理由：____________________________</li>
+            <li>逐条处理全部病例：________；理由：____________________________</li>
+            <li>反复输入直到得到合法数值：________；理由：____________________________</li>
+            <li>找到目标后立即结束循环：________；理由：____________________________</li>
+          </ul>
+
+          <p style="margin: 16px 0 8px; color: var(--ink-light);"><strong>题目2：条件判断结果</strong></p>
+          <pre><code class="language-python">time_in_hospital = 8
+readmitted = "&gt;30"
+number_inpatient = 2</code></pre>
+          <ul class="tasks">
+            <li><code>time_in_hospital &gt;= 7</code> 的结果：________</li>
+            <li><code>readmitted == "&lt;30"</code> 的结果：________</li>
+            <li><code>time_in_hospital &gt;= 7 and number_inpatient &gt;= 2</code> 的结果：________</li>
+            <li>用 <code>if / elif / else</code> 判断 <code>readmitted</code> 后的分类结果：________</li>
+            <li>解释：为什么分支顺序会影响多分支判断的结果？（1～3 句话）</li>
+          </ul>
+
+          <p style="margin: 16px 0 8px; color: var(--ink-light);"><strong>题目3：循环与关键代码</strong></p>
+          <pre><code class="language-python">stay_days = [3, 5, 8, 4, 10]</code></pre>
+          <ul class="tasks">
+            <li>用 <code>for</code> 打印每个住院天数：关键代码（约 2 行）____________________________</li>
+            <li>统计 ≥ 7 的天数个数：关键代码（约 4～6 行）____________________________</li>
+            <li>统计结果：________</li>
+            <li>求全部天数平均值的关键思路或代码：____________________________</li>
+            <li>平均值结果：________</li>
+          </ul>
+
+          <p style="margin: 16px 0 8px; color: var(--ink-light);"><strong>题目4：病例规则处理结果</strong></p>
+          <p style="margin: 0 0 10px; color: var(--ink-light);">在本地完成「病例规则处理器 V0.3」后，根据实际运行结果填写：</p>
+          <ul class="tasks">
+            <li>病例总数：________</li>
+            <li>长住院人数：________</li>
+            <li>早期再入院人数：________</li>
+            <li>重点关注人数：________</li>
+            <li>平均住院天数：________</li>
+            <li>长住院编号（可写多个）：________</li>
+          </ul>
+          <p style="margin: 12px 0 10px; color: var(--ink-light);">也可在雨课堂长文本题中粘贴程序最终文字输出。</p>
+
+          <p style="margin: 16px 0 8px; color: var(--ink-light);"><strong>题目5：错误分析</strong></p>
+          <pre><code class="language-python">i = 0
+while i &lt; 3:
+    print(i)
+# 缺少更新语句</code></pre>
+          <ul class="tasks">
+            <li>这段代码可能出现什么问题？</li>
+            <li>应该怎样修改？请填写关键代码：____________________________</li>
+            <li>补充解释：遍历已知的 <code>patients</code> 列表时，为什么通常优先使用 <code>for</code>？（1～3 句话）</li>
+          </ul>
+
+          <h3 id="p3-3">3.3 实验提交</h3>
+          <p style="margin: 0 0 10px; color: var(--ink-light);">请先在自己的 Python 环境中完成本次实验的代码练习，并实际运行程序、观察结果。</p>
+          <p style="margin: 0 0 10px; color: var(--ink-light);">完成实验后，请按照雨课堂中的题目填写实验记录。</p>
+          <p style="margin: 0 0 10px; color: var(--ink-light);">本次实验主要记录：</p>
+          <ul class="tasks">
+            <li>控制结构的选择结果</li>
+            <li>条件判断的运行结果</li>
+            <li>循环与统计的关键代码</li>
+            <li>病例规则处理的最终文字输出</li>
+            <li>对典型运行结果或错误的简短解释</li>
+          </ul>
+          <p style="margin: 16px 0 10px; color: var(--ink-light);">请按照雨课堂发布的要求完成提交。</p>
+        </section>
       </article>
     </main>
   </div>
+
+  <script>
+    (function () {
+      document.querySelectorAll('pre > code').forEach((code) => {
+        const pre = code.parentElement;
+        if (!pre || pre.querySelector('.copy-btn')) return;
+        const btn = document.createElement('button');
+        btn.className = 'copy-btn';
+        btn.type = 'button';
+        btn.textContent = '复制';
+        btn.addEventListener('click', async () => {
+          try {
+            await navigator.clipboard.writeText(code.innerText);
+            btn.dataset.state = 'ok';
+            btn.textContent = '已复制';
+            setTimeout(() => { delete btn.dataset.state; btn.textContent = '复制'; }, 1200);
+          } catch (e) {
+            const range = document.createRange();
+            range.selectNodeContents(code);
+            const sel = window.getSelection();
+            sel.removeAllRanges();
+            sel.addRange(range);
+            btn.textContent = '请 Ctrl+C';
+            setTimeout(() => { btn.textContent = '复制'; }, 1200);
+          }
+        });
+        pre.appendChild(btn);
+      });
+    })();
+  </script>
+  <script>
+    (function () {
+      const links = Array.from(document.querySelectorAll('.toc a[href^="#"]'));
+      const idToLink = new Map();
+      links.forEach((a) => {
+        const id = decodeURIComponent(a.getAttribute('href').slice(1));
+        if (id) idToLink.set(id, a);
+      });
+      const headings = Array.from(document.querySelectorAll('h2[id], h3[id], section[id]'))
+        .filter((h) => idToLink.has(h.id));
+      if (headings.length === 0) return;
+      const clear = () => links.forEach((a) => a.classList.remove('is-active'));
+      const setActive = (id) => { clear(); const a = idToLink.get(id); if (a) a.classList.add('is-active'); };
+      const initial = (location.hash && location.hash.slice(1)) || headings[0].id;
+      setActive(decodeURIComponent(initial));
+      const obs = new IntersectionObserver((entries) => {
+        const visible = entries.filter((e) => e.isIntersecting).sort((a, b) => (a.boundingClientRect.top - b.boundingClientRect.top));
+        if (visible.length > 0) setActive(visible[0].target.id);
+      }, { rootMargin: '-15% 0px -75% 0px', threshold: [0, 1] });
+      headings.forEach((h) => obs.observe(h));
+    })();
+  </script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/python.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script>hljs.highlightAll();</script>
   <script src="./split.js"></script>
 </body>
 </html>
