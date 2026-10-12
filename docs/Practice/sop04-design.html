@@ -25,14 +25,14 @@
               <a href="#p1-6"><span class="n">1.6</span>病例数量与平均值统计</a>
               <a href="#p1-7"><span class="n">1.7</span>变量变化与程序执行顺序</a>
               <a href="#p1-8"><span class="n">1.8</span>函数调用与结果传递</a>
-              <a href="#p1-9"><span class="n">1.9</span>综合：病例信息处理器 V0.4</a>
+              <a href="#p1-9"><span class="n">1.9</span>综合：病例信息处理器</a>
               <a href="#p1-10"><span class="n">1.10</span>常见错误</a>
             </div>
           </li>
           <li>
             <a class="lv1" href="#p2">2. 任务</a>
             <div class="lv2">
-              <a href="#p2-1"><span class="n">2.1</span>任务 A：病例信息处理器 V0.4</a>
+              <a href="#p2-1"><span class="n">2.1</span>任务 A：病例信息处理器</a>
               <a href="#p2-2"><span class="n">2.2</span>任务 B：病例数据与程序执行分析</a>
             </div>
           </li>
@@ -54,7 +54,7 @@
           <a href="./">Practice</a><span class="sep">/</span>实验4
         </div>
         <h1>实验4：程序设计基本方法</h1>
-        <p class="practice-lead">医学病例数据的处理与分析。前面已学习基本语法、组合数据类型与程序控制结构；本节继续使用糖尿病住院病例数据，把提取、判断、循环、筛选和统计组合起来，完成<span class="nobr">「病例信息处理器 V0.4」</span>。</p>
+        <p class="practice-lead">医学病例数据的处理与分析。前面已学习基本语法、组合数据类型与程序控制结构；本节继续使用糖尿病住院病例数据，把提取、判断、循环、筛选和统计组合起来，完成<span class="nobr">「病例信息处理器」</span>。</p>
 
         <div class="meta-row">
           <div>
@@ -63,7 +63,7 @@
           </div>
           <div>
             <strong>项目阶段</strong>
-            <span>V0.4 病例信息处理器。以病例规则处理器 V0.3 为基础</span>
+            <span>病例信息处理器。以病例规则处理器 V0.3 为基础</span>
           </div>
           <div>
             <strong>练习方式</strong>
@@ -455,7 +455,7 @@ print(value)</code></pre>
 
           <div class="check-point"><strong>检查点：</strong><code>average_stay([8, 4, 10])</code> 结果约为 <code>7.333...</code>；对五条病例，<code>get_stay_days</code> 得到 <code>[8, 4, 10, 6, 9]</code>，平均值 <code>7.4</code>；<code>count_long_stay(patients, 7)</code> 返回 <code>3</code>。</div>
 
-          <h3 id="p1-9">1.9 综合：病例信息处理器 V0.4</h3>
+          <h3 id="p1-9">1.9 综合：病例信息处理器</h3>
           <p style="margin: 0 0 10px; color: var(--ink-light);">在 V0.3 规则处理基础上，整理为统一摘要输出。下列为可复制运行的参考实现。</p>
 
           <div class="step-label">Step 1 / 完整参考代码</div>
@@ -488,7 +488,7 @@ for p in patients:
 
 # 3) 统一摘要
 print("==============================")
-print("病例信息处理器 V0.4")
+print("病例信息处理器")
 print("==============================")
 print(f"病例总数：{total_count}")
 print(f"平均住院天数：{avg_stay}")
@@ -517,7 +517,7 @@ print("==============================")</code></pre>
             <li>实验1：病例信息处理器 V0.1</li>
             <li>实验2：病例数据模型 V0.2</li>
             <li>实验3：病例规则处理器 V0.3</li>
-            <li>本节：病例信息处理器 V0.4</li>
+            <li>本节：病例信息处理器</li>
           </ul>
 
           <div class="check-point"><strong>检查点：</strong>总数 <code>5</code>，平均住院天数 <code>7.4</code>；长住院 3 人；早期再入院 2 人；重点关注 3 人。</div>
@@ -590,9 +590,9 @@ print(total)  # 修正：循环结束后打印一次</code></pre>
 
         <section class="exercise" id="p2">
           <h2>2. 任务</h2>
-          <p style="margin: 0 0 16px; color: var(--ink-light);">请亲自输入代码、运行程序、观察结果，并完成「病例信息处理器 V0.4」。完成后根据实际运行结果填写雨课堂实验记录。</p>
+          <p style="margin: 0 0 16px; color: var(--ink-light);">请亲自输入代码、运行程序、观察结果，并完成「病例信息处理器」。完成后根据实际运行结果填写雨课堂实验记录。</p>
 
-          <h3 id="p2-1">2.1 任务 A：病例信息处理器 V0.4</h3>
+          <h3 id="p2-1">2.1 任务 A：病例信息处理器</h3>
           <p style="margin: 0 0 10px; color: var(--ink-light);">使用下列五条病例（与 1.9 相比，第 4 条住院天数改为 <code>8</code>）。请独立编写程序，不要直接照抄 1.9 的完整代码。</p>
           <pre><code class="language-python">patients = [
     {"patient_id": 10001, "gender": "Female", "age_group": "[70-80)", "time_in_hospital": 8, "num_medications": 18, "number_inpatient": 2, "readmitted": "&lt;30"},
@@ -612,7 +612,7 @@ print(total)  # 修正：循环结束后打印一次</code></pre>
           </ul>
           <p style="margin: 16px 0 10px; color: var(--ink-light);"><strong>输出格式参考：</strong></p>
           <pre><code>==============================
-病例信息处理器 V0.4
+病例信息处理器
 ==============================
 病例总数：5
 平均住院天数：7.8
@@ -685,7 +685,7 @@ print(label)</code></pre>
             <li>预测简单代码的执行结果</li>
             <li>解释循环中变量的变化</li>
             <li>理解简单函数调用与返回值</li>
-            <li>独立完成「病例信息处理器 V0.4」</li>
+            <li>独立完成「病例信息处理器」</li>
           </ul>
           <p style="margin: 16px 0 10px; color: var(--ink-light);">请根据程序的实际运行结果，完成雨课堂中的实验记录。</p>
 
@@ -721,7 +721,7 @@ print(label)</code></pre>
             <li>对 <code>result = average_stay([8, 4, 10])</code>：实参、形参、返回值、打印结果</li>
           </ul>
 
-          <p style="margin: 16px 0 8px; color: var(--ink-light);"><strong>题目5：病例信息处理器 V0.4</strong></p>
+          <p style="margin: 16px 0 8px; color: var(--ink-light);"><strong>题目5：病例信息处理器</strong></p>
           <ul class="tasks">
             <li>独立完成任务 A，填写：病例总数、平均住院天数、三类人数与编号</li>
             <li>在长文本题中提交完整程序或核心处理代码</li>
@@ -737,7 +737,7 @@ print(label)</code></pre>
             <li>筛选结果与条件说明</li>
             <li>统计结果与关键代码</li>
             <li>变量跟踪与函数返回值</li>
-            <li>病例信息处理器 V0.4 的运行结果与核心代码</li>
+            <li>病例信息处理器的运行结果与核心代码</li>
           </ul>
           <p style="margin: 16px 0 10px; color: var(--ink-light);">请按照雨课堂发布的要求完成提交。</p>
         </section>
