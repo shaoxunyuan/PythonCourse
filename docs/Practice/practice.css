@@ -60,6 +60,13 @@
   line-height: 1.65;
 }
 
+/* 中文禁则：顿号、逗号等标点不单独换到行首 */
+.practice-page .article {
+  word-break: keep-all;
+  line-break: strict;
+  overflow-wrap: break-word;
+}
+
 .meta-row {
   display: grid;
   gap: 10px;
@@ -69,6 +76,7 @@
   color: var(--ink-light);
   line-height: 1.7;
   word-break: keep-all;
+  line-break: strict;
   overflow-wrap: break-word;
 }
 
@@ -117,6 +125,7 @@
   margin-bottom: 22px;
   line-height: 1.75;
   word-break: keep-all;
+  line-break: strict;
   overflow-wrap: break-word;
 }
 

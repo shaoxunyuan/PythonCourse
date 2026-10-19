@@ -151,7 +151,7 @@ show_patient_id(patients[0])</code></pre>
 print(stay_summary(10001, 8))
 # print(stay_summary(8, 10001))  # 顺序错了，语义也错</code></pre>
 
-          <div class="step-label">Step 2 / 默认参数（可选参数）</div>
+          <div class="step-label">Step 2 / 默认参数</div>
           <pre><code class="language-python">def is_long_stay(days, threshold=7):
     return days &gt;= threshold
 
@@ -159,7 +159,7 @@ print(is_long_stay(8))          # 使用默认阈值 7
 print(is_long_stay(8, 10))      # 临时改用阈值 10
 print(is_long_stay(8, threshold=9))</code></pre>
           <div class="book-callout">
-            <strong>规则（考点）：</strong>默认参数必须放在位置参数后面。错误写法：<code>def func(a=10, b)</code>。
+            <strong>规则：</strong>默认参数必须放在位置参数后面。错误写法：<code>def func(a=10, b)</code>。
           </div>
 
           <div class="step-label">Step 3 / 可变位置参数 *args</div>
@@ -266,7 +266,7 @@ print(count)  # 2</code></pre>
 print(make_label(8))
 # print(label)  # NameError：label 是局部变量</code></pre>
 
-          <div class="check-point"><strong>检查点：</strong>无 <code>global</code> 时函数内赋值不影响外部 <code>count</code>；有 <code>global</code> 后两次调用可使全局 <code>count</code> 变为 <code>2</code>。教学中优先用 <code>return</code> 传出结果，少依赖 <code>global</code>。</div>
+          <div class="check-point"><strong>检查点：</strong>无 <code>global</code> 时函数内赋值不影响外部 <code>count</code>；有 <code>global</code> 后两次调用可使全局 <code>count</code> 变为 <code>2</code>。</div>
 
           <h3 id="p1-6">1.6 lambda 匿名函数</h3>
           <p style="margin: 0 0 10px; color: var(--ink-light);">语法：<code>lambda 参数: 表达式</code></p>
@@ -290,7 +290,7 @@ print(is_long(4))</code></pre>
 is_long_lambda = lambda days: days &gt;= 7
 print(is_long_def(8), is_long_lambda(8))</code></pre>
 
-          <div class="step-label">Step 3 / 用于排序 key（可选）</div>
+          <div class="step-label">Step 3 / 用于排序 key</div>
           <pre><code class="language-python">sorted_by_stay = sorted(patients, key=lambda p: p["time_in_hospital"])
 for p in sorted_by_stay:
     print(p["patient_id"], p["time_in_hospital"])</code></pre>
@@ -300,7 +300,7 @@ for p in sorted_by_stay:
           <h3 id="p1-7">1.7 递归：两大必备条件</h3>
           <p style="margin: 0 0 10px; color: var(--ink-light);"><strong>递归定义：</strong>函数在函数体内调用自身。</p>
           <div class="book-callout">
-            递归两大必备条件（缺一不可，必考）：<br>
+            递归两大必备条件：<br>
             ✅ <strong>基例（终止条件）</strong>：不再继续递归，直接返回结果，防止无限递归<br>
             ✅ <strong>递归链条</strong>：递归调用时，参数不断向基例收敛
           </div>
@@ -353,7 +353,7 @@ print(factorial(5))  # 120</code></pre>
   ← 3 * 2 = 6</code></pre>
           <pre><code class="language-python">print(factorial(3))  # 6</code></pre>
 
-          <div class="step-label">Step 2 / 斐波那契（另一经典模板）</div>
+          <div class="step-label">Step 2 / 斐波那契</div>
           <pre><code class="language-python">def fib(n):
     if n == 0:
         return 0
@@ -363,7 +363,7 @@ print(factorial(5))  # 120</code></pre>
 
 print(fib(6))  # 8</code></pre>
 
-          <div class="step-label">Step 3 / 优缺点（概念）</div>
+          <div class="step-label">Step 3 / 优缺点</div>
           <ul class="tasks">
             <li><strong>优点：</strong>代码简洁，天然适合分形、分支类问题（如汉诺塔、科赫雪花）</li>
             <li><strong>缺点：</strong>递归深度有限，大量递归可能栈溢出，效率往往低于等价循环</li>
@@ -374,12 +374,12 @@ print(fib(6))  # 8</code></pre>
           <h3 id="p1-9">1.9 代码复用与模块化</h3>
           <p style="margin: 0 0 10px; color: var(--ink-light);"><strong>代码复用两种形式：</strong></p>
           <ul class="tasks">
-            <li><strong>函数复用：</strong>封装一段逻辑，多次调用（本章核心）</li>
-            <li><strong>对象复用：</strong>面向对象方式（本章仅概念，不深入）</li>
+            <li><strong>函数复用：</strong>封装一段逻辑，多次调用</li>
+            <li><strong>对象复用：</strong>面向对象方式</li>
           </ul>
           <p style="margin: 16px 0 10px; color: var(--ink-light);"><strong>模块化设计：分而治之</strong>——把大程序拆成多个独立模块，每个模块负责单一功能。</p>
           <div class="book-callout">
-            <strong>耦合原则（高频简答）：模块内部紧耦合，模块之间松耦合。</strong><br>
+            <strong>耦合原则：模块内部紧耦合，模块之间松耦合。</strong><br>
             紧耦合：同一模块内部代码关联紧密。<br>
             松耦合：模块之间依赖少、接口简单，一处改动尽量不影响其他模块。
           </div>
@@ -490,7 +490,7 @@ print_toolbox_summary(patients)</code></pre>
           <ul class="tasks">
             <li>取数工具：<code>get_ids</code>、<code>average_stay</code></li>
             <li>筛选工具：<code>filter_by_stay</code>、<code>filter_early_readmit</code>、<code>filter_attention</code></li>
-            <li>展示工具：<code>print_toolbox_summary</code>（调用上述工具，接口简单）</li>
+            <li>展示工具：<code>print_toolbox_summary</code></li>
           </ul>
 
           <div class="check-point"><strong>检查点：</strong>总数 <code>5</code>，平均住院天数 <code>7.4</code>；长住院 3 人；早期再入院 2 人；重点关注 3 人。各筛选函数可被单独测试与复用。</div>
@@ -547,7 +547,7 @@ def stay_level(days):
           <p style="margin: 0 0 16px; color: var(--ink-light);">请亲自输入代码、运行程序、观察结果，并完成「病例处理工具箱」。完成后根据实际运行结果填写雨课堂实验记录。</p>
 
           <h3 id="p2-1">2.1 任务 A：病例处理工具箱</h3>
-          <p style="margin: 0 0 10px; color: var(--ink-light);">使用下列五条病例（与 1.10 相比，第 4 条住院天数改为 <code>8</code>）。请用<strong>多个函数</strong>完成，不要把所有逻辑写在一个无函数脚本里。</p>
+          <p style="margin: 0 0 10px; color: var(--ink-light);">使用下列五条病例。请用<strong>多个函数</strong>完成，不要把所有逻辑写在一个无函数脚本里。</p>
           <pre><code class="language-python">patients = [
     {"patient_id": 10001, "gender": "Female", "age_group": "[70-80)", "time_in_hospital": 8, "num_medications": 18, "number_inpatient": 2, "readmitted": "&lt;30"},
     {"patient_id": 10002, "gender": "Male", "age_group": "[60-70)", "time_in_hospital": 4, "num_medications": 12, "number_inpatient": 0, "readmitted": "NO"},
@@ -557,9 +557,9 @@ def stay_level(days):
 ]</code></pre>
           <p style="margin: 16px 0 10px; color: var(--ink-light);"><strong>要求：</strong></p>
           <ul class="tasks">
-            <li>至少定义 4 个函数（建议：求平均、按住院天数筛选、早期再入院筛选、重点关注筛选或摘要输出）</li>
-            <li>筛选函数使用默认参数（例如阈值默认 <code>7</code>）</li>
-            <li>至少有一个函数 <code>return</code> 多个值（例如人数与编号列表，本质为元组）</li>
+            <li>至少定义 4 个函数</li>
+            <li>筛选函数使用默认参数，阈值默认为 <code>7</code></li>
+            <li>至少有一个函数 <code>return</code> 多个值，本质为元组</li>
             <li>统计总病例数与平均住院天数</li>
             <li>长住院：住院天数 ≥ 7；早期再入院：<code>readmitted == "&lt;30"</code></li>
             <li>重点关注：住院天数 ≥ 7 且药物数量 ≥ 18</li>
@@ -629,7 +629,7 @@ print("外", x)</code></pre>
           <p style="margin: 16px 0 8px; color: var(--ink-light);"><strong>B4 模块化原则</strong></p>
           <ul class="tasks">
             <li>代码复用的两种形式：________、________</li>
-            <li>用一句话写出耦合原则：________</li>
+            <li>写出耦合原则：________</li>
           </ul>
         </section>
 
@@ -655,7 +655,7 @@ print("外", x)</code></pre>
 
           <p style="margin: 16px 0 8px; color: var(--ink-light);"><strong>题目1：def 与参数</strong></p>
           <ul class="tasks">
-            <li>写出函数定义的基本语法骨架（可用文字描述）</li>
+            <li>写出函数定义的基本语法骨架</li>
             <li>判断正误：默认参数可以写在普通位置参数前面。________</li>
             <li>填写：<code>*args</code> 在函数内部的类型是 ________</li>
           </ul>
@@ -671,20 +671,20 @@ r1 = f(1, 2)
 r2 = g(3)</code></pre>
           <ul class="tasks">
             <li><code>r1</code> 的值与类型：________</li>
-            <li><code>r2</code> 的值：________（说明原因）</li>
+            <li><code>r2</code> 的值：________</li>
           </ul>
 
           <p style="margin: 16px 0 8px; color: var(--ink-light);"><strong>题目3：作用域与 lambda</strong></p>
           <ul class="tasks">
-            <li><code>global</code> 关键字的作用（1～2 句）</li>
+            <li><code>global</code> 关键字的作用</li>
             <li>写出等价于 <code>def add1(x): return x + 1</code> 的 lambda：________</li>
-            <li>lambda 的语法限制是什么？（1 句）</li>
+            <li>lambda 的语法限制是什么？</li>
           </ul>
 
-          <p style="margin: 16px 0 8px; color: var(--ink-light);"><strong>题目4：递归（重中之重）</strong></p>
+          <p style="margin: 16px 0 8px; color: var(--ink-light);"><strong>题目4：递归</strong></p>
           <ul class="tasks">
             <li>递归两大必要条件：________、________</li>
-            <li>简述递归调用栈的执行过程（压栈 → 基例 → 退栈）</li>
+            <li>简述递归调用栈的执行过程</li>
             <li>推演 <code>factorial(5)</code> 的结果：________</li>
           </ul>
 
@@ -692,7 +692,7 @@ r2 = g(3)</code></pre>
           <ul class="tasks">
             <li>写出耦合原则原文：________</li>
             <li>完成任务 A，填写：病例总数、平均住院天数、三类人数与编号</li>
-            <li>在长文本题中提交工具箱核心函数代码（至少 3 个函数）</li>
+            <li>提交工具箱核心函数代码</li>
           </ul>
 
           <h3 id="p3-3">3.3 实验提交</h3>
