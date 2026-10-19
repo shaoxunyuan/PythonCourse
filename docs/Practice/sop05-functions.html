@@ -55,7 +55,7 @@
           <a href="./">Practice</a><span class="sep">/</span>实验5
         </div>
         <h1>实验5：函数、参数与模块化</h1>
-        <p class="practice-lead">把重复逻辑做成工具 · 工具箱。本节把筛选、统计等逻辑封装为函数，理解参数、返回值、作用域、lambda、递归，以及模块化设计原则。</p>
+        <p class="practice-lead"><span class="nobr">把重复逻辑做成工具 · 工具箱。</span><span class="nobr">本节把筛选、统计等逻辑封装为函数，理解参数、返回值、作用域、lambda、递归，以及模块化设计原则。</span></p>
 
         <div class="meta-row">
           <div>
@@ -64,7 +64,7 @@
           </div>
           <div>
             <strong>项目阶段</strong>
-            <span>病例处理工具箱。以「病例信息处理器」为基础，把逻辑拆成可复用函数</span>
+            <span>病例处理工具箱。把筛选与统计逻辑拆成可复用函数</span>
           </div>
           <div>
             <strong>练习方式</strong>
@@ -76,11 +76,11 @@
           <h2>1. 练习</h2>
 
           <h3 id="p1-1">1.1 为什么需要函数</h3>
-          <p style="margin: 0 0 10px; color: var(--ink-light);">上一节已能用循环与条件完成病例筛选与统计。若多处都要写「住院天数 ≥ 7」或「求平均住院天数」，代码会重复、难改、易错。</p>
+          <p style="margin: 0 0 10px; color: var(--ink-light);">若多处都要写「住院天数 ≥ 7」或「求平均住院天数」，代码会重复、难改、易错。</p>
           <div class="book-callout">
             函数把一段「输入 → 处理 → 输出」逻辑封装成工具：定义一次，多处调用。
           </div>
-          <p style="margin: 16px 0 10px; color: var(--ink-light);">本节继续使用与实验 3 / 4 一致的五条病例：</p>
+          <p style="margin: 16px 0 10px; color: var(--ink-light);">本节使用下列五条病例：</p>
           <pre><code class="language-python">patients = [
     {"patient_id": 10001, "gender": "Female", "age_group": "[70-80)", "time_in_hospital": 8, "num_medications": 18, "number_inpatient": 2, "readmitted": "&lt;30"},
     {"patient_id": 10002, "gender": "Male", "age_group": "[60-70)", "time_in_hospital": 4, "num_medications": 12, "number_inpatient": 0, "readmitted": "NO"},
@@ -218,7 +218,7 @@ a = add_one_wrong(3)  # 屏幕看到 4，但 a 是 None
 b = add_one(3)        # b 是 4
 print(a, b)</code></pre>
 
-          <div class="check-point"><strong>检查点：</strong><code>stay_and_meds(patients[0])</code> 得到 <code>(8, 18)</code>，类型为 <code>tuple</code>。需要后续计算时用 <code>return</code>，不要只靠 <code>print</code>。</div>
+          <div class="check-point"><strong>检查点：</strong><code>stay_and_meds(patients[0])</code> 得到 <code>(8, 18)</code>，类型为 <code>tuple</code>。需要继续计算时用 <code>return</code>，不要只靠 <code>print</code>。</div>
 
           <h3 id="p1-5">1.5 变量作用域与 global</h3>
           <div class="book-callout">
@@ -539,7 +539,6 @@ def stay_level(days):
         return "长"
     return "短"</code></pre>
 
-          <p style="margin: 16px 0 10px; color: var(--ink-light);">完成本节后，已能把病例处理逻辑封装成工具箱。若要进一步按规则名动态选择函数，将在后续「函数进阶与动态调用」实验中展开。</p>
         </section>
 
         <section class="exercise" id="p2">
@@ -706,7 +705,6 @@ r2 = g(3)</code></pre>
             <li>病例处理工具箱的运行结果与核心函数代码</li>
           </ul>
           <p style="margin: 16px 0 10px; color: var(--ink-light);">请按照雨课堂发布的要求完成提交。</p>
-          <p class="practice-footer-note">下一页：<a href="sop06-dynamic.html">实验6：函数进阶、函数对象与动态调用</a></p>
         </section>
       </article>
     </main>
