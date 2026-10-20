@@ -4,182 +4,375 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>面向过程与面向对象编程 · Python 高级应用</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.6.1/dist/reveal.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.6.1/dist/theme/white.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.6.1/plugin/highlight/monokai.css">
   <style>
+    :root {
+      --ink: #12141a;
+      --ink-soft: #3d4450;
+      --muted: #7a8290;
+      --line: #d8dde6;
+      --code-bg: #e7edf4;
+      --surface: #ffffff;
+      --paper: #f4f5f7;
+      --accent: #0d9488;
+      --accent-deep: #0f766e;
+      --blue-bg: #e8f0fe;
+      --blue-ink: #1e3a5f;
+      --green-bg: #e6f6ed;
+      --green-ink: #14532d;
+      --orange-bg: #fff1e6;
+      --orange-ink: #9a3412;
+      --gray-bg: #eef0f3;
+      --font: "IBM Plex Sans", "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
+      --mono: "IBM Plex Mono", Consolas, ui-monospace, monospace;
+    }
+
     .reveal {
-      font-family: "Microsoft YaHei", "PingFang SC", system-ui, -apple-system, "Segoe UI", Arial, sans-serif;
-      font-size: 32px;
+      font-family: var(--font);
+      font-size: 30px;
+      color: var(--ink);
+      background: var(--paper);
+      -webkit-font-smoothing: antialiased;
     }
     .reveal .slides { text-align: left; }
     .reveal .slides section {
-      padding: 36px 56px 72px;
+      padding: 40px 52px 68px;
       box-sizing: border-box;
+      background:
+        linear-gradient(180deg, #fbfbfc 0%, var(--surface) 42%, #f7f8fa 100%);
     }
-    .reveal h1, .reveal h2 {
-      color: #1a1a2e;
-      font-weight: 800;
-      text-transform: none;
-      letter-spacing: 0;
-      margin: 0 0 0.7em;
-      font-size: 1.35em;
+    .reveal .slides section::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--accent) 0%, var(--accent) 120px, transparent 320px);
     }
-    .reveal h1 { font-size: 1.7em; }
-    .reveal p, .reveal li { color: #1a1a2e; line-height: 1.55; }
-    .reveal ul { margin: 0.4em 0 0 1.1em; }
-    .reveal li { margin: 0.35em 0; }
-    .reveal a { color: #0f766e; }
-    .reveal .subtitle { color: #4a4a6a; font-size: 0.85em; margin-top: -0.4em; }
-    .reveal .small { font-size: 0.72em; color: #4a4a6a; }
 
-    /* 代码：浅灰蓝底，无边框 */
+    .reveal h1, .reveal h2 {
+      color: var(--ink);
+      font-weight: 700;
+      text-transform: none;
+      letter-spacing: -0.025em;
+      margin: 0 0 0.65em;
+      font-size: 1.22em;
+      line-height: 1.25;
+      position: relative;
+      padding-bottom: 0.35em;
+    }
+    .reveal h1::after, .reveal h2::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      bottom: 0;
+      width: 28px;
+      height: 2px;
+      background: var(--accent);
+    }
+    .reveal h1 { font-size: 1.55em; letter-spacing: -0.03em; }
+    .reveal p, .reveal li { color: var(--ink); line-height: 1.55; font-weight: 450; }
+    .reveal ul {
+      margin: 0.35em 0 0;
+      padding: 0;
+      list-style: none;
+    }
+    .reveal ul > li {
+      margin: 0.42em 0;
+      padding-left: 1.05em;
+      position: relative;
+    }
+    .reveal ul > li::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 0.62em;
+      width: 0.42em;
+      height: 2px;
+      background: var(--accent);
+    }
+    .reveal a { color: var(--accent-deep); }
+    .reveal .subtitle {
+      color: var(--ink-soft);
+      font-size: 0.82em;
+      font-weight: 500;
+      margin: -0.15em 0 0.15em;
+      letter-spacing: -0.01em;
+    }
+    .reveal .small {
+      font-size: 0.7em;
+      color: var(--ink-soft);
+      line-height: 1.5;
+    }
+
     .reveal pre {
       width: 100%;
       box-shadow: none !important;
       border: none !important;
-      background: #e8eef4 !important;
-      padding: 0.85em 1em !important;
-      margin: 0.5em 0 0.85em;
+      border-left: 3px solid var(--accent) !important;
+      background: var(--code-bg) !important;
+      padding: 0.75em 0.95em !important;
+      margin: 0.45em 0 0.75em;
       border-radius: 0;
     }
     .reveal pre code {
       background: transparent !important;
-      color: #1a1a2e !important;
-      font-family: Consolas, "Courier New", ui-monospace, monospace;
-      font-size: 0.72em;
-      line-height: 1.45;
+      color: var(--ink) !important;
+      font-family: var(--mono);
+      font-size: 0.68em;
+      font-weight: 450;
+      line-height: 1.48;
       max-height: none;
       padding: 0 !important;
+      tab-size: 4;
     }
     .reveal code {
-      font-family: Consolas, "Courier New", ui-monospace, monospace;
-      background: #e8eef4;
-      color: #1a1a2e;
-      padding: 0.08em 0.28em;
-      border-radius: 3px;
+      font-family: var(--mono);
+      background: var(--code-bg);
+      color: var(--ink);
+      padding: 0.06em 0.28em;
+      border-radius: 2px;
+      font-size: 0.92em;
+      font-weight: 500;
     }
     .reveal pre code .hljs-comment,
-    .reveal pre code .hljs-quote { color: #64748b !important; }
+    .reveal pre code .hljs-quote { color: #64748b !important; font-style: italic; }
     .reveal pre code .hljs-keyword,
-    .reveal pre code .hljs-selector-tag { color: #0369a1 !important; }
-    .reveal pre code .hljs-string { color: #0f766e !important; }
+    .reveal pre code .hljs-selector-tag,
+    .reveal pre code .hljs-built_in { color: #0b6e99 !important; font-weight: 600; }
+    .reveal pre code .hljs-string { color: var(--accent-deep) !important; }
     .reveal pre code .hljs-number { color: #b45309 !important; }
+    .reveal pre code .hljs-title,
+    .reveal pre code .hljs-title.class_,
+    .reveal pre code .hljs-title.function_ { color: #1d4ed8 !important; }
 
     .band {
-      padding: 0.55em 0.85em;
-      margin: 0.55em 0;
-      font-size: 0.82em;
+      padding: 0.5em 0.8em;
+      margin: 0.5em 0;
+      font-size: 0.78em;
       line-height: 1.45;
+      font-weight: 500;
+      border-left: 3px solid transparent;
     }
-    .band-blue { background: #dbeafe; color: #1e3a8a; }
-    .band-green { background: #dcfce7; color: #14532d; }
-    .band-orange { background: #ffedd5; color: #9a3412; }
-    .band-gray { background: #f3f4f6; color: #1a1a2e; }
+    .band-blue { background: var(--blue-bg); color: var(--blue-ink); border-left-color: #3b82f6; }
+    .band-green { background: var(--green-bg); color: var(--green-ink); border-left-color: #22c55e; }
+    .band-orange { background: var(--orange-bg); color: var(--orange-ink); border-left-color: #f97316; }
+    .band-gray { background: var(--gray-bg); color: var(--ink); border-left-color: var(--line); }
 
     .students {
-      display: flex;
-      gap: 1em;
-      margin: 1.2em 0;
-      flex-wrap: wrap;
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 8.5em));
+      gap: 0.75em;
+      margin: 1.15em 0 1em;
     }
     .students .chip {
-      background: #f3f4f6;
-      padding: 0.55em 1em;
-      font-size: 0.85em;
-      min-width: 6.5em;
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-top: 2px solid var(--accent);
+      padding: 0.65em 0.75em;
+      font-size: 0.78em;
       text-align: center;
+      color: var(--ink-soft);
+      line-height: 1.35;
+    }
+    .students .chip strong {
+      display: inline-block;
+      margin-top: 0.15em;
+      font-size: 1.15em;
+      color: var(--ink);
+      font-variant-numeric: tabular-nums;
+      font-family: var(--mono);
+      font-weight: 600;
+    }
+
+    .rules {
+      display: grid;
+      gap: 0.45em;
+      margin-top: 0.35em;
+      max-width: 26em;
     }
     .rules .band {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      font-size: 0.9em;
+      font-size: 0.86em;
+      margin: 0;
+      font-variant-numeric: tabular-nums;
     }
+    .rules .band span {
+      font-family: var(--mono);
+      font-weight: 500;
+      color: var(--ink-soft);
+    }
+    .rules .band strong { font-weight: 700; letter-spacing: -0.01em; }
+
     .steps {
       display: grid;
-      gap: 0.35em;
-      margin-top: 0.8em;
+      gap: 0.2em;
+      margin-top: 0.7em;
       max-width: 22em;
     }
-    .steps .band { text-align: center; margin: 0; }
-    .steps .arrow { text-align: center; color: #64748b; font-size: 0.9em; line-height: 1; }
+    .steps .band {
+      text-align: left;
+      margin: 0;
+      font-size: 0.84em;
+      border-left-color: var(--accent);
+    }
+    .steps .arrow {
+      text-align: left;
+      padding-left: 1.1em;
+      color: var(--muted);
+      font-size: 0.75em;
+      line-height: 1;
+      font-family: var(--mono);
+    }
 
     .two-col {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 1.2em;
-      margin-top: 0.6em;
+      gap: 1em;
+      margin-top: 0.45em;
     }
     .two-col .col-head {
-      padding: 0.4em 0.7em;
-      font-weight: 700;
-      font-size: 0.82em;
-      margin-bottom: 0.4em;
+      padding: 0.38em 0.7em;
+      font-weight: 650;
+      font-size: 0.76em;
+      margin-bottom: 0.35em;
+      letter-spacing: -0.01em;
+      border-left: 3px solid transparent;
     }
-    .two-col .col-head.blue { background: #dbeafe; color: #1e3a8a; }
-    .two-col .col-head.green { background: #dcfce7; color: #14532d; }
-    .two-col ul { margin-top: 0; font-size: 0.85em; }
+    .two-col .col-head.blue {
+      background: var(--blue-bg);
+      color: var(--blue-ink);
+      border-left-color: #3b82f6;
+    }
+    .two-col .col-head.green {
+      background: var(--green-bg);
+      color: var(--green-ink);
+      border-left-color: #22c55e;
+    }
+    .two-col ul { margin-top: 0; font-size: 0.8em; }
+    .two-col pre { margin-bottom: 0.45em; }
 
     .term-table {
       display: grid;
-      grid-template-columns: 7.5em 1fr;
-      gap: 0.45em 1em;
-      margin-top: 0.8em;
-      font-size: 0.82em;
-      align-items: baseline;
+      grid-template-columns: 8em 1fr;
+      gap: 0.4em 0.9em;
+      margin-top: 0.75em;
+      font-size: 0.78em;
+      align-items: stretch;
     }
     .term-table .k {
-      font-family: Consolas, "Courier New", monospace;
-      background: #e8eef4;
-      padding: 0.2em 0.45em;
+      font-family: var(--mono);
+      background: var(--code-bg);
+      border-left: 3px solid var(--accent);
+      padding: 0.28em 0.5em;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
     }
+    .term-table > div:nth-child(even) {
+      display: flex;
+      align-items: center;
+      color: var(--ink-soft);
+      border-bottom: 1px solid var(--line);
+      padding: 0.2em 0;
+    }
+
     .flow-list {
-      margin-top: 0.7em;
+      margin-top: 0.65em;
       display: grid;
-      gap: 0.45em;
-      font-size: 0.82em;
+      gap: 0.4em;
+      font-size: 0.76em;
     }
     .flow-list .row {
       display: grid;
-      grid-template-columns: 2.2em 1fr;
-      gap: 0.6em;
-      align-items: start;
+      grid-template-columns: 2.4em 1fr;
+      gap: 0.55em;
+      align-items: stretch;
     }
     .flow-list .n {
-      background: #dbeafe;
-      color: #1e3a8a;
+      background: var(--ink);
+      color: #fff;
       text-align: center;
-      font-weight: 700;
-      padding: 0.15em 0;
+      font-weight: 600;
+      font-family: var(--mono);
+      font-size: 0.9em;
+      letter-spacing: 0.02em;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 1.7em;
+    }
+    .flow-list .row > div:last-child {
+      background: var(--gray-bg);
+      padding: 0.35em 0.65em;
+      display: flex;
+      align-items: center;
+      color: var(--ink);
     }
 
     .slide-footer {
       position: absolute;
-      left: 56px;
-      right: 56px;
-      bottom: 22px;
+      left: 52px;
+      right: 52px;
+      bottom: 18px;
       display: flex;
       justify-content: space-between;
-      font-size: 14px;
-      color: #6b6b8a;
+      align-items: center;
+      font-size: 12px;
+      font-family: var(--mono);
+      font-weight: 500;
+      letter-spacing: 0.02em;
+      color: var(--muted);
       pointer-events: none;
+      padding-top: 10px;
+      border-top: 1px solid var(--line);
     }
-    .reveal .controls { color: #0d9488; }
-    .reveal .progress { color: #0d9488; height: 3px; }
+    .slide-footer span:last-child {
+      color: var(--accent-deep);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .reveal .controls { color: var(--accent); }
+    .reveal .progress {
+      color: var(--accent);
+      height: 2px;
+      background: rgba(13, 148, 136, 0.12);
+    }
+    .reveal .slide-number { display: none; }
+
     .back-link {
       position: fixed;
-      top: 12px;
+      top: 14px;
       left: 14px;
       z-index: 30;
-      font-size: 13px;
-      background: rgba(255,255,255,0.92);
-      border: 1px solid #e7e5e4;
-      padding: 4px 10px;
+      font-family: var(--font);
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      background: rgba(255, 255, 255, 0.92);
+      backdrop-filter: blur(8px);
+      border: 1px solid var(--line);
+      padding: 6px 12px;
       text-decoration: none !important;
-      color: #0f766e !important;
+      color: var(--accent-deep) !important;
+      transition: border-color 0.15s ease, background 0.15s ease;
     }
-    .back-link:hover { background: #f7f7f7; }
+    .back-link:hover {
+      background: #fff;
+      border-color: var(--accent);
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .reveal .slides section { transition: none !important; }
+    }
   </style>
 </head>
 <body>
@@ -570,10 +763,14 @@ print(s2.get_level())</code></pre>
     Reveal.initialize({
       hash: true,
       center: false,
-      transition: 'slide',
+      transition: 'fade',
+      transitionSpeed: 'fast',
+      backgroundTransition: 'fade',
       width: 960,
       height: 540,
       margin: 0.04,
+      minScale: 0.35,
+      maxScale: 1.6,
       slideNumber: false,
       plugins: [RevealHighlight]
     });
