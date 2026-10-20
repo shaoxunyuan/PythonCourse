@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>演示 · Python 高级应用</title>
+  <link rel="stylesheet" href="../style.css">
+  <style>
+    .demos-page {
+      max-width: 40em;
+      margin: 0 auto;
+      padding: 36px 20px 64px;
+    }
+    .demos-page h1 {
+      font-size: 28px;
+      font-weight: 800;
+      margin: 0 0 8px;
+      color: var(--ink);
+    }
+    .demos-list {
+      list-style: none;
+      margin: 20px 0 0;
+      padding: 0;
+      display: grid;
+      gap: 12px;
+    }
+    .demos-list li {
+      border: 1px solid var(--border);
+      background: var(--paper-elevated);
+      border-radius: 10px;
+      padding: 0;
+    }
+    .demos-list a {
+      display: block;
+      padding: 14px 16px;
+      text-decoration: none !important;
+      color: inherit;
+      transition: border-color 0.15s;
+      border-radius: 10px;
+    }
+    .demos-list a:hover { outline: 1px solid var(--accent); }
+    .demos-list .pl-tit {
+      font-weight: 700;
+      color: var(--ink);
+      margin-bottom: 6px;
+    }
+    .demos-list .pl-desc {
+      font-size: 13px;
+      color: var(--ink-light);
+      line-height: 1.5;
+    }
+    .demos-list .pl-meta {
+      font-size: 12px;
+      color: var(--ink-muted);
+      margin-top: 6px;
+    }
+  </style>
+</head>
+<body>
+  <div class="demos-page">
+    <h1>演示</h1>
+    <ul class="demos-list">
+    </ul>
+  </div>
+</body>
+</html>
