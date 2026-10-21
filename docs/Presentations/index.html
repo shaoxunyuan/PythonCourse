@@ -44,13 +44,13 @@
       grid-template-rows: auto 1fr;
       max-width: 720px;
       margin: 0 auto;
-      padding: clamp(40px, 8vh, 88px) clamp(20px, 4vw, 32px) 72px;
+      padding: clamp(28px, 5vh, 56px) clamp(20px, 4vw, 32px) 56px;
     }
 
     .demos-header {
       position: relative;
-      padding-bottom: 28px;
-      margin-bottom: 8px;
+      padding-bottom: 18px;
+      margin-bottom: 6px;
       border-bottom: 1px solid var(--line);
       animation: rise 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
     }
@@ -75,7 +75,7 @@
 
     .demos-list {
       list-style: none;
-      margin: 20px 0 0;
+      margin: 12px 0 0;
       padding: 0;
       display: grid;
       gap: 0;
@@ -89,10 +89,10 @@
 
     .demos-list a {
       display: grid;
-      grid-template-columns: 3.2rem 1fr auto;
+      grid-template-columns: 3.6rem 1fr 22px;
       align-items: center;
       gap: 1rem;
-      padding: 22px 14px 22px 4px;
+      padding: 18px 14px 18px 4px;
       text-decoration: none !important;
       color: inherit;
       position: relative;
@@ -128,7 +128,7 @@
 
     .pl-idx {
       font-family: var(--mono);
-      font-size: 13px;
+      font-size: 16px;
       font-weight: 600;
       letter-spacing: 0.04em;
       color: var(--muted);
@@ -141,21 +141,11 @@
     }
 
     .pl-tit {
-      font-size: clamp(16px, 2.2vw, 18px);
+      font-size: clamp(20px, 2.8vw, 24px);
       font-weight: 600;
       letter-spacing: -0.01em;
       color: var(--ink);
       line-height: 1.35;
-    }
-
-    .pl-meta {
-      font-family: var(--mono);
-      font-size: 12px;
-      font-weight: 500;
-      color: var(--muted);
-      letter-spacing: 0.02em;
-      white-space: nowrap;
-      justify-self: end;
     }
 
     .pl-arrow {
@@ -175,10 +165,6 @@
       transform: translateX(0);
     }
 
-    .demos-list a {
-      grid-template-columns: 3.2rem 1fr auto 22px;
-    }
-
     @keyframes rise {
       from { opacity: 0; transform: translateY(10px); }
       to { opacity: 1; transform: translateY(0); }
@@ -186,14 +172,9 @@
 
     @media (max-width: 560px) {
       .demos-list a {
-        grid-template-columns: 2.6rem 1fr;
-        grid-template-rows: auto auto;
+        grid-template-columns: 2.8rem 1fr;
         gap: 6px 12px;
-        padding: 18px 8px 18px 2px;
-      }
-      .pl-meta {
-        grid-column: 2;
-        justify-self: start;
+        padding: 16px 8px 16px 2px;
       }
       .pl-arrow { display: none; }
     }
@@ -220,7 +201,6 @@
         <a href="01-oop.html">
           <span class="pl-idx">01</span>
           <span class="pl-tit">面向过程与面向对象编程</span>
-          <span class="pl-meta">26 页</span>
           <svg class="pl-arrow" viewBox="0 0 20 20" fill="none" aria-hidden="true">
             <path d="M4 10h11M10 4l6 6-6 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
           </svg>
