@@ -1,0 +1,779 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>面向过程与面向对象编程 · Python 高级应用</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.6.1/dist/reveal.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.6.1/dist/theme/white.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.6.1/plugin/highlight/monokai.css">
+  <style>
+    :root {
+      --ink: #12141a;
+      --ink-soft: #3d4450;
+      --muted: #7a8290;
+      --line: #d8dde6;
+      --code-bg: #e7edf4;
+      --surface: #ffffff;
+      --paper: #f4f5f7;
+      --accent: #0d9488;
+      --accent-deep: #0f766e;
+      --blue-bg: #e8f0fe;
+      --blue-ink: #1e3a5f;
+      --green-bg: #e6f6ed;
+      --green-ink: #14532d;
+      --orange-bg: #fff1e6;
+      --orange-ink: #9a3412;
+      --gray-bg: #eef0f3;
+      --font: "IBM Plex Sans", "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
+      --mono: "IBM Plex Mono", Consolas, ui-monospace, monospace;
+    }
+
+    .reveal {
+      font-family: var(--font);
+      font-size: 30px;
+      color: var(--ink);
+      background: var(--paper);
+      -webkit-font-smoothing: antialiased;
+    }
+    .reveal .slides { text-align: left; }
+    .reveal .slides section {
+      padding: 40px 52px 68px;
+      box-sizing: border-box;
+      background:
+        linear-gradient(180deg, #fbfbfc 0%, var(--surface) 42%, #f7f8fa 100%);
+    }
+    .reveal .slides section::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--accent) 0%, var(--accent) 120px, transparent 320px);
+    }
+
+    .reveal h1, .reveal h2 {
+      color: var(--ink);
+      font-weight: 700;
+      text-transform: none;
+      letter-spacing: -0.025em;
+      margin: 0 0 0.65em;
+      font-size: 1.22em;
+      line-height: 1.25;
+      position: relative;
+      padding-bottom: 0.35em;
+    }
+    .reveal h1::after, .reveal h2::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      bottom: 0;
+      width: 28px;
+      height: 2px;
+      background: var(--accent);
+    }
+    .reveal h1 { font-size: 1.55em; letter-spacing: -0.03em; }
+    .reveal p, .reveal li { color: var(--ink); line-height: 1.55; font-weight: 450; }
+    .reveal ul {
+      margin: 0.35em 0 0;
+      padding: 0;
+      list-style: none;
+    }
+    .reveal ul > li {
+      margin: 0.42em 0;
+      padding-left: 1.05em;
+      position: relative;
+    }
+    .reveal ul > li::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 0.62em;
+      width: 0.42em;
+      height: 2px;
+      background: var(--accent);
+    }
+    .reveal a { color: var(--accent-deep); }
+    .reveal .subtitle {
+      color: var(--ink-soft);
+      font-size: 0.82em;
+      font-weight: 500;
+      margin: -0.15em 0 0.15em;
+      letter-spacing: -0.01em;
+    }
+    .reveal .small {
+      font-size: 0.7em;
+      color: var(--ink-soft);
+      line-height: 1.5;
+    }
+
+    .reveal pre {
+      width: 100%;
+      box-shadow: none !important;
+      border: none !important;
+      border-left: 3px solid var(--accent) !important;
+      background: var(--code-bg) !important;
+      padding: 0.75em 0.95em !important;
+      margin: 0.45em 0 0.75em;
+      border-radius: 0;
+    }
+    .reveal pre code {
+      background: transparent !important;
+      color: var(--ink) !important;
+      font-family: var(--mono);
+      font-size: 0.68em;
+      font-weight: 450;
+      line-height: 1.48;
+      max-height: none;
+      padding: 0 !important;
+      tab-size: 4;
+    }
+    .reveal code {
+      font-family: var(--mono);
+      background: var(--code-bg);
+      color: var(--ink);
+      padding: 0.06em 0.28em;
+      border-radius: 2px;
+      font-size: 0.92em;
+      font-weight: 500;
+    }
+    .reveal pre code .hljs-comment,
+    .reveal pre code .hljs-quote { color: #64748b !important; font-style: italic; }
+    .reveal pre code .hljs-keyword,
+    .reveal pre code .hljs-selector-tag,
+    .reveal pre code .hljs-built_in { color: #0b6e99 !important; font-weight: 600; }
+    .reveal pre code .hljs-string { color: var(--accent-deep) !important; }
+    .reveal pre code .hljs-number { color: #b45309 !important; }
+    .reveal pre code .hljs-title,
+    .reveal pre code .hljs-title.class_,
+    .reveal pre code .hljs-title.function_ { color: #1d4ed8 !important; }
+
+    .band {
+      padding: 0.5em 0.8em;
+      margin: 0.5em 0;
+      font-size: 0.78em;
+      line-height: 1.45;
+      font-weight: 500;
+      border-left: 3px solid transparent;
+    }
+    .band-blue { background: var(--blue-bg); color: var(--blue-ink); border-left-color: #3b82f6; }
+    .band-green { background: var(--green-bg); color: var(--green-ink); border-left-color: #22c55e; }
+    .band-orange { background: var(--orange-bg); color: var(--orange-ink); border-left-color: #f97316; }
+    .band-gray { background: var(--gray-bg); color: var(--ink); border-left-color: var(--line); }
+
+    .students {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 8.5em));
+      gap: 0.75em;
+      margin: 1.15em 0 1em;
+    }
+    .students .chip {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-top: 2px solid var(--accent);
+      padding: 0.65em 0.75em;
+      font-size: 0.78em;
+      text-align: center;
+      color: var(--ink-soft);
+      line-height: 1.35;
+    }
+    .students .chip strong {
+      display: inline-block;
+      margin-top: 0.15em;
+      font-size: 1.15em;
+      color: var(--ink);
+      font-variant-numeric: tabular-nums;
+      font-family: var(--mono);
+      font-weight: 600;
+    }
+
+    .rules {
+      display: grid;
+      gap: 0.45em;
+      margin-top: 0.35em;
+      max-width: 26em;
+    }
+    .rules .band {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.86em;
+      margin: 0;
+      font-variant-numeric: tabular-nums;
+    }
+    .rules .band span {
+      font-family: var(--mono);
+      font-weight: 500;
+      color: var(--ink-soft);
+    }
+    .rules .band strong { font-weight: 700; letter-spacing: -0.01em; }
+
+    .steps {
+      display: grid;
+      gap: 0.2em;
+      margin-top: 0.7em;
+      max-width: 22em;
+    }
+    .steps .band {
+      text-align: left;
+      margin: 0;
+      font-size: 0.84em;
+      border-left-color: var(--accent);
+    }
+    .steps .arrow {
+      text-align: left;
+      padding-left: 1.1em;
+      color: var(--muted);
+      font-size: 0.75em;
+      line-height: 1;
+      font-family: var(--mono);
+    }
+
+    .two-col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1em;
+      margin-top: 0.45em;
+    }
+    .two-col .col-head {
+      padding: 0.38em 0.7em;
+      font-weight: 650;
+      font-size: 0.76em;
+      margin-bottom: 0.35em;
+      letter-spacing: -0.01em;
+      border-left: 3px solid transparent;
+    }
+    .two-col .col-head.blue {
+      background: var(--blue-bg);
+      color: var(--blue-ink);
+      border-left-color: #3b82f6;
+    }
+    .two-col .col-head.green {
+      background: var(--green-bg);
+      color: var(--green-ink);
+      border-left-color: #22c55e;
+    }
+    .two-col ul { margin-top: 0; font-size: 0.8em; }
+    .two-col pre { margin-bottom: 0.45em; }
+
+    .term-table {
+      display: grid;
+      grid-template-columns: 8em 1fr;
+      gap: 0.4em 0.9em;
+      margin-top: 0.75em;
+      font-size: 0.78em;
+      align-items: stretch;
+    }
+    .term-table .k {
+      font-family: var(--mono);
+      background: var(--code-bg);
+      border-left: 3px solid var(--accent);
+      padding: 0.28em 0.5em;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+    }
+    .term-table > div:nth-child(even) {
+      display: flex;
+      align-items: center;
+      color: var(--ink-soft);
+      border-bottom: 1px solid var(--line);
+      padding: 0.2em 0;
+    }
+
+    .flow-list {
+      margin-top: 0.65em;
+      display: grid;
+      gap: 0.4em;
+      font-size: 0.76em;
+    }
+    .flow-list .row {
+      display: grid;
+      grid-template-columns: 2.4em 1fr;
+      gap: 0.55em;
+      align-items: stretch;
+    }
+    .flow-list .n {
+      background: var(--ink);
+      color: #fff;
+      text-align: center;
+      font-weight: 600;
+      font-family: var(--mono);
+      font-size: 0.9em;
+      letter-spacing: 0.02em;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 1.7em;
+    }
+    .flow-list .row > div:last-child {
+      background: var(--gray-bg);
+      padding: 0.35em 0.65em;
+      display: flex;
+      align-items: center;
+      color: var(--ink);
+    }
+
+    .slide-footer {
+      position: absolute;
+      left: 52px;
+      right: 52px;
+      bottom: 18px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 12px;
+      font-family: var(--mono);
+      font-weight: 500;
+      letter-spacing: 0.02em;
+      color: var(--muted);
+      pointer-events: none;
+      padding-top: 10px;
+      border-top: 1px solid var(--line);
+    }
+    .slide-footer span:last-child {
+      color: var(--accent-deep);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .reveal .controls { color: var(--accent); }
+    .reveal .progress {
+      color: var(--accent);
+      height: 2px;
+      background: rgba(13, 148, 136, 0.12);
+    }
+    .reveal .slide-number { display: none; }
+
+    .back-link {
+      position: fixed;
+      top: 14px;
+      left: 14px;
+      z-index: 30;
+      font-family: var(--font);
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      background: rgba(255, 255, 255, 0.92);
+      backdrop-filter: blur(8px);
+      border: 1px solid var(--line);
+      padding: 6px 12px;
+      text-decoration: none !important;
+      color: var(--accent-deep) !important;
+      transition: border-color 0.15s ease, background 0.15s ease;
+    }
+    .back-link:hover {
+      background: #fff;
+      border-color: var(--accent);
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .reveal .slides section { transition: none !important; }
+    }
+  </style>
+</head>
+<body>
+  <a class="back-link" href="index.html">← 演示列表</a>
+  <div class="reveal">
+    <div class="slides">
+
+      <!-- 01 -->
+      <section data-page="01">
+        <h1>面向过程与面向对象编程</h1>
+        <p class="subtitle">从三个学生的 Python 成绩开始</p>
+        <div class="students">
+          <div class="chip">张三<br><strong>85</strong> 分</div>
+          <div class="chip">李四<br><strong>72</strong> 分</div>
+          <div class="chip">王五<br><strong>93</strong> 分</div>
+        </div>
+        <div class="band band-blue">同一个任务，可以用不同的方式组织代码。</div>
+        <div class="slide-footer"><span>Python高级应用 · 学生成绩管理案例</span><span>01</span></div>
+      </section>
+
+      <!-- 02 -->
+      <section data-page="02">
+        <h2>今天要完成什么？</h2>
+        <ul>
+          <li>保存三个学生的姓名和 Python 成绩</li>
+          <li>根据分数判断：优秀、良好、及格、不及格</li>
+          <li>输出每位学生的姓名、分数和等级</li>
+          <li>比较两种写法：函数处理数据；对象保存数据并提供方法</li>
+        </ul>
+        <div class="slide-footer"><span>Python高级应用 · 学生成绩管理案例</span><span>02</span></div>
+      </section>
+
+      <!-- 03 -->
+      <section data-page="03">
+        <h2>先把评分规则说清楚</h2>
+        <div class="rules">
+          <div class="band band-gray"><span>90～100</span><strong>优秀</strong></div>
+          <div class="band band-gray"><span>80～89</span><strong>良好</strong></div>
+          <div class="band band-gray"><span>60～79</span><strong>及格</strong></div>
+          <div class="band band-gray"><span>0～59</span><strong>不及格</strong></div>
+        </div>
+        <div class="slide-footer"><span>Python高级应用 · 学生成绩管理案例</span><span>03</span></div>
+      </section>
+
+      <!-- 04 -->
+      <section data-page="04">
+        <h2>第一种想法：把事情分成几步</h2>
+        <div class="steps">
+          <div class="band band-gray">第一步：保存学生数据</div>
+          <div class="arrow">↓</div>
+          <div class="band band-gray">第二步：计算成绩等级</div>
+          <div class="arrow">↓</div>
+          <div class="band band-gray">第三步：输出结果</div>
+        </div>
+        <div class="slide-footer"><span>Python高级应用 · 学生成绩管理案例</span><span>04</span></div>
+      </section>
+
+      <!-- 05 -->
+      <section data-page="05">
+        <h2>第一步：用字典保存学生信息</h2>
+        <pre><code class="language-python">student1 = {"name": "张三", "score": 85}
+student2 = {"name": "李四", "score": 72}
+student3 = {"name": "王五", "score": 93}</code></pre>
+        <ul class="small">
+          <li>字典中，每个学生都有 <code>name</code> 和 <code>score</code> 两项</li>
+          <li>数据已经保存好了，但还没有判断等级</li>
+        </ul>
+        <div class="slide-footer"><span>Python高级应用 · 学生成绩管理案例</span><span>05</span></div>
+      </section>
+
+      <!-- 06 -->
+      <section data-page="06">
+        <h2>第二步：用函数判断等级</h2>
+        <pre><code class="language-python">def get_level(score):
+    if score &gt;= 90:
+        return "优秀"
+    elif score &gt;= 80:
+        return "良好"
+    elif score &gt;= 60:
+        return "及格"
+    else:
+        return "不及格"</code></pre>
+        <div class="band band-blue">问：为什么这里使用 return，而不是 print？</div>
+        <div class="slide-footer"><span>Python高级应用 · 学生成绩管理案例</span><span>06</span></div>
+      </section>
+
+      <!-- 07 -->
+      <section data-page="07">
+        <h2>第三步：用函数输出学生信息</h2>
+        <pre><code class="language-python">def show_student(student):
+    level = get_level(student["score"])
+    print(student["name"], student["score"], level)
+
+show_student(student1)
+show_student(student2)
+show_student(student3)</code></pre>
+        <div class="band band-green">运行结果：张三 85 良好 · 李四 72 及格 · 王五 93 优秀</div>
+        <div class="slide-footer"><span>Python高级应用 · 学生成绩管理案例</span><span>07</span></div>
+      </section>
+
+      <!-- 08 -->
+      <section data-page="08">
+        <h2>这一种写法，为什么叫面向过程？</h2>
+        <div class="band band-blue">程序主要围绕“做什么、先做什么、后做什么”组织。</div>
+        <pre><code class="language-python">student1          # 保存数据
+get_level(score)  # 计算等级
+show_student(student1)  # 输出信息</code></pre>
+        <ul class="small">
+          <li>数据放在字典中</li>
+          <li>处理数据的操作写成独立函数</li>
+        </ul>
+        <div class="slide-footer"><span>Python高级应用 · 学生成绩管理案例</span><span>08</span></div>
+      </section>
+
+      <!-- 09 -->
+      <section data-page="09">
+        <h2>问题来了：假如功能继续增加？</h2>
+        <ul>
+          <li>现在要支持修改成绩</li>
+          <li>还要判断学生是否及格</li>
+          <li>还要显示学生的完整信息</li>
+          <li>以后可能还要增加学号、班级等字段</li>
+        </ul>
+        <div class="band band-blue" style="margin-top: 1em;">思考：这些函数，究竟属于谁？</div>
+        <div class="slide-footer"><span>Python高级应用 · 学生成绩管理案例</span><span>09</span></div>
+      </section>
+
+      <!-- 10 -->
+      <section data-page="10">
+        <h2>换一种想法：把“学生”看作一个对象</h2>
+        <div class="two-col">
+          <div>
+            <div class="col-head blue">一个学生有什么？</div>
+            <ul>
+              <li>姓名 <code>name</code></li>
+              <li>成绩 <code>score</code></li>
+            </ul>
+          </div>
+          <div>
+            <div class="col-head green">一个学生能做什么？</div>
+            <ul>
+              <li>判断等级 <code>get_level()</code></li>
+              <li>显示信息 <code>show()</code></li>
+            </ul>
+          </div>
+        </div>
+        <div class="band band-blue" style="margin-top: 1em;">把“数据”和“操作这些数据的方法”组织在一起。</div>
+        <div class="slide-footer"><span>Python高级应用 · 学生成绩管理案例</span><span>10</span></div>
+      </section>
+
+      <!-- 11 -->
+      <section data-page="11">
+        <h2>认识 class：先写一份“学生说明书”</h2>
+        <pre><code class="language-python">class Student:
+    def __init__(self, name, score):
+        self.name = name
+        self.score = score
+
+    def get_level(self):
+        return "优秀" if self.score &gt;= 90 else "其他"</code></pre>
+        <p class="small"><code>Student</code> 是类名。类规定对象可以有哪些属性和方法。</p>
+        <div class="slide-footer"><span>Python高级应用 · 学生成绩管理案例</span><span>11</span></div>
+      </section>
+
+      <!-- 12 -->
+      <section data-page="12">
+        <h2>为什么写 __init__？这个名字是什么意思？</h2>
+        <pre><code class="language-python">class Student:
+    def __init__(self, name, score):
+        self.name = name
+        self.score = score</code></pre>
+        <div class="band band-blue">init 来自 initialize：初始化、设置初始信息</div>
+        <div class="band band-blue">创建新学生时，Python 会自动调用 __init__，给对象设置初始属性。</div>
+        <div class="slide-footer"><span>Python高级应用 · 学生成绩管理案例</span><span>12</span></div>
+      </section>
+
+      <!-- 13 -->
+      <section data-page="13">
+        <h2>把 __init__ 这一行拆开看</h2>
+        <pre><code class="language-python">def __init__(self, name, score):</code></pre>
+        <div class="term-table">
+          <div class="k">def</div><div>定义一个方法</div>
+          <div class="k">__init__</div><div>特殊方法名；创建对象时自动执行</div>
+          <div class="k">self</div><div>正在初始化的这个学生对象</div>
+          <div class="k">name, score</div><div>创建学生时传入的姓名和成绩</div>
+        </div>
+        <div class="slide-footer"><span>Python高级应用 · 学生成绩管理案例</span><span>13</span></div>
+      </section>
+
+      <!-- 14 -->
+      <section data-page="14">
+        <h2>为什么有 self？看创建对象这一句</h2>
+        <pre><code class="language-python">student1 = Student("张三", 85)
+# 调用时只写姓名和成绩
+# 没有手动传 self</code></pre>
+        <div class="band band-blue">self 会自动对应正在创建的 student1 对象。</div>
+        <div class="band band-blue">可以把 self 理解为：“我这个学生自己”。</div>
+        <div class="slide-footer"><span>Python高级应用 · 学生成绩管理案例</span><span>14</span></div>
+      </section>
+
+      <!-- 15 -->
+      <section data-page="15">
+        <h2>代码运行时，数据到底传给了谁？</h2>
+        <p class="small">以 <code>student1 = Student("张三", 85)</code> 为例</p>
+        <pre><code class="language-python">student1 = Student("张三", 85)</code></pre>
+        <div class="flow-list">
+          <div class="row"><div class="n">01</div><div>创建一个 Student 对象 → <code>student1</code></div></div>
+          <div class="row"><div class="n">02</div><div>传入两个实参 → <code>name = "张三"</code>　<code>score = 85</code></div></div>
+          <div class="row"><div class="n">03</div><div>自动执行 <code>__init__</code> → <code>self</code> 对应当前新对象</div></div>
+          <div class="row"><div class="n">04</div><div>将数据保存到属性 → <code>self.name = "张三"</code>；<code>self.score = 85</code></div></div>
+        </div>
+        <div class="slide-footer"><span>Python高级应用 · 学生成绩管理案例</span><span>15</span></div>
+      </section>
+
+      <!-- 16 -->
+      <section data-page="16">
+        <h2>最容易混淆的一行：self.name = name</h2>
+        <pre><code class="language-python">def __init__(self, name, score):
+    self.name = name
+    self.score = score</code></pre>
+        <div class="two-col">
+          <div class="band band-orange">右边 <code>name</code>：临时接收到的参数</div>
+          <div class="band band-blue">左边 <code>self.name</code>：保存到对象中的属性</div>
+        </div>
+        <div class="band band-blue">执行之后，即使 __init__ 结束，student1.name 仍然是“张三”。</div>
+        <div class="slide-footer"><span>Python高级应用 · 学生成绩管理案例</span><span>16</span></div>
+      </section>
+
+      <!-- 17 -->
+      <section data-page="17">
+        <h2>创建三位学生：同一份类，不同的对象</h2>
+        <pre><code class="language-python">student1 = Student("张三", 85)
+student2 = Student("李四", 72)
+student3 = Student("王五", 93)
+
+print(student1.name, student1.score)
+print(student2.name, student2.score)
+print(student3.name, student3.score)</code></pre>
+        <div class="band band-green">一份 Student 类，可以创建多个相互独立的学生对象。</div>
+        <div class="slide-footer"><span>Python高级应用 · 学生成绩管理案例</span><span>17</span></div>
+      </section>
+
+      <!-- 18 -->
+      <section data-page="18">
+        <h2>给学生增加方法：判断成绩等级</h2>
+        <pre><code class="language-python">def get_level(self):
+    if self.score &gt;= 90:
+        return "优秀"
+    elif self.score &gt;= 80:
+        return "良好"
+    elif self.score &gt;= 60:
+        return "及格"
+    else:
+        return "不及格"</code></pre>
+        <div class="band band-blue">关键变化：原来用 score，现在用 self.score。</div>
+        <div class="slide-footer"><span>Python高级应用 · 学生成绩管理案例</span><span>18</span></div>
+      </section>
+
+      <!-- 19 -->
+      <section data-page="19">
+        <h2>再增加方法：显示信息</h2>
+        <pre><code class="language-python">def show(self):
+    print(self.name, self.score, self.get_level())
+
+student1.show()
+student2.show()
+student3.show()</code></pre>
+        <div class="band band-green">张三 85 良好 · 李四 72 及格 · 王五 93 优秀</div>
+        <div class="slide-footer"><span>Python高级应用 · 学生成绩管理案例</span><span>19</span></div>
+      </section>
+
+      <!-- 20 -->
+      <section data-page="20">
+        <h2>完整代码：一起来运行</h2>
+        <pre><code class="language-python">class Student:
+    def __init__(self, name, score):
+        self.name = name
+        self.score = score
+
+    def get_level(self):
+        if self.score &gt;= 90: return "优秀"
+        elif self.score &gt;= 80: return "良好"
+        elif self.score &gt;= 60: return "及格"
+        else: return "不及格"
+
+    def show(self):
+        print(self.name, self.score, self.get_level())
+
+for student in [Student("张三", 85), Student("李四", 72), Student("王五", 93)]:
+    student.show()</code></pre>
+        <div class="slide-footer"><span>Python高级应用 · 学生成绩管理案例</span><span>20</span></div>
+      </section>
+
+      <!-- 21 -->
+      <section data-page="21">
+        <h2>同一个任务，两种组织方式</h2>
+        <div class="two-col">
+          <div>
+            <div class="col-head blue">面向过程</div>
+            <pre><code class="language-python">student1 = {"name": "张三", "score": 85}
+show_student(student1)</code></pre>
+            <p class="small">把数据交给函数处理</p>
+          </div>
+          <div>
+            <div class="col-head green">面向对象</div>
+            <pre><code class="language-python">student1 = Student("张三", 85)
+student1.show()</code></pre>
+            <p class="small">让对象调用自己的方法</p>
+          </div>
+        </div>
+        <div class="slide-footer"><span>Python高级应用 · 学生成绩管理案例</span><span>21</span></div>
+      </section>
+
+      <!-- 22 -->
+      <section data-page="22">
+        <h2>什么时候值得自己定义一个类？</h2>
+        <ul>
+          <li>只是求三个数字的平均值：通常直接写函数就够了</li>
+          <li>程序里有很多学生，每位学生都保存姓名、成绩</li>
+          <li>每位学生都要查询等级、显示信息、修改成绩</li>
+          <li>这些数据和操作经常一起出现时，可以考虑 Student 类</li>
+        </ul>
+        <div class="band band-blue" style="margin-top: 0.8em;">类不是必须使用的语法，而是一种代码组织选择。</div>
+        <div class="slide-footer"><span>Python高级应用 · 学生成绩管理案例</span><span>22</span></div>
+      </section>
+
+      <!-- 23 -->
+      <section data-page="23">
+        <h2>你其实已经见过对象和方法</h2>
+        <pre><code class="language-python">name = "python"
+print(name.upper())
+
+scores = [85, 72, 93]
+scores.append(88)
+# 共同形式：对象.方法()</code></pre>
+        <div class="band band-blue">Student 里的 student1.show()，写法并不陌生。</div>
+        <div class="slide-footer"><span>Python高级应用 · 学生成绩管理案例</span><span>23</span></div>
+      </section>
+
+      <!-- 24 -->
+      <section data-page="24">
+        <h2>课堂思考一：先预测，再运行</h2>
+        <pre><code class="language-python">s1 = Student("张三", 85)
+s2 = Student("李四", 72)
+s1.score = 95
+print(s1.get_level())
+print(s2.get_level())</code></pre>
+        <div class="band band-blue">问题：会输出什么？为什么 s2 的等级不会变化？</div>
+        <div class="slide-footer"><span>Python高级应用 · 学生成绩管理案例</span><span>24</span></div>
+      </section>
+
+      <!-- 25 -->
+      <section data-page="25">
+        <h2>课堂思考二：自己补充一个方法</h2>
+        <pre><code class="language-python">class Student:
+    # 这里省略 __init__ 和 get_level
+    def is_pass(self):
+        # 请补充一行代码
+        ...</code></pre>
+        <ul class="small">
+          <li>要求：成绩大于等于 60，返回 <code>True</code></li>
+          <li>否则返回 <code>False</code></li>
+          <li>思考：这里为什么写 <code>self.score</code>？</li>
+        </ul>
+        <div class="slide-footer"><span>Python高级应用 · 学生成绩管理案例</span><span>25</span></div>
+      </section>
+
+      <!-- 26 -->
+      <section data-page="26">
+        <h2>回顾：今天真正需要记住什么？</h2>
+        <ul>
+          <li>面向过程：先考虑任务分成哪些步骤</li>
+          <li>面向对象：先考虑有哪些对象、它们有什么和能做什么</li>
+          <li><code>class</code> 定义类；<code>Student(...)</code> 创建对象</li>
+          <li><code>__init__</code> 在创建对象时自动执行，设置初始属性</li>
+          <li><code>self</code> 指当前对象；<code>self.name</code> 是对象的属性</li>
+          <li>两种写法没有绝对优劣，要看任务是否需要</li>
+        </ul>
+        <div class="slide-footer"><span>Python高级应用 · 学生成绩管理案例</span><span>26</span></div>
+      </section>
+
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/reveal.js@4.6.1/dist/reveal.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/reveal.js@4.6.1/plugin/highlight/highlight.js"></script>
+  <script>
+    Reveal.initialize({
+      hash: true,
+      center: false,
+      transition: 'fade',
+      transitionSpeed: 'fast',
+      backgroundTransition: 'fade',
+      width: 960,
+      height: 540,
+      margin: 0.04,
+      minScale: 0.35,
+      maxScale: 1.6,
+      slideNumber: false,
+      plugins: [RevealHighlight]
+    });
+  </script>
+</body>
+</html>

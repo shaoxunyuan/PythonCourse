@@ -1,0 +1,951 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Python 文件与数据格式化 · Python 高级应用</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.6.1/dist/reveal.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.6.1/dist/theme/white.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.6.1/plugin/highlight/monokai.css">
+  <style>
+    :root {
+      --ink: #12141a;
+      --ink-soft: #3d4450;
+      --muted: #7a8290;
+      --line: #d8dde6;
+      --code-bg: #e7edf4;
+      --surface: #ffffff;
+      --paper: #f4f5f7;
+      --accent: #0d9488;
+      --accent-deep: #0f766e;
+      --blue-bg: #e8f0fe;
+      --blue-ink: #1e3a5f;
+      --green-bg: #e6f6ed;
+      --green-ink: #14532d;
+      --orange-bg: #fff1e6;
+      --orange-ink: #9a3412;
+      --gray-bg: #eef0f3;
+      --font: "IBM Plex Sans", "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
+      --mono: "IBM Plex Mono", Consolas, ui-monospace, monospace;
+    }
+
+    .reveal {
+      font-family: var(--font);
+      font-size: 30px;
+      color: var(--ink);
+      background: var(--paper);
+      -webkit-font-smoothing: antialiased;
+    }
+    .reveal .slides { text-align: left; }
+    .reveal .slides section {
+      padding: 40px 52px 68px;
+      box-sizing: border-box;
+      background:
+        linear-gradient(180deg, #fbfbfc 0%, var(--surface) 42%, #f7f8fa 100%);
+    }
+    .reveal .slides section::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--accent) 0%, var(--accent) 120px, transparent 320px);
+    }
+
+    .reveal h1, .reveal h2 {
+      color: var(--ink);
+      font-weight: 700;
+      text-transform: none;
+      letter-spacing: -0.025em;
+      margin: 0 0 0.65em;
+      font-size: 1.22em;
+      line-height: 1.25;
+      position: relative;
+      padding-bottom: 0.35em;
+    }
+    .reveal h1::after, .reveal h2::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      bottom: 0;
+      width: 28px;
+      height: 2px;
+      background: var(--accent);
+    }
+    .reveal h1 { font-size: 1.55em; letter-spacing: -0.03em; }
+    .reveal p, .reveal li { color: var(--ink); line-height: 1.55; font-weight: 450; }
+    .reveal ul {
+      margin: 0.35em 0 0;
+      padding: 0;
+      list-style: none;
+    }
+    .reveal ul > li {
+      margin: 0.42em 0;
+      padding-left: 1.05em;
+      position: relative;
+    }
+    .reveal ul > li::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 0.62em;
+      width: 0.42em;
+      height: 2px;
+      background: var(--accent);
+    }
+    .reveal a { color: var(--accent-deep); }
+    .reveal .subtitle {
+      color: var(--ink-soft);
+      font-size: 0.82em;
+      font-weight: 500;
+      margin: -0.15em 0 0.15em;
+      letter-spacing: -0.01em;
+    }
+    .reveal .small {
+      font-size: 0.7em;
+      color: var(--ink-soft);
+      line-height: 1.5;
+    }
+
+    .reveal pre {
+      width: 100%;
+      box-shadow: none !important;
+      border: none !important;
+      border-left: 3px solid var(--accent) !important;
+      background: var(--code-bg) !important;
+      padding: 0.75em 0.95em !important;
+      margin: 0.45em 0 0.75em;
+      border-radius: 0;
+    }
+    .reveal pre code {
+      background: transparent !important;
+      color: var(--ink) !important;
+      font-family: var(--mono);
+      font-size: 0.68em;
+      font-weight: 450;
+      line-height: 1.48;
+      max-height: none;
+      padding: 0 !important;
+      tab-size: 4;
+    }
+    .reveal section.dense pre code { font-size: 0.58em; line-height: 1.42; }
+    .reveal code {
+      font-family: var(--mono);
+      background: var(--code-bg);
+      color: var(--ink);
+      padding: 0.06em 0.28em;
+      border-radius: 2px;
+      font-size: 0.92em;
+      font-weight: 500;
+    }
+    .reveal pre code .hljs-comment,
+    .reveal pre code .hljs-quote { color: #64748b !important; font-style: italic; }
+    .reveal pre code .hljs-keyword,
+    .reveal pre code .hljs-selector-tag,
+    .reveal pre code .hljs-built_in { color: #0b6e99 !important; font-weight: 600; }
+    .reveal pre code .hljs-string { color: var(--accent-deep) !important; }
+    .reveal pre code .hljs-number { color: #b45309 !important; }
+    .reveal pre code .hljs-title,
+    .reveal pre code .hljs-title.class_,
+    .reveal pre code .hljs-title.function_ { color: #1d4ed8 !important; }
+
+    .band {
+      padding: 0.5em 0.8em;
+      margin: 0.5em 0;
+      font-size: 0.78em;
+      line-height: 1.45;
+      font-weight: 500;
+      border-left: 3px solid transparent;
+    }
+    .band-blue { background: var(--blue-bg); color: var(--blue-ink); border-left-color: #3b82f6; }
+    .band-green { background: var(--green-bg); color: var(--green-ink); border-left-color: #22c55e; }
+    .band-orange { background: var(--orange-bg); color: var(--orange-ink); border-left-color: #f97316; }
+    .band-gray { background: var(--gray-bg); color: var(--ink); border-left-color: var(--line); }
+
+    .students {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 8.5em));
+      gap: 0.75em;
+      margin: 1.15em 0 1em;
+    }
+    .students .chip {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-top: 2px solid var(--accent);
+      padding: 0.65em 0.75em;
+      font-size: 0.78em;
+      text-align: center;
+      color: var(--ink-soft);
+      line-height: 1.35;
+    }
+    .students .chip strong {
+      display: inline-block;
+      margin-top: 0.15em;
+      font-size: 1.15em;
+      color: var(--ink);
+      font-variant-numeric: tabular-nums;
+      font-family: var(--mono);
+      font-weight: 600;
+    }
+
+    .two-col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1em;
+      margin-top: 0.45em;
+    }
+    .two-col .col-head {
+      padding: 0.38em 0.7em;
+      font-weight: 650;
+      font-size: 0.76em;
+      margin-bottom: 0.35em;
+      letter-spacing: -0.01em;
+      border-left: 3px solid transparent;
+    }
+    .two-col .col-head.blue {
+      background: var(--blue-bg);
+      color: var(--blue-ink);
+      border-left-color: #3b82f6;
+    }
+    .two-col .col-head.green {
+      background: var(--green-bg);
+      color: var(--green-ink);
+      border-left-color: #22c55e;
+    }
+    .two-col .col-head.orange {
+      background: var(--orange-bg);
+      color: var(--orange-ink);
+      border-left-color: #f97316;
+    }
+    .two-col ul { margin-top: 0; font-size: 0.8em; }
+    .two-col pre { margin-bottom: 0.45em; }
+
+    .three-col {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 0.7em;
+      margin-top: 0.5em;
+      font-size: 0.72em;
+    }
+    .three-col .box {
+      background: var(--gray-bg);
+      padding: 0.55em 0.65em;
+      min-height: 7.5em;
+    }
+    .three-col .box strong {
+      display: block;
+      margin-bottom: 0.35em;
+      font-size: 1.05em;
+      color: var(--ink);
+    }
+
+    .term-table {
+      display: grid;
+      grid-template-columns: 8em 1fr;
+      gap: 0.4em 0.9em;
+      margin-top: 0.75em;
+      font-size: 0.78em;
+      align-items: stretch;
+    }
+    .term-table .k {
+      font-family: var(--mono);
+      background: var(--code-bg);
+      border-left: 3px solid var(--accent);
+      padding: 0.28em 0.5em;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+    }
+    .term-table > div:nth-child(even) {
+      display: flex;
+      align-items: center;
+      color: var(--ink-soft);
+      border-bottom: 1px solid var(--line);
+      padding: 0.2em 0;
+    }
+
+    .flow-list {
+      margin-top: 0.65em;
+      display: grid;
+      gap: 0.4em;
+      font-size: 0.76em;
+    }
+    .flow-list .row {
+      display: grid;
+      grid-template-columns: 2.4em 1fr;
+      gap: 0.55em;
+      align-items: stretch;
+    }
+    .flow-list .n {
+      background: var(--ink);
+      color: #fff;
+      text-align: center;
+      font-weight: 600;
+      font-family: var(--mono);
+      font-size: 0.9em;
+      letter-spacing: 0.02em;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 1.7em;
+    }
+    .flow-list .row > div:last-child {
+      background: var(--gray-bg);
+      padding: 0.35em 0.65em;
+      display: flex;
+      align-items: center;
+      color: var(--ink);
+    }
+
+    .file-box {
+      font-family: var(--mono);
+      background: var(--code-bg);
+      border-left: 3px solid var(--accent);
+      padding: 0.65em 0.9em;
+      font-size: 0.72em;
+      line-height: 1.55;
+      color: var(--ink);
+      margin: 0.45em 0 0.75em;
+      white-space: pre-wrap;
+    }
+
+    .mode-row {
+      display: grid;
+      grid-template-columns: 3.2em 1fr;
+      gap: 0.6em;
+      align-items: center;
+      margin: 0.4em 0;
+      font-size: 0.8em;
+    }
+    .mode-row .tag {
+      font-family: var(--mono);
+      font-weight: 700;
+      text-align: center;
+      padding: 0.35em 0;
+      background: var(--code-bg);
+    }
+    .mode-row.warn .tag {
+      background: var(--orange-bg);
+      color: var(--orange-ink);
+    }
+
+    .parse-flow {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr auto 1fr;
+      gap: 0.4em;
+      align-items: center;
+      margin: 0.6em 0;
+      font-size: 0.72em;
+    }
+    .parse-flow .cell {
+      background: var(--gray-bg);
+      padding: 0.45em 0.55em;
+      text-align: center;
+      font-family: var(--mono);
+    }
+    .parse-flow .arrow { color: var(--muted); font-family: var(--mono); }
+
+    .goals li {
+      font-size: 0.95em;
+      margin: 0.55em 0 !important;
+    }
+
+    .slide-footer {
+      position: absolute;
+      left: 52px;
+      right: 52px;
+      bottom: 18px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 12px;
+      font-family: var(--mono);
+      font-weight: 500;
+      letter-spacing: 0.02em;
+      color: var(--muted);
+      pointer-events: none;
+      padding-top: 10px;
+      border-top: 1px solid var(--line);
+    }
+    .slide-footer span:last-child {
+      color: var(--accent-deep);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .reveal .controls { color: var(--accent); }
+    .reveal .progress {
+      color: var(--accent);
+      height: 2px;
+      background: rgba(13, 148, 136, 0.12);
+    }
+    .reveal .slide-number { display: none; }
+
+    .back-link {
+      position: fixed;
+      top: 14px;
+      left: 14px;
+      z-index: 30;
+      font-family: var(--font);
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      background: rgba(255, 255, 255, 0.92);
+      backdrop-filter: blur(8px);
+      border: 1px solid var(--line);
+      padding: 6px 12px;
+      text-decoration: none !important;
+      color: var(--accent-deep) !important;
+      transition: border-color 0.15s ease, background 0.15s ease;
+    }
+    .back-link:hover {
+      background: #fff;
+      border-color: var(--accent);
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .reveal .slides section { transition: none !important; }
+    }
+  </style>
+</head>
+<body>
+  <a class="back-link" href="index.html">← 演示列表</a>
+  <div class="reveal">
+    <div class="slides">
+
+      <!-- 01 -->
+      <section data-page="01">
+        <h1>Python 文件与数据格式化</h1>
+        <p class="subtitle">从三个学生的成绩保存与读取开始</p>
+        <div class="students">
+          <div class="chip">张三<br><strong>85</strong> 分</div>
+          <div class="chip">李四<br><strong>72</strong> 分</div>
+          <div class="chip">王五<br><strong>93</strong> 分</div>
+        </div>
+        <div class="band band-blue">我们已经能计算成绩等级，但程序结束后，怎样留下结果？</div>
+        <div class="slide-footer"><span>Python高级应用 · 文件与数据格式化</span><span>01</span></div>
+      </section>
+
+      <!-- 02 -->
+      <section data-page="02">
+        <h2>今天要完成什么？</h2>
+        <ul class="goals">
+          <li>保存成绩到磁盘</li>
+          <li>再次运行时读取成绩</li>
+          <li>认识 TXT、CSV、JSON</li>
+          <li>学会规范格式化输出</li>
+        </ul>
+        <div class="band band-blue" style="margin-top: 1em;">这节课解决「保存、读取、显示」的完整闭环。</div>
+        <div class="slide-footer"><span>Python高级应用 · 文件与数据格式化</span><span>02</span></div>
+      </section>
+
+      <!-- 03 -->
+      <section data-page="03">
+        <h2>问题：为什么 print 不等于保存？</h2>
+        <pre><code class="language-python">students = [
+    {"name": "张三", "score": 85},
+    {"name": "李四", "score": 72},
+    {"name": "王五", "score": 93}
+]
+print(students)</code></pre>
+        <div class="two-col">
+          <div>
+            <div class="col-head blue">屏幕输出</div>
+            <p class="small">终端里看得见，程序一结束就消失</p>
+          </div>
+          <div>
+            <div class="col-head green">文件保存</div>
+            <p class="small">写到磁盘后，下次还能再读回来</p>
+          </div>
+        </div>
+        <div class="slide-footer"><span>Python高级应用 · 文件与数据格式化</span><span>03</span></div>
+      </section>
+
+      <!-- 04 -->
+      <section data-page="04">
+        <h2>先认识一个文本文件</h2>
+        <div class="two-col">
+          <div>
+            <div class="col-head blue">students.txt</div>
+            <div class="file-box">张三,85
+李四,72
+王五,93</div>
+          </div>
+          <div>
+            <ul class="small">
+              <li>文件名：<code>students</code></li>
+              <li>扩展名：<code>.txt</code></li>
+              <li>一行一条记录</li>
+              <li>逗号分隔姓名与成绩</li>
+            </ul>
+            <div class="band band-blue" style="margin-top: 0.8em;">文本文件保存的是字符，不会自动理解「成绩」含义。</div>
+          </div>
+        </div>
+        <div class="slide-footer"><span>Python高级应用 · 文件与数据格式化</span><span>04</span></div>
+      </section>
+
+      <!-- 05 -->
+      <section data-page="05">
+        <h2>第一步：准备三名学生的数据</h2>
+        <pre><code class="language-python">students = [
+    {"name": "张三", "score": 85},
+    {"name": "李四", "score": 72},
+    {"name": "王五", "score": 93}
+]</code></pre>
+        <ul class="small">
+          <li>列表存放多名学生；字典保存每人的 <code>name</code> 与 <code>score</code></li>
+          <li>后面写入、读取都以这份数据为统一来源</li>
+        </ul>
+        <div class="slide-footer"><span>Python高级应用 · 文件与数据格式化</span><span>05</span></div>
+      </section>
+
+      <!-- 06 -->
+      <section data-page="06">
+        <h2>文件读写：程序和磁盘如何联系？</h2>
+        <div class="flow-list">
+          <div class="row"><div class="n">01</div><div>内存里的 <code>students</code>（程序运行时）</div></div>
+          <div class="row"><div class="n">02</div><div>写入 → <code>students.txt</code>（持久保存在磁盘）</div></div>
+          <div class="row"><div class="n">03</div><div>下次运行：从文件读取 → 再回到程序变量</div></div>
+        </div>
+        <div class="band band-blue" style="margin-top: 0.9em;">变量在程序运行环境里；文件持久保存在磁盘上。</div>
+        <div class="slide-footer"><span>Python高级应用 · 文件与数据格式化</span><span>06</span></div>
+      </section>
+
+      <!-- 07 -->
+      <section data-page="07">
+        <h2>文件路径：Python 到哪里找文件？</h2>
+        <div class="two-col">
+          <div>
+            <div class="col-head blue">相对路径</div>
+            <pre><code class="language-python">"students.txt"
+"data/students.txt"</code></pre>
+            <p class="small">相对当前工作目录</p>
+          </div>
+          <div>
+            <div class="col-head green">绝对路径</div>
+            <pre><code class="language-python">"D:/course/data/students.txt"</code></pre>
+            <p class="small">从盘符开始的完整位置</p>
+          </div>
+        </div>
+        <div class="band band-orange">想一想：当前工作目录和文件所在目录，一定相同吗？</div>
+        <div class="slide-footer"><span>Python高级应用 · 文件与数据格式化</span><span>07</span></div>
+      </section>
+
+      <!-- 08 -->
+      <section data-page="08">
+        <h2>使用 open() 打开文件</h2>
+        <pre><code class="language-python">open("students.txt", "w", encoding="utf-8")</code></pre>
+        <div class="term-table">
+          <div class="k">students.txt</div><div>要操作的文件名</div>
+          <div class="k">"w"</div><div>打开模式（写入）</div>
+          <div class="k">encoding</div><div>文本编码，推荐 utf-8</div>
+        </div>
+        <div class="band band-blue" style="margin-top: 0.8em;">先明确：操作哪个文件、如何操作、用什么编码。</div>
+        <div class="slide-footer"><span>Python高级应用 · 文件与数据格式化</span><span>08</span></div>
+      </section>
+
+      <!-- 09 -->
+      <section data-page="09">
+        <h2>为什么推荐 with open()？</h2>
+        <div class="two-col">
+          <div>
+            <pre><code class="language-python">with open("students.txt", "w",
+          encoding="utf-8") as f:
+    f.write("张三,85\n")</code></pre>
+          </div>
+          <div>
+            <ul class="small">
+              <li><code>with</code> 管好文件的使用范围</li>
+              <li>代码块结束后自动关闭文件</li>
+              <li>比单独 <code>open</code> 再手动 <code>close</code> 更省心</li>
+            </ul>
+          </div>
+        </div>
+        <div class="slide-footer"><span>Python高级应用 · 文件与数据格式化</span><span>09</span></div>
+      </section>
+
+      <!-- 10 -->
+      <section data-page="10">
+        <h2>写入第一行学生成绩</h2>
+        <pre><code class="language-python">with open("students.txt", "w", encoding="utf-8") as f:
+    f.write("张三,85\n")</code></pre>
+        <div class="col-head green" style="display:inline-block;margin-bottom:0.35em;">生成的文件内容</div>
+        <div class="file-box">张三,85</div>
+        <div class="band band-blue"><code>write</code> 写入的是字符串；换行不会自动出现，要自己写 <code>\n</code>。</div>
+        <div class="slide-footer"><span>Python高级应用 · 文件与数据格式化</span><span>10</span></div>
+      </section>
+
+      <!-- 11 -->
+      <section data-page="11">
+        <h2>换行符 \n 是什么？</h2>
+        <div class="two-col">
+          <div>
+            <div class="col-head blue">代码里的字符串</div>
+            <pre><code class="language-python">"张三,85\n李四,72\n王五,93\n"</code></pre>
+          </div>
+          <div>
+            <div class="col-head green">文件里看到的样子</div>
+            <div class="file-box">张三,85
+李四,72
+王五,93</div>
+          </div>
+        </div>
+        <p class="small">源代码中的 <code>\n</code> 是转义符；落到文件里就变成真正的换行。</p>
+        <div class="slide-footer"><span>Python高级应用 · 文件与数据格式化</span><span>11</span></div>
+      </section>
+
+      <!-- 12 -->
+      <section data-page="12">
+        <h2>用循环写入三名学生</h2>
+        <pre><code class="language-python">with open("students.txt", "w", encoding="utf-8") as f:
+    for student in students:
+        f.write(f"{student['name']},{student['score']}\n")</code></pre>
+        <div class="band band-green">students.txt 预期三行：张三,85 / 李四,72 / 王五,93</div>
+        <p class="small">复用 <code>for</code> 循环与 f-string，一次写完全部学生。</p>
+        <div class="slide-footer"><span>Python高级应用 · 文件与数据格式化</span><span>12</span></div>
+      </section>
+
+      <!-- 13 -->
+      <section data-page="13">
+        <h2>文件打开模式：r、w、a</h2>
+        <div class="mode-row">
+          <div class="tag">r</div>
+          <div>读取；文件不存在会报错</div>
+        </div>
+        <div class="mode-row warn">
+          <div class="tag">w</div>
+          <div>写入；文件不存在则创建；<strong>已有内容会被清空覆盖</strong></div>
+        </div>
+        <div class="mode-row">
+          <div class="tag">a</div>
+          <div>追加；在文件末尾继续写入</div>
+        </div>
+        <div class="band band-orange" style="margin-top: 0.8em;">想一想：同名文件第二次用 <code>w</code>，会发生什么？</div>
+        <div class="slide-footer"><span>Python高级应用 · 文件与数据格式化</span><span>13</span></div>
+      </section>
+
+      <!-- 14 -->
+      <section data-page="14">
+        <h2>课堂思考一：再运行一次会怎样？</h2>
+        <pre><code class="language-python">with open("students.txt", "w", encoding="utf-8") as f:
+    for student in students:
+        f.write(f"{student['name']},{student['score']}\n")</code></pre>
+        <div class="band band-blue">预测：再运行一遍后，<code>students.txt</code> 是 3 行还是 6 行？为什么？</div>
+        <p class="small">先预测，再运行核对。把 <code>"w"</code> 换成 <code>"a"</code> 再试一次，结果会不同吗？</p>
+        <!-- 讲者备注：w 覆盖仍为 3 行；a 追加变为 6 行 -->
+        <div class="slide-footer"><span>Python高级应用 · 文件与数据格式化</span><span>14</span></div>
+      </section>
+
+      <!-- 15 -->
+      <section data-page="15">
+        <h2>读取整个文件：read()</h2>
+        <pre><code class="language-python">with open("students.txt", "r", encoding="utf-8") as f:
+    content = f.read()
+print(content)</code></pre>
+        <div class="band band-green">输出是多行文本字符串，例如：
+张三,85
+李四,72
+王五,93</div>
+        <div class="band band-blue"><code>read()</code> 得到的是 <code>str</code>，不会自动变成字典列表。</div>
+        <div class="slide-footer"><span>Python高级应用 · 文件与数据格式化</span><span>15</span></div>
+      </section>
+
+      <!-- 16 -->
+      <section data-page="16">
+        <h2>逐行读取：for line in f</h2>
+        <pre><code class="language-python">with open("students.txt", "r", encoding="utf-8") as f:
+    for line in f:
+        print(line.strip())</code></pre>
+        <ul class="small">
+          <li><code>strip()</code> 去掉行首尾空白（含换行）</li>
+          <li>它不只是「去换行」，空白字符都会处理</li>
+          <li>大文件时，逐行读更省内存</li>
+        </ul>
+        <div class="slide-footer"><span>Python高级应用 · 文件与数据格式化</span><span>16</span></div>
+      </section>
+
+      <!-- 17 -->
+      <section data-page="17">
+        <h2>把一行文本还原为姓名和成绩</h2>
+        <div class="parse-flow">
+          <div class="cell">张三,85</div>
+          <div class="arrow">→</div>
+          <div class="cell">split(",")</div>
+          <div class="arrow">→</div>
+          <div class="cell">name / "85"</div>
+        </div>
+        <pre><code class="language-python">name, score_text = line.strip().split(",")
+score = int(score_text)   # "85" → 85</code></pre>
+        <div class="band band-blue">读取的是文字；要自己解析，并用 <code>int()</code> 转成数字。</div>
+        <div class="slide-footer"><span>Python高级应用 · 文件与数据格式化</span><span>17</span></div>
+      </section>
+
+      <!-- 18 -->
+      <section class="dense" data-page="18">
+        <h2>完整任务：读取后计算等级</h2>
+        <pre><code class="language-python">def get_level(score):
+    if score &gt;= 90: return "优秀"
+    elif score &gt;= 80: return "良好"
+    elif score &gt;= 60: return "及格"
+    else: return "不及格"
+
+with open("students.txt", "r", encoding="utf-8") as f:
+    for line in f:
+        name, score_text = line.strip().split(",")
+        score = int(score_text)
+        print(name, score, get_level(score))</code></pre>
+        <div class="band band-green">张三 85 良好 · 李四 72 及格 · 王五 93 优秀</div>
+        <div class="slide-footer"><span>Python高级应用 · 文件与数据格式化</span><span>18</span></div>
+      </section>
+
+      <!-- 19 -->
+      <section data-page="19">
+        <h2>为什么还要 CSV？</h2>
+        <div class="two-col">
+          <div>
+            <div class="col-head blue">普通逗号文本</div>
+            <div class="file-box">张三,85
+李四,72
+王五,93</div>
+          </div>
+          <div>
+            <div class="col-head green">带表头的 CSV</div>
+            <div class="file-box">name,score
+张三,85
+李四,72
+王五,93</div>
+          </div>
+        </div>
+        <p class="small">CSV 是文本格式：标准化的列与记录，可用表格软件查看；它并不等于 Excel 专有格式。</p>
+        <div class="slide-footer"><span>Python高级应用 · 文件与数据格式化</span><span>19</span></div>
+      </section>
+
+      <!-- 20 -->
+      <section class="dense" data-page="20">
+        <h2>用 csv.DictWriter() 写表格</h2>
+        <pre><code class="language-python">import csv
+
+with open("students.csv", "w", encoding="utf-8", newline="") as f:
+    writer = csv.DictWriter(f, fieldnames=["name", "score"])
+    writer.writeheader()
+    writer.writerows(students)</code></pre>
+        <div class="band band-green">students.csv：name,score 表头 + 三行数据</div>
+        <p class="small"><code>newline=""</code> 可避免 Windows 上多余空行；字典列表可直接交给 <code>writerows</code>。</p>
+        <div class="slide-footer"><span>Python高级应用 · 文件与数据格式化</span><span>20</span></div>
+      </section>
+
+      <!-- 21 -->
+      <section data-page="21">
+        <h2>用 csv.DictReader() 读成绩表</h2>
+        <pre><code class="language-python">import csv
+
+with open("students.csv", "r", encoding="utf-8", newline="") as f:
+    for row in csv.DictReader(f):
+        print(row)
+        # 例如：{"name": "张三", "score": "85"}</code></pre>
+        <div class="band band-blue">读到的字段通常仍是字符串，算等级前要 <code>int(row["score"])</code>。</div>
+        <div class="slide-footer"><span>Python高级应用 · 文件与数据格式化</span><span>21</span></div>
+      </section>
+
+      <!-- 22 -->
+      <section data-page="22">
+        <h2>课堂思考二：为什么 85 是字符串？</h2>
+        <div class="two-col">
+          <div>
+            <div class="col-head orange">读入后</div>
+            <pre><code class="language-python">score_text = "85"
+print(score_text + "10")</code></pre>
+          </div>
+          <div>
+            <div class="col-head green">转换后</div>
+            <pre><code class="language-python">score = int("85")
+print(score + 10)</code></pre>
+          </div>
+        </div>
+        <div class="band band-blue">运行后分别得到什么？文件格式里的字符，和 Python 里的数字类型，需要你来转换。</div>
+        <!-- 讲者备注："85"+"10"→"8510"；85+10→95 -->
+        <div class="slide-footer"><span>Python高级应用 · 文件与数据格式化</span><span>22</span></div>
+      </section>
+
+      <!-- 23 -->
+      <section data-page="23">
+        <h2>JSON 与列表、字典</h2>
+        <div class="two-col">
+          <div>
+            <div class="col-head blue">JSON 文本</div>
+            <div class="file-box">[
+  {"name": "张三", "score": 85},
+  {"name": "李四", "score": 72},
+  {"name": "王五", "score": 93}
+]</div>
+          </div>
+          <div>
+            <div class="col-head green">Python 结构</div>
+            <ul class="small">
+              <li>外层：列表</li>
+              <li>元素：字典</li>
+              <li>键名：字符串</li>
+              <li>成绩：数字</li>
+            </ul>
+          </div>
+        </div>
+        <p class="small">适合表达结构化对象数据，不限于二维表。</p>
+        <div class="slide-footer"><span>Python高级应用 · 文件与数据格式化</span><span>23</span></div>
+      </section>
+
+      <!-- 24 -->
+      <section data-page="24">
+        <h2>用 json.dump() 保存数据</h2>
+        <pre><code class="language-python">import json
+
+with open("students.json", "w", encoding="utf-8") as f:
+    json.dump(students, f, ensure_ascii=False, indent=2)</code></pre>
+        <div class="file-box">{
+  "name": "张三",
+  "score": 85
+},
+...</div>
+        <p class="small"><code>ensure_ascii=False</code> 保留中文；<code>indent=2</code> 便于阅读。注意：<code>dump</code> 写文件，<code>dumps</code> 得到字符串。</p>
+        <div class="slide-footer"><span>Python高级应用 · 文件与数据格式化</span><span>24</span></div>
+      </section>
+
+      <!-- 25 -->
+      <section data-page="25">
+        <h2>用 json.load() 读取数据</h2>
+        <pre><code class="language-python">import json
+
+with open("students.json", "r", encoding="utf-8") as f:
+    data = json.load(f)
+
+print(data[0]["name"])   # 张三
+print(type(data[0]["score"]))  # &lt;class 'int'&gt;</code></pre>
+        <div class="band band-green">读回后是 list / dict，数字仍是数字——比手写 TXT 解析更省事。</div>
+        <div class="slide-footer"><span>Python高级应用 · 文件与数据格式化</span><span>25</span></div>
+      </section>
+
+      <!-- 26 -->
+      <section data-page="26">
+        <h2>TXT、CSV、JSON 怎么选？</h2>
+        <div class="three-col">
+          <div class="box">
+            <strong>TXT</strong>
+            自由文本、简单行记录<br><br>
+            优点：直观<br>
+            局限：要自己解析
+          </div>
+          <div class="box">
+            <strong>CSV</strong>
+            行列记录、表头明确<br><br>
+            优点：表格软件友好<br>
+            局限：难表达嵌套
+          </div>
+          <div class="box">
+            <strong>JSON</strong>
+            嵌套结构、对象数据<br><br>
+            优点：结构可还原<br>
+            局限：人工编辑稍繁
+          </div>
+        </div>
+        <div class="band band-blue" style="margin-top: 0.8em;">没有绝对优劣，按数据怎么组织来选。</div>
+        <div class="slide-footer"><span>Python高级应用 · 文件与数据格式化</span><span>26</span></div>
+      </section>
+
+      <!-- 27 -->
+      <section data-page="27">
+        <h2>什么是格式化输出？</h2>
+        <div class="two-col">
+          <div>
+            <div class="col-head blue">普通 print</div>
+            <div class="file-box">print(name, score)
+# 张三 85</div>
+          </div>
+          <div>
+            <div class="col-head green">f-string</div>
+            <div class="file-box">print(f"{name}：{score} 分")
+# 张三：85 分</div>
+          </div>
+        </div>
+        <div class="band band-blue">格式化让结果更好读；它不改变原始成绩。打印是呈现，保存到文件还要另一步。</div>
+        <div class="slide-footer"><span>Python高级应用 · 文件与数据格式化</span><span>27</span></div>
+      </section>
+
+      <!-- 28 -->
+      <section data-page="28">
+        <h2>f-string：把变量放进一句话</h2>
+        <pre><code class="language-python">print(f"{name} 的 Python 成绩是 {score} 分")</code></pre>
+        <div class="term-table">
+          <div class="k">f"..."</div><div>字符串前的 <code>f</code>：启用格式化</div>
+          <div class="k">{name}</div><div>花括号里放入变量，运行时求值</div>
+          <div class="k">{score}</div><div>同样可以嵌入数字变量</div>
+        </div>
+        <div class="slide-footer"><span>Python高级应用 · 文件与数据格式化</span><span>28</span></div>
+      </section>
+
+      <!-- 29 -->
+      <section data-page="29">
+        <h2>小数精度、宽度与对齐</h2>
+        <pre><code class="language-python">average = 83.3333
+print(f"{average:.2f}")   # 83.33   显示两位小数
+print(f"{score:&gt;5}")      #   85   宽度 5，右对齐</code></pre>
+        <ul class="small">
+          <li><code>.2f</code> 只影响显示，不修改 <code>average</code> 本身</li>
+          <li>中文宽度不一定等于「看起来的字符宽度」</li>
+        </ul>
+        <div class="slide-footer"><span>Python高级应用 · 文件与数据格式化</span><span>29</span></div>
+      </section>
+
+      <!-- 30 -->
+      <section data-page="30">
+        <h2>综合练习：保存、读取、输出</h2>
+        <div class="flow-list">
+          <div class="row"><div class="n">01</div><div>把三名学生保存到 CSV（含表头）</div></div>
+          <div class="row"><div class="n">02</div><div>重新读入，并把成绩转为 <code>int</code></div></div>
+          <div class="row"><div class="n">03</div><div>按 ≥90 / ≥80 / ≥60 计算等级</div></div>
+          <div class="row"><div class="n">04</div><div>用 f-string 输出「姓名：分数 分（等级）」</div></div>
+        </div>
+        <div class="band band-green" style="margin-top: 0.7em;">预期例如：张三：85 分（良好）</div>
+        <p class="small">先想清楚文件路径和数据类型，再动手写程序。</p>
+        <div class="slide-footer"><span>Python高级应用 · 文件与数据格式化</span><span>30</span></div>
+      </section>
+
+      <!-- 31 -->
+      <section data-page="31">
+        <h2>回顾：这节课学到了什么？</h2>
+        <ul>
+          <li>文件与变量：磁盘持久 vs 内存临时</li>
+          <li><code>with open</code>：自动管理文件开关</li>
+          <li><code>r</code> / <code>w</code> / <code>a</code>：读、覆盖写、追加（注意 <code>w</code> 覆盖风险）</li>
+          <li>TXT / CSV / JSON：按结构选型</li>
+          <li>读取后常需类型转换（如 <code>int</code>）</li>
+          <li>f-string：规范、清晰的格式化输出</li>
+        </ul>
+        <div class="band band-blue" style="margin-top: 0.6em;">回到最初的问题：关闭程序后，成绩如何保留？</div>
+        <div class="slide-footer"><span>Python高级应用 · 文件与数据格式化</span><span>31</span></div>
+      </section>
+
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/reveal.js@4.6.1/dist/reveal.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/reveal.js@4.6.1/plugin/highlight/highlight.js"></script>
+  <script>
+    Reveal.initialize({
+      hash: true,
+      center: false,
+      transition: 'fade',
+      transitionSpeed: 'fast',
+      backgroundTransition: 'fade',
+      width: 960,
+      height: 540,
+      margin: 0.04,
+      minScale: 0.35,
+      maxScale: 1.6,
+      slideNumber: false,
+      plugins: [RevealHighlight]
+    });
+  </script>
+</body>
+</html>
