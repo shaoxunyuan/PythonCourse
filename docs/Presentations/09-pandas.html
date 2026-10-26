@@ -1,0 +1,786 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>pandas 数据清洗 · Python 高级应用</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.6.1/dist/reveal.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.6.1/dist/theme/white.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.6.1/plugin/highlight/monokai.css">
+  <style>
+    :root {
+      --ink: #12141a;
+      --ink-soft: #3d4450;
+      --muted: #7a8290;
+      --line: #d8dde6;
+      --code-bg: #e7edf4;
+      --surface: #ffffff;
+      --paper: #f4f5f7;
+      --accent: #0d9488;
+      --accent-deep: #0f766e;
+      --blue-bg: #e8f0fe;
+      --blue-ink: #1e3a5f;
+      --green-bg: #e6f6ed;
+      --green-ink: #14532d;
+      --orange-bg: #fff1e6;
+      --orange-ink: #9a3412;
+      --gray-bg: #eef0f3;
+      --font: "IBM Plex Sans", "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
+      --mono: "IBM Plex Mono", Consolas, ui-monospace, monospace;
+    }
+
+    .reveal {
+      font-family: var(--font);
+      font-size: 30px;
+      color: var(--ink);
+      background: var(--paper);
+      -webkit-font-smoothing: antialiased;
+    }
+    .reveal .slides { text-align: left; }
+    .reveal .slides section {
+      padding: 40px 52px 68px;
+      box-sizing: border-box;
+      background:
+        linear-gradient(180deg, #fbfbfc 0%, var(--surface) 42%, #f7f8fa 100%);
+    }
+    .reveal .slides section::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--accent) 0%, var(--accent) 120px, transparent 320px);
+    }
+
+    .reveal h1, .reveal h2 {
+      color: var(--ink);
+      font-weight: 700;
+      text-transform: none;
+      letter-spacing: -0.025em;
+      margin: 0 0 0.65em;
+      font-size: 1.22em;
+      line-height: 1.25;
+      position: relative;
+      padding-bottom: 0.35em;
+    }
+    .reveal h1::after, .reveal h2::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      bottom: 0;
+      width: 28px;
+      height: 2px;
+      background: var(--accent);
+    }
+    .reveal h1 { font-size: 1.55em; letter-spacing: -0.03em; }
+    .reveal p, .reveal li { color: var(--ink); line-height: 1.55; font-weight: 450; }
+    .reveal ul {
+      margin: 0.35em 0 0;
+      padding: 0;
+      list-style: none;
+    }
+    .reveal ul > li {
+      margin: 0.42em 0;
+      padding-left: 1.05em;
+      position: relative;
+    }
+    .reveal ul > li::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 0.62em;
+      width: 0.42em;
+      height: 2px;
+      background: var(--accent);
+    }
+    .reveal a { color: var(--accent-deep); }
+    .reveal .subtitle {
+      color: var(--ink-soft);
+      font-size: 0.82em;
+      font-weight: 500;
+      margin: -0.15em 0 0.15em;
+      letter-spacing: -0.01em;
+    }
+    .reveal .small {
+      font-size: 0.7em;
+      color: var(--ink-soft);
+      line-height: 1.5;
+    }
+
+    .reveal pre {
+      width: 100%;
+      box-shadow: none !important;
+      border: none !important;
+      border-left: 3px solid var(--accent) !important;
+      background: var(--code-bg) !important;
+      padding: 0.75em 0.95em !important;
+      margin: 0.45em 0 0.75em;
+      border-radius: 0;
+    }
+    .reveal pre code {
+      background: transparent !important;
+      color: var(--ink) !important;
+      font-family: var(--mono);
+      font-size: 0.68em;
+      font-weight: 450;
+      line-height: 1.48;
+      max-height: none;
+      padding: 0 !important;
+      tab-size: 4;
+    }
+    .reveal section.dense pre code { font-size: 0.58em; line-height: 1.42; }
+    .reveal code {
+      font-family: var(--mono);
+      background: var(--code-bg);
+      color: var(--ink);
+      padding: 0.06em 0.28em;
+      border-radius: 2px;
+      font-size: 0.92em;
+      font-weight: 500;
+    }
+    .reveal pre code .hljs-comment,
+    .reveal pre code .hljs-quote { color: #64748b !important; font-style: italic; }
+    .reveal pre code .hljs-keyword,
+    .reveal pre code .hljs-selector-tag,
+    .reveal pre code .hljs-built_in { color: #0b6e99 !important; font-weight: 600; }
+    .reveal pre code .hljs-string { color: var(--accent-deep) !important; }
+    .reveal pre code .hljs-number { color: #b45309 !important; }
+    .reveal pre code .hljs-title,
+    .reveal pre code .hljs-title.class_,
+    .reveal pre code .hljs-title.function_ { color: #1d4ed8 !important; }
+
+    .band {
+      padding: 0.5em 0.8em;
+      margin: 0.5em 0;
+      font-size: 0.78em;
+      line-height: 1.45;
+      font-weight: 500;
+      border-left: 3px solid transparent;
+    }
+    .band-blue { background: var(--blue-bg); color: var(--blue-ink); border-left-color: #3b82f6; }
+    .band-green { background: var(--green-bg); color: var(--green-ink); border-left-color: #22c55e; }
+    .band-orange { background: var(--orange-bg); color: var(--orange-ink); border-left-color: #f97316; }
+    .band-gray { background: var(--gray-bg); color: var(--ink); border-left-color: var(--line); }
+
+    .students {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 8.5em));
+      gap: 0.75em;
+      margin: 1.15em 0 1em;
+    }
+    .students .chip {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-top: 2px solid var(--accent);
+      padding: 0.65em 0.75em;
+      font-size: 0.78em;
+      text-align: center;
+      color: var(--ink-soft);
+      line-height: 1.35;
+    }
+    .students .chip strong {
+      display: inline-block;
+      margin-top: 0.15em;
+      font-size: 1.15em;
+      color: var(--ink);
+      font-variant-numeric: tabular-nums;
+      font-family: var(--mono);
+      font-weight: 600;
+    }
+
+    .two-col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1em;
+      margin-top: 0.45em;
+    }
+    .two-col .col-head {
+      padding: 0.38em 0.7em;
+      font-weight: 650;
+      font-size: 0.76em;
+      margin-bottom: 0.35em;
+      letter-spacing: -0.01em;
+      border-left: 3px solid transparent;
+    }
+    .two-col .col-head.blue {
+      background: var(--blue-bg);
+      color: var(--blue-ink);
+      border-left-color: #3b82f6;
+    }
+    .two-col .col-head.green {
+      background: var(--green-bg);
+      color: var(--green-ink);
+      border-left-color: #22c55e;
+    }
+    .two-col .col-head.orange {
+      background: var(--orange-bg);
+      color: var(--orange-ink);
+      border-left-color: #f97316;
+    }
+    .two-col ul { margin-top: 0; font-size: 0.8em; }
+    .two-col pre { margin-bottom: 0.45em; }
+
+    .three-col {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 0.7em;
+      margin-top: 0.5em;
+      font-size: 0.72em;
+    }
+    .three-col .box {
+      background: var(--gray-bg);
+      padding: 0.55em 0.65em;
+      min-height: 7.5em;
+    }
+    .three-col .box strong {
+      display: block;
+      margin-bottom: 0.35em;
+      font-size: 1.05em;
+      color: var(--ink);
+    }
+
+    .term-table {
+      display: grid;
+      grid-template-columns: 8em 1fr;
+      gap: 0.4em 0.9em;
+      margin-top: 0.75em;
+      font-size: 0.78em;
+      align-items: stretch;
+    }
+    .term-table .k {
+      font-family: var(--mono);
+      background: var(--code-bg);
+      border-left: 3px solid var(--accent);
+      padding: 0.28em 0.5em;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+    }
+    .term-table > div:nth-child(even) {
+      display: flex;
+      align-items: center;
+      color: var(--ink-soft);
+      border-bottom: 1px solid var(--line);
+      padding: 0.2em 0;
+    }
+
+    .flow-list {
+      margin-top: 0.65em;
+      display: grid;
+      gap: 0.4em;
+      font-size: 0.76em;
+    }
+    .flow-list .row {
+      display: grid;
+      grid-template-columns: 2.4em 1fr;
+      gap: 0.55em;
+      align-items: stretch;
+    }
+    .flow-list .n {
+      background: var(--ink);
+      color: #fff;
+      text-align: center;
+      font-weight: 600;
+      font-family: var(--mono);
+      font-size: 0.9em;
+      letter-spacing: 0.02em;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 1.7em;
+    }
+    .flow-list .row > div:last-child {
+      background: var(--gray-bg);
+      padding: 0.35em 0.65em;
+      display: flex;
+      align-items: center;
+      color: var(--ink);
+    }
+
+    .file-box {
+      font-family: var(--mono);
+      background: var(--code-bg);
+      border-left: 3px solid var(--accent);
+      padding: 0.65em 0.9em;
+      font-size: 0.72em;
+      line-height: 1.55;
+      color: var(--ink);
+      margin: 0.45em 0 0.75em;
+      white-space: pre-wrap;
+    }
+
+    .mode-row {
+      display: grid;
+      grid-template-columns: 3.2em 1fr;
+      gap: 0.6em;
+      align-items: center;
+      margin: 0.4em 0;
+      font-size: 0.8em;
+    }
+    .mode-row .tag {
+      font-family: var(--mono);
+      font-weight: 700;
+      text-align: center;
+      padding: 0.35em 0;
+      background: var(--code-bg);
+    }
+    .mode-row.warn .tag {
+      background: var(--orange-bg);
+      color: var(--orange-ink);
+    }
+
+    .parse-flow {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr auto 1fr;
+      gap: 0.4em;
+      align-items: center;
+      margin: 0.6em 0;
+      font-size: 0.72em;
+    }
+    .parse-flow .cell {
+      background: var(--gray-bg);
+      padding: 0.45em 0.55em;
+      text-align: center;
+      font-family: var(--mono);
+    }
+    .parse-flow .arrow { color: var(--muted); font-family: var(--mono); }
+
+    .goals li {
+      font-size: 0.95em;
+      margin: 0.55em 0 !important;
+    }
+
+    .slide-footer {
+      position: absolute;
+      left: 52px;
+      right: 52px;
+      bottom: 18px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 12px;
+      font-family: var(--mono);
+      font-weight: 500;
+      letter-spacing: 0.02em;
+      color: var(--muted);
+      pointer-events: none;
+      padding-top: 10px;
+      border-top: 1px solid var(--line);
+    }
+    .slide-footer span:last-child {
+      color: var(--accent-deep);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .reveal .controls { color: var(--accent); }
+    .reveal .progress {
+      color: var(--accent);
+      height: 2px;
+      background: rgba(13, 148, 136, 0.12);
+    }
+    .reveal .slide-number { display: none; }
+
+    .back-link {
+      position: fixed;
+      top: 14px;
+      left: 14px;
+      z-index: 30;
+      font-family: var(--font);
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      background: rgba(255, 255, 255, 0.92);
+      backdrop-filter: blur(8px);
+      border: 1px solid var(--line);
+      padding: 6px 12px;
+      text-decoration: none !important;
+      color: var(--accent-deep) !important;
+      transition: border-color 0.15s ease, background 0.15s ease;
+    }
+    .back-link:hover {
+      background: #fff;
+      border-color: var(--accent);
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .reveal .slides section { transition: none !important; }
+    }
+  </style>
+</head>
+<body>
+  <a class="back-link" href="index.html">← 演示列表</a>
+  <div class="reveal">
+    <div class="slides">
+
+      <!-- 01 -->
+      <section data-page="01">
+        <h1>pandas 数据清洗</h1>
+        <p class="subtitle">用 Series / DataFrame 整理课程表格数据</p>
+        <div class="students">
+          <div class="chip">表结构<br><strong>DataFrame</strong></div>
+          <div class="chip">缺失重复<br><strong>清洗</strong></div>
+          <div class="chip">筛选规范<br><strong>流水线</strong></div>
+        </div>
+        <div class="band band-blue">真实表格很少「拿来就能建模」——先清洗。</div>
+        <div class="slide-footer"><span>Python高级应用 · pandas 数据清洗</span><span>01</span></div>
+      </section>
+
+      <!-- 02 -->
+      <section data-page="02">
+        <h2>今天要完成什么？</h2>
+        <ul class="goals">
+          <li>认识 Series 与 DataFrame</li>
+          <li>理解 <code>read_csv</code>；会看头尾与 <code>shape</code></li>
+          <li>处理缺失标记、重复行</li>
+          <li>列选型与条件筛选；字段规范化</li>
+          <li>串起一条清洗流水线</li>
+        </ul>
+        <div class="slide-footer"><span>Python高级应用 · pandas 数据清洗</span><span>02</span></div>
+      </section>
+
+      <!-- 03 -->
+      <section data-page="03">
+        <h2>Series 与 DataFrame</h2>
+        <div class="two-col">
+          <div>
+            <div class="col-head blue">Series</div>
+            <pre><code class="language-python">import pandas as pd
+s = pd.Series([3, 5, 12],
+              name="los")
+print(s)</code></pre>
+            <p class="small">一列带索引的数据</p>
+          </div>
+          <div>
+            <div class="col-head green">DataFrame</div>
+            <pre><code class="language-python">df = pd.DataFrame({
+  "id": ["C01", "C02"],
+  "los": [12, 3],
+  "sex": ["F", "M"],
+})</code></pre>
+            <p class="small">多列表格；每列是 Series</p>
+          </div>
+        </div>
+        <div class="slide-footer"><span>Python高级应用 · pandas 数据清洗</span><span>03</span></div>
+      </section>
+
+      <!-- 04 -->
+      <section data-page="04">
+        <h2>为什么用 pandas 清洗？</h2>
+        <ul>
+          <li>按<strong>列名</strong>思考，而不是纯下标</li>
+          <li>缺失值有统一表示（<code>NaN</code>）</li>
+          <li>筛选、去重、替换有现成方法</li>
+          <li>与 CSV 读写衔接自然</li>
+        </ul>
+        <div class="band band-blue">NumPy 擅长数值块；pandas 擅长「带标签的表」。</div>
+        <div class="slide-footer"><span>Python高级应用 · pandas 数据清洗</span><span>04</span></div>
+      </section>
+
+      <!-- 05 -->
+      <section data-page="05">
+        <h2>read_csv：概念</h2>
+        <pre><code class="language-python">df = pd.read_csv(
+    "data/diabetic_sample.csv",
+    encoding="utf-8",
+    na_values=["?", "NA", ""],   # 把这些记号读成缺失
+)
+print(type(df))</code></pre>
+        <ul class="small">
+          <li>默认第一行作表头</li>
+          <li><code>na_values</code> 把课程数据里的 <code>?</code> 等标成缺失</li>
+          <li>大文件可加 <code>nrows=1000</code> 先探路</li>
+        </ul>
+        <div class="slide-footer"><span>Python高级应用 · pandas 数据清洗</span><span>05</span></div>
+      </section>
+
+      <!-- 06 -->
+      <section data-page="06">
+        <h2>先看：头、尾、形状</h2>
+        <pre><code class="language-python">print(df.shape)     # (行数, 列数)
+print(df.head())    # 前 5 行
+print(df.tail(3))   # 末 3 行
+print(df.columns)   # 列名
+print(df.dtypes)    # 各列类型</code></pre>
+        <div class="band band-blue">清洗前先「摸清表」：多大、有哪些列、类型是否合理。</div>
+        <div class="slide-footer"><span>Python高级应用 · pandas 数据清洗</span><span>06</span></div>
+      </section>
+
+      <!-- 07 -->
+      <section data-page="07">
+        <h2>缺失是什么？</h2>
+        <pre><code class="language-python">print(df.isna().head())
+print(df["race"].isna().sum())   # 该列缺失个数
+print(df.isna().sum().sort_values(ascending=False).head())</code></pre>
+        <ul class="small">
+          <li><code>NaN</code>：pandas 中的缺失浮点标记</li>
+          <li>原始文件可能是 <code>?</code>、<code>NA</code>、空字符串——读入时就要统一</li>
+        </ul>
+        <div class="slide-footer"><span>Python高级应用 · pandas 数据清洗</span><span>07</span></div>
+      </section>
+
+      <!-- 08 -->
+      <section data-page="08">
+        <h2>缺失标记：读入时统一</h2>
+        <div class="two-col">
+          <div>
+            <div class="col-head blue">读入时</div>
+            <pre><code class="language-python">pd.read_csv(
+  path,
+  na_values=["?", "NA", "Null"],
+)</code></pre>
+          </div>
+          <div>
+            <div class="col-head green">读入后</div>
+            <pre><code class="language-python">df["race"] = df["race"].replace(
+    "?", pd.NA
+)</code></pre>
+          </div>
+        </div>
+        <div class="band band-orange">同一列不要同时残留 <code>"?"</code> 字符串和真缺失——统计会错。</div>
+        <div class="slide-footer"><span>Python高级应用 · pandas 数据清洗</span><span>08</span></div>
+      </section>
+
+      <!-- 09 -->
+      <section data-page="09">
+        <h2>处理缺失：删或填</h2>
+        <pre><code class="language-python"># 删除：任一关键列缺失则去行
+df2 = df.dropna(subset=["gender", "time_in_hospital"])
+
+# 填充：类别用众数 / 显式标签
+df["race"] = df["race"].fillna("未知")
+
+# 数值示例：用中位数填（需先保证列是数值）
+med = df["time_in_hospital"].median()
+df["time_in_hospital"] = df["time_in_hospital"].fillna(med)</code></pre>
+        <div class="slide-footer"><span>Python高级应用 · pandas 数据清洗</span><span>09</span></div>
+      </section>
+
+      <!-- 10 -->
+      <section data-page="10">
+        <h2>重复行</h2>
+        <pre><code class="language-python">print(df.duplicated().sum())
+print(df.duplicated(subset=["encounter_id"]).sum())
+
+df_u = df.drop_duplicates(
+    subset=["encounter_id"],
+    keep="first",
+)</code></pre>
+        <ul class="small">
+          <li>先想清楚「什么叫重复」：整行相同，还是业务主键相同</li>
+          <li><code>keep</code> 决定保留第一条还是最后一条</li>
+        </ul>
+        <div class="slide-footer"><span>Python高级应用 · pandas 数据清洗</span><span>10</span></div>
+      </section>
+
+      <!-- 11 -->
+      <section data-page="11">
+        <h2>列选型</h2>
+        <pre><code class="language-python">cols = ["encounter_id", "race", "gender",
+        "age", "time_in_hospital", "readmitted"]
+df = df[cols]
+
+# 单列 → Series；多列 → DataFrame
+los = df["time_in_hospital"]
+sub = df[["gender", "time_in_hospital"]]</code></pre>
+        <div class="band band-blue">清洗流水线早期就丢掉无关列，后续更轻、更清晰。</div>
+        <div class="slide-footer"><span>Python高级应用 · pandas 数据清洗</span><span>11</span></div>
+      </section>
+
+      <!-- 12 -->
+      <section data-page="12">
+        <h2>行筛选：条件</h2>
+        <pre><code class="language-python"># 长住院
+long_df = df[df["time_in_hospital"] >= 10]
+
+# 组合条件
+female_long = df[
+    (df["gender"] == "Female")
+    & (df["time_in_hospital"] >= 10)
+]
+print(female_long.shape)</code></pre>
+        <div class="band band-orange">多个条件用 <code>&amp;</code> / <code>|</code>，并给每个条件加括号。</div>
+        <div class="slide-footer"><span>Python高级应用 · pandas 数据清洗</span><span>12</span></div>
+      </section>
+
+      <!-- 13 -->
+      <section data-page="13">
+        <h2>字段规范化：字符串</h2>
+        <pre><code class="language-python">df["gender"] = (
+    df["gender"]
+      .astype(str)
+      .str.strip()
+      .str.lower()
+      .replace({"female": "F", "male": "M",
+                "f": "F", "m": "M"})
+)</code></pre>
+        <ul class="small">
+          <li>去空白、统一大小写、映射到受控词表</li>
+          <li>避免同一含义多种写法破坏分组统计</li>
+        </ul>
+        <div class="slide-footer"><span>Python高级应用 · pandas 数据清洗</span><span>13</span></div>
+      </section>
+
+      <!-- 14 -->
+      <section data-page="14">
+        <h2>字段规范化：数值与区间</h2>
+        <pre><code class="language-python"># 住院天数转为整数
+df["time_in_hospital"] = pd.to_numeric(
+    df["time_in_hospital"], errors="coerce"
+)
+
+# age 常为 "[70-80)" 这类区间字符串——先保留类别，或再解析
+print(df["age"].value_counts().head())</code></pre>
+        <div class="band band-blue"><code>errors="coerce"</code>：转不动的变成缺失，而不是整表报错。</div>
+        <div class="slide-footer"><span>Python高级应用 · pandas 数据清洗</span><span>14</span></div>
+      </section>
+
+      <!-- 15 -->
+      <section data-page="15">
+        <h2>查看清洗效果</h2>
+        <pre><code class="language-python">print(df.shape)
+print(df["gender"].value_counts(dropna=False))
+print(df["time_in_hospital"].describe())
+print(df.isna().mean().sort_values(ascending=False).head())</code></pre>
+        <div class="flow-list">
+          <div class="row"><div class="n">01</div><div>行数是否异常变少？</div></div>
+          <div class="row"><div class="n">02</div><div>类别水平是否收敛？</div></div>
+          <div class="row"><div class="n">03</div><div>缺失比例是否可接受？</div></div>
+        </div>
+        <div class="slide-footer"><span>Python高级应用 · pandas 数据清洗</span><span>15</span></div>
+      </section>
+
+      <!-- 16 -->
+      <section data-page="16">
+        <h2>清洗流水线：步骤鸟瞰</h2>
+        <div class="flow-list">
+          <div class="row"><div class="n">01</div><div>读取 + 统一缺失标记</div></div>
+          <div class="row"><div class="n">02</div><div>列选型；统一列名（可选）</div></div>
+          <div class="row"><div class="n">03</div><div>类型转换（数值 / 类别）</div></div>
+          <div class="row"><div class="n">04</div><div>去重；处理缺失（删或填）</div></div>
+          <div class="row"><div class="n">05</div><div>字段规范化；再描述检查</div></div>
+        </div>
+        <div class="slide-footer"><span>Python高级应用 · pandas 数据清洗</span><span>16</span></div>
+      </section>
+
+      <!-- 17 -->
+      <section data-page="17">
+        <h2>流水线：函数化示意</h2>
+        <pre><code class="language-python">def clean_cases(path):
+    df = pd.read_csv(path, na_values=["?", "NA", ""])
+    cols = ["encounter_id", "gender", "time_in_hospital", "readmitted"]
+    df = df[cols].copy()
+    df = df.drop_duplicates(subset=["encounter_id"])
+    df["time_in_hospital"] = pd.to_numeric(
+        df["time_in_hospital"], errors="coerce")
+    df = df.dropna(subset=["time_in_hospital", "gender"])
+    df["gender"] = df["gender"].str.strip().str.lower()
+    return df.reset_index(drop=True)</code></pre>
+        <div class="slide-footer"><span>Python高级应用 · pandas 数据清洗</span><span>17</span></div>
+      </section>
+
+      <!-- 18 -->
+      <section data-page="18">
+        <h2>综合：清洗后做简单汇总</h2>
+        <pre><code class="language-python">df = clean_cases("data/diabetic_sample.csv")
+summary = (
+    df.groupby("gender")["time_in_hospital"]
+      .agg(n="count", mean_los="mean", max_los="max")
+      .round(2)
+)
+print(summary)
+print("长住院占比",
+      (df["time_in_hospital"] >= 10).mean().round(3))</code></pre>
+        <div class="slide-footer"><span>Python高级应用 · pandas 数据清洗</span><span>18</span></div>
+      </section>
+
+      <!-- 19 -->
+      <section data-page="19">
+        <h2>思考：先筛选还是先去缺失？</h2>
+        <div class="two-col">
+          <div>
+            <div class="col-head blue">先缩列 / 缩条件</div>
+            <p class="small">只保留分析需要的列与行，缺失处理成本更低</p>
+          </div>
+          <div>
+            <div class="col-head green">关键字段优先</div>
+            <p class="small">主键、结局、核心数值列的缺失要有明确策略</p>
+          </div>
+        </div>
+        <div class="band band-blue">没有唯一答案；原则是：策略可复现、步骤可函数化。</div>
+        <div class="slide-footer"><span>Python高级应用 · pandas 数据清洗</span><span>19</span></div>
+      </section>
+
+      <!-- 20 -->
+      <section data-page="20">
+        <h2>代码：缺失报告小工具</h2>
+        <pre><code class="language-python">def missing_report(df):
+    n = len(df)
+    s = df.isna().sum()
+    out = pd.DataFrame({
+        "n_missing": s,
+        "rate": (s / n).round(4),
+    })
+    return out[out["n_missing"] > 0].sort_values(
+        "rate", ascending=False
+    )
+
+print(missing_report(df))</code></pre>
+        <div class="slide-footer"><span>Python高级应用 · pandas 数据清洗</span><span>20</span></div>
+      </section>
+
+      <!-- 21 -->
+      <section data-page="21">
+        <h2>与 NumPy 的衔接</h2>
+        <pre><code class="language-python">los = df["time_in_hospital"].to_numpy()
+print(type(los), los.mean())
+
+# 反之：数组进 DataFrame
+pd.DataFrame({"los": los}).head()</code></pre>
+        <div class="band band-blue">表用 pandas 洗；取出一列数值后可用 NumPy 做向量化计算。</div>
+        <div class="slide-footer"><span>Python高级应用 · pandas 数据清洗</span><span>21</span></div>
+      </section>
+
+      <!-- 22 -->
+      <section data-page="22">
+        <h2>回顾：这节课学到了什么？</h2>
+        <ul>
+          <li>Series / DataFrame；<code>read_csv</code> 与探查（head / shape）</li>
+          <li>缺失标记统一；删或填；去重</li>
+          <li>列选型与条件筛选</li>
+          <li>字符串与数值字段规范化</li>
+          <li>可复现的清洗流水线 → 再汇总</li>
+        </ul>
+        <div class="band band-blue" style="margin-top: 0.6em;">清洗不是一次性手工活，而是可重复的程序步骤。</div>
+        <div class="slide-footer"><span>Python高级应用 · pandas 数据清洗</span><span>22</span></div>
+      </section>
+
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/reveal.js@4.6.1/dist/reveal.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/reveal.js@4.6.1/plugin/highlight/highlight.js"></script>
+  <script>
+    Reveal.initialize({
+      hash: true,
+      center: false,
+      transition: 'fade',
+      transitionSpeed: 'fast',
+      backgroundTransition: 'fade',
+      width: 960,
+      height: 540,
+      margin: 0.04,
+      minScale: 0.35,
+      maxScale: 1.6,
+      slideNumber: false,
+      plugins: [RevealHighlight]
+    });
+  </script>
+</body>
+</html>
+
+</body>
+</html>

@@ -1,0 +1,799 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Matplotlib 数据可视化 · Python 高级应用</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.6.1/dist/reveal.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.6.1/dist/theme/white.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.6.1/plugin/highlight/monokai.css">
+  <style>
+    :root {
+      --ink: #12141a;
+      --ink-soft: #3d4450;
+      --muted: #7a8290;
+      --line: #d8dde6;
+      --code-bg: #e7edf4;
+      --surface: #ffffff;
+      --paper: #f4f5f7;
+      --accent: #0d9488;
+      --accent-deep: #0f766e;
+      --blue-bg: #e8f0fe;
+      --blue-ink: #1e3a5f;
+      --green-bg: #e6f6ed;
+      --green-ink: #14532d;
+      --orange-bg: #fff1e6;
+      --orange-ink: #9a3412;
+      --gray-bg: #eef0f3;
+      --font: "IBM Plex Sans", "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
+      --mono: "IBM Plex Mono", Consolas, ui-monospace, monospace;
+    }
+
+    .reveal {
+      font-family: var(--font);
+      font-size: 30px;
+      color: var(--ink);
+      background: var(--paper);
+      -webkit-font-smoothing: antialiased;
+    }
+    .reveal .slides { text-align: left; }
+    .reveal .slides section {
+      padding: 40px 52px 68px;
+      box-sizing: border-box;
+      background:
+        linear-gradient(180deg, #fbfbfc 0%, var(--surface) 42%, #f7f8fa 100%);
+    }
+    .reveal .slides section::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--accent) 0%, var(--accent) 120px, transparent 320px);
+    }
+
+    .reveal h1, .reveal h2 {
+      color: var(--ink);
+      font-weight: 700;
+      text-transform: none;
+      letter-spacing: -0.025em;
+      margin: 0 0 0.65em;
+      font-size: 1.22em;
+      line-height: 1.25;
+      position: relative;
+      padding-bottom: 0.35em;
+    }
+    .reveal h1::after, .reveal h2::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      bottom: 0;
+      width: 28px;
+      height: 2px;
+      background: var(--accent);
+    }
+    .reveal h1 { font-size: 1.55em; letter-spacing: -0.03em; }
+    .reveal p, .reveal li { color: var(--ink); line-height: 1.55; font-weight: 450; }
+    .reveal ul {
+      margin: 0.35em 0 0;
+      padding: 0;
+      list-style: none;
+    }
+    .reveal ul > li {
+      margin: 0.42em 0;
+      padding-left: 1.05em;
+      position: relative;
+    }
+    .reveal ul > li::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 0.62em;
+      width: 0.42em;
+      height: 2px;
+      background: var(--accent);
+    }
+    .reveal a { color: var(--accent-deep); }
+    .reveal .subtitle {
+      color: var(--ink-soft);
+      font-size: 0.82em;
+      font-weight: 500;
+      margin: -0.15em 0 0.15em;
+      letter-spacing: -0.01em;
+    }
+    .reveal .small {
+      font-size: 0.7em;
+      color: var(--ink-soft);
+      line-height: 1.5;
+    }
+
+    .reveal pre {
+      width: 100%;
+      box-shadow: none !important;
+      border: none !important;
+      border-left: 3px solid var(--accent) !important;
+      background: var(--code-bg) !important;
+      padding: 0.75em 0.95em !important;
+      margin: 0.45em 0 0.75em;
+      border-radius: 0;
+    }
+    .reveal pre code {
+      background: transparent !important;
+      color: var(--ink) !important;
+      font-family: var(--mono);
+      font-size: 0.68em;
+      font-weight: 450;
+      line-height: 1.48;
+      max-height: none;
+      padding: 0 !important;
+      tab-size: 4;
+    }
+    .reveal section.dense pre code { font-size: 0.58em; line-height: 1.42; }
+    .reveal code {
+      font-family: var(--mono);
+      background: var(--code-bg);
+      color: var(--ink);
+      padding: 0.06em 0.28em;
+      border-radius: 2px;
+      font-size: 0.92em;
+      font-weight: 500;
+    }
+    .reveal pre code .hljs-comment,
+    .reveal pre code .hljs-quote { color: #64748b !important; font-style: italic; }
+    .reveal pre code .hljs-keyword,
+    .reveal pre code .hljs-selector-tag,
+    .reveal pre code .hljs-built_in { color: #0b6e99 !important; font-weight: 600; }
+    .reveal pre code .hljs-string { color: var(--accent-deep) !important; }
+    .reveal pre code .hljs-number { color: #b45309 !important; }
+    .reveal pre code .hljs-title,
+    .reveal pre code .hljs-title.class_,
+    .reveal pre code .hljs-title.function_ { color: #1d4ed8 !important; }
+
+    .band {
+      padding: 0.5em 0.8em;
+      margin: 0.5em 0;
+      font-size: 0.78em;
+      line-height: 1.45;
+      font-weight: 500;
+      border-left: 3px solid transparent;
+    }
+    .band-blue { background: var(--blue-bg); color: var(--blue-ink); border-left-color: #3b82f6; }
+    .band-green { background: var(--green-bg); color: var(--green-ink); border-left-color: #22c55e; }
+    .band-orange { background: var(--orange-bg); color: var(--orange-ink); border-left-color: #f97316; }
+    .band-gray { background: var(--gray-bg); color: var(--ink); border-left-color: var(--line); }
+
+    .students {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 8.5em));
+      gap: 0.75em;
+      margin: 1.15em 0 1em;
+    }
+    .students .chip {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-top: 2px solid var(--accent);
+      padding: 0.65em 0.75em;
+      font-size: 0.78em;
+      text-align: center;
+      color: var(--ink-soft);
+      line-height: 1.35;
+    }
+    .students .chip strong {
+      display: inline-block;
+      margin-top: 0.15em;
+      font-size: 1.15em;
+      color: var(--ink);
+      font-variant-numeric: tabular-nums;
+      font-family: var(--mono);
+      font-weight: 600;
+    }
+
+    .two-col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1em;
+      margin-top: 0.45em;
+    }
+    .two-col .col-head {
+      padding: 0.38em 0.7em;
+      font-weight: 650;
+      font-size: 0.76em;
+      margin-bottom: 0.35em;
+      letter-spacing: -0.01em;
+      border-left: 3px solid transparent;
+    }
+    .two-col .col-head.blue {
+      background: var(--blue-bg);
+      color: var(--blue-ink);
+      border-left-color: #3b82f6;
+    }
+    .two-col .col-head.green {
+      background: var(--green-bg);
+      color: var(--green-ink);
+      border-left-color: #22c55e;
+    }
+    .two-col .col-head.orange {
+      background: var(--orange-bg);
+      color: var(--orange-ink);
+      border-left-color: #f97316;
+    }
+    .two-col ul { margin-top: 0; font-size: 0.8em; }
+    .two-col pre { margin-bottom: 0.45em; }
+
+    .three-col {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 0.7em;
+      margin-top: 0.5em;
+      font-size: 0.72em;
+    }
+    .three-col .box {
+      background: var(--gray-bg);
+      padding: 0.55em 0.65em;
+      min-height: 7.5em;
+    }
+    .three-col .box strong {
+      display: block;
+      margin-bottom: 0.35em;
+      font-size: 1.05em;
+      color: var(--ink);
+    }
+
+    .term-table {
+      display: grid;
+      grid-template-columns: 8em 1fr;
+      gap: 0.4em 0.9em;
+      margin-top: 0.75em;
+      font-size: 0.78em;
+      align-items: stretch;
+    }
+    .term-table .k {
+      font-family: var(--mono);
+      background: var(--code-bg);
+      border-left: 3px solid var(--accent);
+      padding: 0.28em 0.5em;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+    }
+    .term-table > div:nth-child(even) {
+      display: flex;
+      align-items: center;
+      color: var(--ink-soft);
+      border-bottom: 1px solid var(--line);
+      padding: 0.2em 0;
+    }
+
+    .flow-list {
+      margin-top: 0.65em;
+      display: grid;
+      gap: 0.4em;
+      font-size: 0.76em;
+    }
+    .flow-list .row {
+      display: grid;
+      grid-template-columns: 2.4em 1fr;
+      gap: 0.55em;
+      align-items: stretch;
+    }
+    .flow-list .n {
+      background: var(--ink);
+      color: #fff;
+      text-align: center;
+      font-weight: 600;
+      font-family: var(--mono);
+      font-size: 0.9em;
+      letter-spacing: 0.02em;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 1.7em;
+    }
+    .flow-list .row > div:last-child {
+      background: var(--gray-bg);
+      padding: 0.35em 0.65em;
+      display: flex;
+      align-items: center;
+      color: var(--ink);
+    }
+
+    .file-box {
+      font-family: var(--mono);
+      background: var(--code-bg);
+      border-left: 3px solid var(--accent);
+      padding: 0.65em 0.9em;
+      font-size: 0.72em;
+      line-height: 1.55;
+      color: var(--ink);
+      margin: 0.45em 0 0.75em;
+      white-space: pre-wrap;
+    }
+
+    .mode-row {
+      display: grid;
+      grid-template-columns: 3.2em 1fr;
+      gap: 0.6em;
+      align-items: center;
+      margin: 0.4em 0;
+      font-size: 0.8em;
+    }
+    .mode-row .tag {
+      font-family: var(--mono);
+      font-weight: 700;
+      text-align: center;
+      padding: 0.35em 0;
+      background: var(--code-bg);
+    }
+    .mode-row.warn .tag {
+      background: var(--orange-bg);
+      color: var(--orange-ink);
+    }
+
+    .parse-flow {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr auto 1fr;
+      gap: 0.4em;
+      align-items: center;
+      margin: 0.6em 0;
+      font-size: 0.72em;
+    }
+    .parse-flow .cell {
+      background: var(--gray-bg);
+      padding: 0.45em 0.55em;
+      text-align: center;
+      font-family: var(--mono);
+    }
+    .parse-flow .arrow { color: var(--muted); font-family: var(--mono); }
+
+    .goals li {
+      font-size: 0.95em;
+      margin: 0.55em 0 !important;
+    }
+
+    .slide-footer {
+      position: absolute;
+      left: 52px;
+      right: 52px;
+      bottom: 18px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 12px;
+      font-family: var(--mono);
+      font-weight: 500;
+      letter-spacing: 0.02em;
+      color: var(--muted);
+      pointer-events: none;
+      padding-top: 10px;
+      border-top: 1px solid var(--line);
+    }
+    .slide-footer span:last-child {
+      color: var(--accent-deep);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .reveal .controls { color: var(--accent); }
+    .reveal .progress {
+      color: var(--accent);
+      height: 2px;
+      background: rgba(13, 148, 136, 0.12);
+    }
+    .reveal .slide-number { display: none; }
+
+    .back-link {
+      position: fixed;
+      top: 14px;
+      left: 14px;
+      z-index: 30;
+      font-family: var(--font);
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      background: rgba(255, 255, 255, 0.92);
+      backdrop-filter: blur(8px);
+      border: 1px solid var(--line);
+      padding: 6px 12px;
+      text-decoration: none !important;
+      color: var(--accent-deep) !important;
+      transition: border-color 0.15s ease, background 0.15s ease;
+    }
+    .back-link:hover {
+      background: #fff;
+      border-color: var(--accent);
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .reveal .slides section { transition: none !important; }
+    }
+  </style>
+</head>
+<body>
+  <a class="back-link" href="index.html">← 演示列表</a>
+  <div class="reveal">
+    <div class="slides">
+      <!-- 01 -->
+      <section data-page="01">
+        <h1>Matplotlib 数据可视化</h1>
+        <p class="subtitle">把数字变成看得懂的图</p>
+        <div class="students">
+          <div class="chip">折线<br><strong>趋势</strong></div>
+          <div class="chip">柱状<br><strong>对比</strong></div>
+          <div class="chip">散点<br><strong>关系</strong></div>
+        </div>
+        <div class="band band-blue">数据清洗之后，如何把结果讲清楚？出图是常用一步。</div>
+      <div class="slide-footer"><span>Python高级应用 · Matplotlib 数据可视化</span><span>01</span></div>
+      </section>
+
+      <!-- 02 -->
+      <section data-page="02">
+        <h2>今天要完成什么？</h2>
+        <ul class="goals">
+          <li>分清 figure 与 axes</li>
+          <li>画出折线、柱状、散点图</li>
+          <li>补齐标题、轴标签与图例</li>
+          <li>处理中文显示并保存图片</li>
+          <li>完成一份病例统计出图示例</li>
+        </ul>
+        <div class="band band-blue" style="margin-top: 1em;">目标：从数据到可读图表的完整闭环。</div>
+      <div class="slide-footer"><span>Python高级应用 · Matplotlib 数据可视化</span><span>02</span></div>
+      </section>
+
+      <!-- 03 -->
+      <section data-page="03">
+        <h2>为什么要可视化？</h2>
+        <div class="two-col">
+          <div>
+            <div class="col-head blue">只看表格</div>
+            <ul class="small">
+              <li>数字多时难抓重点</li>
+              <li>趋势、对比不直观</li>
+              <li>汇报时听众负担大</li>
+            </ul>
+          </div>
+          <div>
+            <div class="col-head green">配上一张图</div>
+            <ul class="small">
+              <li>一眼看出升降与异常</li>
+              <li>便于比较组别差异</li>
+              <li>报告、答辩更清晰</li>
+            </ul>
+          </div>
+        </div>
+        <div class="band band-blue">图不是装饰，而是把结论说清楚的工具。</div>
+      <div class="slide-footer"><span>Python高级应用 · Matplotlib 数据可视化</span><span>03</span></div>
+      </section>
+
+      <!-- 04 -->
+      <section data-page="04">
+        <h2>figure 与 axes：画布和坐标系</h2>
+        <div class="term-table">
+          <div class="k">Figure</div><div>整张图的「画布」，可含一个或多个子图</div>
+          <div class="k">Axes</div><div>具体的坐标系：坐标轴、曲线、标题都画在这里</div>
+          <div class="k">Axis</div><div>单根轴（x 或 y），控制刻度与范围</div>
+        </div>
+        <div class="band band-blue" style="margin-top: 0.8em;">日常说的「画一张图」，多数时候是在操作 Axes。</div>
+      <div class="slide-footer"><span>Python高级应用 · Matplotlib 数据可视化</span><span>04</span></div>
+      </section>
+
+      <!-- 05 -->
+      <section data-page="05">
+        <h2>两种常见写法</h2>
+        <div class="two-col">
+          <div>
+            <div class="col-head blue">pyplot 快捷接口</div>
+            <pre><code class="language-python">import matplotlib.pyplot as plt
+
+plt.plot(x, y)
+plt.title("趋势")
+plt.show()</code></pre>
+          </div>
+          <div>
+            <div class="col-head green">面向对象接口</div>
+            <pre><code class="language-python">fig, ax = plt.subplots()
+ax.plot(x, y)
+ax.set_title("趋势")
+plt.show()</code></pre>
+          </div>
+        </div>
+        <p class="small">初学可用 <code>plt</code>；多子图、精细控制时更推荐 <code>fig, ax</code>。</p>
+      <div class="slide-footer"><span>Python高级应用 · Matplotlib 数据可视化</span><span>05</span></div>
+      </section>
+
+      <!-- 06 -->
+      <section data-page="06">
+        <h2>导入与最简折线图</h2>
+        <pre><code class="language-python">import matplotlib.pyplot as plt
+
+months = ["1月", "2月", "3月", "4月"]
+cases = [12, 18, 15, 22]
+
+plt.plot(months, cases)
+plt.show()</code></pre>
+        <div class="band band-green"><code>plot</code>：按顺序把点连成折线，适合看趋势。</div>
+      <div class="slide-footer"><span>Python高级应用 · Matplotlib 数据可视化</span><span>06</span></div>
+      </section>
+
+      <!-- 07 -->
+      <section data-page="07">
+        <h2>柱状图：对比数量</h2>
+        <pre><code class="language-python">depts = ["内科", "外科", "儿科"]
+counts = [45, 32, 28]
+
+plt.bar(depts, counts)
+plt.show()</code></pre>
+        <ul class="small">
+          <li>类别之间比高低 → 优先柱状图</li>
+          <li><code>bar</code> 的 x 常是类别名，y 是数值</li>
+        </ul>
+      <div class="slide-footer"><span>Python高级应用 · Matplotlib 数据可视化</span><span>07</span></div>
+      </section>
+
+      <!-- 08 -->
+      <section data-page="08">
+        <h2>散点图：看两个变量的关系</h2>
+        <pre><code class="language-python">age = [25, 40, 55, 62, 33]
+days = [3, 5, 8, 10, 4]
+
+plt.scatter(age, days)
+plt.show()</code></pre>
+        <div class="band band-blue">每个点是一条记录；适合观察相关、聚类或异常点。</div>
+      <div class="slide-footer"><span>Python高级应用 · Matplotlib 数据可视化</span><span>08</span></div>
+      </section>
+
+      <!-- 09 -->
+      <section data-page="09">
+        <h2>三种图怎么选？</h2>
+        <div class="three-col">
+          <div class="box">
+            <strong>折线</strong>
+            时间顺序、连续变化<br><br>
+            例：每月病例数趋势
+          </div>
+          <div class="box">
+            <strong>柱状</strong>
+            类别对比、分组计数<br><br>
+            例：各科室入院人数
+          </div>
+          <div class="box">
+            <strong>散点</strong>
+            两变量关系、分布<br><br>
+            例：年龄与住院天数
+          </div>
+        </div>
+        <div class="band band-blue" style="margin-top: 0.8em;">先问「要表达什么」，再选图型。</div>
+      <div class="slide-footer"><span>Python高级应用 · Matplotlib 数据可视化</span><span>09</span></div>
+      </section>
+
+      <!-- 10 -->
+      <section data-page="10">
+        <h2>标题与轴标签</h2>
+        <pre><code class="language-python">plt.plot(months, cases)
+plt.title("近四月病例数")
+plt.xlabel("月份")
+plt.ylabel("病例数")
+plt.show()</code></pre>
+        <div class="term-table">
+          <div class="k">title</div><div>图在说什么（一句话）</div>
+          <div class="k">xlabel</div><div>横轴含义与单位</div>
+          <div class="k">ylabel</div><div>纵轴含义与单位</div>
+        </div>
+      <div class="slide-footer"><span>Python高级应用 · Matplotlib 数据可视化</span><span>10</span></div>
+      </section>
+
+      <!-- 11 -->
+      <section data-page="11">
+        <h2>图例：多条线时要标明</h2>
+        <pre><code class="language-python">plt.plot(months, cases_a, label="A 院区")
+plt.plot(months, cases_b, label="B 院区")
+plt.legend()
+plt.show()</code></pre>
+        <ul class="small">
+          <li><code>label=</code> 给每条系列起名字</li>
+          <li><code>legend()</code> 把名字显示在图上</li>
+          <li>没有图例，读者分不清线代表什么</li>
+        </ul>
+      <div class="slide-footer"><span>Python高级应用 · Matplotlib 数据可视化</span><span>11</span></div>
+      </section>
+
+      <!-- 12 -->
+      <section data-page="12" class="dense">
+        <h2>用 Axes 写完整一版</h2>
+        <pre><code class="language-python">fig, ax = plt.subplots()
+ax.plot(months, cases_a, label="A 院区")
+ax.plot(months, cases_b, label="B 院区")
+ax.set_title("近四月病例数对比")
+ax.set_xlabel("月份")
+ax.set_ylabel("病例数")
+ax.legend()
+plt.show()</code></pre>
+        <p class="small"><code>set_title</code> / <code>set_xlabel</code> 对应 pyplot 里的 <code>title</code> / <code>xlabel</code>。</p>
+      <div class="slide-footer"><span>Python高级应用 · Matplotlib 数据可视化</span><span>12</span></div>
+      </section>
+
+      <!-- 13 -->
+      <section data-page="13">
+        <h2>中文显示：常见现象</h2>
+        <div class="two-col">
+          <div>
+            <div class="col-head orange">可能看到什么</div>
+            <ul class="small">
+              <li>标题变成方框 □□□</li>
+              <li>轴标签缺字、乱码感</li>
+              <li>负号显示异常</li>
+            </ul>
+          </div>
+          <div>
+            <div class="col-head green">常见原因</div>
+            <ul class="small">
+              <li>默认字体不含中文</li>
+              <li>系统中文字体名写错</li>
+              <li>未统一配置字体</li>
+            </ul>
+          </div>
+        </div>
+        <div class="band band-orange">中文出图前，先确认字体配置是否生效。</div>
+      <div class="slide-footer"><span>Python高级应用 · Matplotlib 数据可视化</span><span>13</span></div>
+      </section>
+
+      <!-- 14 -->
+      <section data-page="14">
+        <h2>中文显示：配置示意</h2>
+        <pre><code class="language-python">plt.rcParams["font.sans-serif"] = ["Microsoft YaHei", "SimHei"]
+plt.rcParams["axes.unicode_minus"] = False  # 正常显示负号</code></pre>
+        <ul class="small">
+          <li>Windows 上常用「微软雅黑」「黑体」</li>
+          <li>不同电脑字体名可能不同，需按环境调整</li>
+          <li>配置写在画图代码之前</li>
+        </ul>
+        <div class="band band-blue">原则：选系统已安装、且支持中文的字体。</div>
+      <div class="slide-footer"><span>Python高级应用 · Matplotlib 数据可视化</span><span>14</span></div>
+      </section>
+
+      <!-- 15 -->
+      <section data-page="15">
+        <h2>保存图片：savefig</h2>
+        <pre><code class="language-python">fig, ax = plt.subplots()
+ax.bar(depts, counts)
+ax.set_title("各科室入院人数")
+fig.savefig("dept_counts.png", dpi=150, bbox_inches="tight")
+plt.close(fig)</code></pre>
+        <div class="band band-green">图片文件可插入报告、PPT；不一定每次都 <code>show()</code>。</div>
+      <div class="slide-footer"><span>Python高级应用 · Matplotlib 数据可视化</span><span>15</span></div>
+      </section>
+
+      <!-- 16 -->
+      <section data-page="16">
+        <h2>保存时要注意什么？</h2>
+        <div class="term-table">
+          <div class="k">格式</div><div><code>.png</code> 清晰通用；<code>.pdf</code> 适合印刷排版</div>
+          <div class="k">dpi</div><div>分辨率；报告插图常用 120–200</div>
+          <div class="k">bbox_inches</div><div><code>"tight"</code> 可减少标题被裁切</div>
+          <div class="k">路径</div><div>相对/绝对路径，确认工作目录</div>
+        </div>
+        <div class="band band-blue" style="margin-top: 0.7em;">先 <code>savefig</code> 再 <code>close</code>，避免窗口堆积。</div>
+      <div class="slide-footer"><span>Python高级应用 · Matplotlib 数据可视化</span><span>16</span></div>
+      </section>
+
+      <!-- 17 -->
+      <section data-page="17">
+        <h2>场景：病例统计要出什么图？</h2>
+        <div class="flow-list">
+          <div class="row"><div class="n">01</div><div>按月统计病例数 → 折线图看趋势</div></div>
+          <div class="row"><div class="n">02</div><div>按科室统计人数 → 柱状图做对比</div></div>
+          <div class="row"><div class="n">03</div><div>年龄与住院天数 → 散点图看关系</div></div>
+        </div>
+        <div class="band band-blue" style="margin-top: 0.8em;">同一份清洗后的表，可以服务多种图表问题。</div>
+      <div class="slide-footer"><span>Python高级应用 · Matplotlib 数据可视化</span><span>17</span></div>
+      </section>
+
+      <!-- 18 -->
+      <section data-page="18">
+        <h2>从数据到出图的流程</h2>
+        <div class="flow-list">
+          <div class="row"><div class="n">01</div><div>准备好序列或表（如列表 / DataFrame 列）</div></div>
+          <div class="row"><div class="n">02</div><div>选图型：折线 / 柱状 / 散点</div></div>
+          <div class="row"><div class="n">03</div><div>补标题、轴标签、图例</div></div>
+          <div class="row"><div class="n">04</div><div>处理中文字体后保存或展示</div></div>
+        </div>
+        <p class="small">出图质量很大程度取决于：数据是否已对齐、标签是否说人话。</p>
+      <div class="slide-footer"><span>Python高级应用 · Matplotlib 数据可视化</span><span>18</span></div>
+      </section>
+
+      <!-- 19 -->
+      <section data-page="19" class="dense">
+        <h2>病例统计出图示例</h2>
+        <pre><code class="language-python">import matplotlib.pyplot as plt
+
+plt.rcParams["font.sans-serif"] = ["Microsoft YaHei"]
+plt.rcParams["axes.unicode_minus"] = False
+
+months = ["1月", "2月", "3月", "4月"]
+counts = [120, 135, 128, 150]
+
+fig, ax = plt.subplots()
+ax.plot(months, counts, marker="o", label="全院")
+ax.set_title("近四月病例数")
+ax.set_xlabel("月份")
+ax.set_ylabel("病例数")
+ax.legend()
+fig.savefig("cases_trend.png", dpi=150, bbox_inches="tight")
+plt.close(fig)</code></pre>
+      <div class="slide-footer"><span>Python高级应用 · Matplotlib 数据可视化</span><span>19</span></div>
+      </section>
+
+      <!-- 20 -->
+      <section data-page="20">
+        <h2>读图时要自问三句</h2>
+        <ul class="goals">
+          <li>横轴、纵轴分别是什么？单位清楚吗？</li>
+          <li>图在支持哪一句结论？</li>
+          <li>有没有被刻度范围「放大」的假象？</li>
+        </ul>
+        <div class="band band-orange" style="margin-top: 1em;">能画出来不等于结论可靠；标签与尺度同样重要。</div>
+      <div class="slide-footer"><span>Python高级应用 · Matplotlib 数据可视化</span><span>20</span></div>
+      </section>
+
+      <!-- 21 -->
+      <section data-page="21">
+        <h2>常见问题速查</h2>
+        <div class="mode-row warn">
+          <div class="tag">中文</div>
+          <div>方框 → 检查 <code>font.sans-serif</code> 与系统字体</div>
+        </div>
+        <div class="mode-row">
+          <div class="tag">空白</div>
+          <div>图是空的 → 检查数据长度是否对齐、是否调用了绘图函数</div>
+        </div>
+        <div class="mode-row">
+          <div class="tag">裁切</div>
+          <div>标题被切 → 试 <code>bbox_inches="tight"</code></div>
+        </div>
+        <div class="mode-row">
+          <div class="tag">路径</div>
+          <div>找不到文件 → 确认 <code>savefig</code> 的工作目录</div>
+        </div>
+      <div class="slide-footer"><span>Python高级应用 · Matplotlib 数据可视化</span><span>21</span></div>
+      </section>
+
+      <!-- 22 -->
+      <section data-page="22">
+        <h2>回顾：这节课学到了什么？</h2>
+        <ul>
+          <li>Figure / Axes：画布与坐标系</li>
+          <li>折线、柱状、散点：按表达目的选型</li>
+          <li>标题、轴标签、图例：让读者读得懂</li>
+          <li>中文字体与负号配置</li>
+          <li><code>savefig</code>：把图留给报告与交付</li>
+          <li>病例统计：趋势、对比、关系三类典型出图</li>
+        </ul>
+        <div class="band band-blue" style="margin-top: 0.6em;">下一站：网络请求与大模型，让程序连接外部服务。</div>
+      <div class="slide-footer"><span>Python高级应用 · Matplotlib 数据可视化</span><span>22</span></div>
+      </section>
+
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/reveal.js@4.6.1/dist/reveal.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/reveal.js@4.6.1/plugin/highlight/highlight.js"></script>
+  <script>
+    Reveal.initialize({
+      hash: true,
+      center: false,
+      transition: 'fade',
+      transitionSpeed: 'fast',
+      backgroundTransition: 'fade',
+      width: 960,
+      height: 540,
+      margin: 0.04,
+      minScale: 0.35,
+      maxScale: 1.6,
+      slideNumber: false,
+      plugins: [RevealHighlight]
+    });
+  </script>
+</body>
+</html>

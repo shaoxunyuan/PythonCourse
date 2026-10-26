@@ -1,0 +1,762 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NumPy 数组与数值计算 · Python 高级应用</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.6.1/dist/reveal.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.6.1/dist/theme/white.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.6.1/plugin/highlight/monokai.css">
+  <style>
+    :root {
+      --ink: #12141a;
+      --ink-soft: #3d4450;
+      --muted: #7a8290;
+      --line: #d8dde6;
+      --code-bg: #e7edf4;
+      --surface: #ffffff;
+      --paper: #f4f5f7;
+      --accent: #0d9488;
+      --accent-deep: #0f766e;
+      --blue-bg: #e8f0fe;
+      --blue-ink: #1e3a5f;
+      --green-bg: #e6f6ed;
+      --green-ink: #14532d;
+      --orange-bg: #fff1e6;
+      --orange-ink: #9a3412;
+      --gray-bg: #eef0f3;
+      --font: "IBM Plex Sans", "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
+      --mono: "IBM Plex Mono", Consolas, ui-monospace, monospace;
+    }
+
+    .reveal {
+      font-family: var(--font);
+      font-size: 30px;
+      color: var(--ink);
+      background: var(--paper);
+      -webkit-font-smoothing: antialiased;
+    }
+    .reveal .slides { text-align: left; }
+    .reveal .slides section {
+      padding: 40px 52px 68px;
+      box-sizing: border-box;
+      background:
+        linear-gradient(180deg, #fbfbfc 0%, var(--surface) 42%, #f7f8fa 100%);
+    }
+    .reveal .slides section::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--accent) 0%, var(--accent) 120px, transparent 320px);
+    }
+
+    .reveal h1, .reveal h2 {
+      color: var(--ink);
+      font-weight: 700;
+      text-transform: none;
+      letter-spacing: -0.025em;
+      margin: 0 0 0.65em;
+      font-size: 1.22em;
+      line-height: 1.25;
+      position: relative;
+      padding-bottom: 0.35em;
+    }
+    .reveal h1::after, .reveal h2::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      bottom: 0;
+      width: 28px;
+      height: 2px;
+      background: var(--accent);
+    }
+    .reveal h1 { font-size: 1.55em; letter-spacing: -0.03em; }
+    .reveal p, .reveal li { color: var(--ink); line-height: 1.55; font-weight: 450; }
+    .reveal ul {
+      margin: 0.35em 0 0;
+      padding: 0;
+      list-style: none;
+    }
+    .reveal ul > li {
+      margin: 0.42em 0;
+      padding-left: 1.05em;
+      position: relative;
+    }
+    .reveal ul > li::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 0.62em;
+      width: 0.42em;
+      height: 2px;
+      background: var(--accent);
+    }
+    .reveal a { color: var(--accent-deep); }
+    .reveal .subtitle {
+      color: var(--ink-soft);
+      font-size: 0.82em;
+      font-weight: 500;
+      margin: -0.15em 0 0.15em;
+      letter-spacing: -0.01em;
+    }
+    .reveal .small {
+      font-size: 0.7em;
+      color: var(--ink-soft);
+      line-height: 1.5;
+    }
+
+    .reveal pre {
+      width: 100%;
+      box-shadow: none !important;
+      border: none !important;
+      border-left: 3px solid var(--accent) !important;
+      background: var(--code-bg) !important;
+      padding: 0.75em 0.95em !important;
+      margin: 0.45em 0 0.75em;
+      border-radius: 0;
+    }
+    .reveal pre code {
+      background: transparent !important;
+      color: var(--ink) !important;
+      font-family: var(--mono);
+      font-size: 0.68em;
+      font-weight: 450;
+      line-height: 1.48;
+      max-height: none;
+      padding: 0 !important;
+      tab-size: 4;
+    }
+    .reveal section.dense pre code { font-size: 0.58em; line-height: 1.42; }
+    .reveal code {
+      font-family: var(--mono);
+      background: var(--code-bg);
+      color: var(--ink);
+      padding: 0.06em 0.28em;
+      border-radius: 2px;
+      font-size: 0.92em;
+      font-weight: 500;
+    }
+    .reveal pre code .hljs-comment,
+    .reveal pre code .hljs-quote { color: #64748b !important; font-style: italic; }
+    .reveal pre code .hljs-keyword,
+    .reveal pre code .hljs-selector-tag,
+    .reveal pre code .hljs-built_in { color: #0b6e99 !important; font-weight: 600; }
+    .reveal pre code .hljs-string { color: var(--accent-deep) !important; }
+    .reveal pre code .hljs-number { color: #b45309 !important; }
+    .reveal pre code .hljs-title,
+    .reveal pre code .hljs-title.class_,
+    .reveal pre code .hljs-title.function_ { color: #1d4ed8 !important; }
+
+    .band {
+      padding: 0.5em 0.8em;
+      margin: 0.5em 0;
+      font-size: 0.78em;
+      line-height: 1.45;
+      font-weight: 500;
+      border-left: 3px solid transparent;
+    }
+    .band-blue { background: var(--blue-bg); color: var(--blue-ink); border-left-color: #3b82f6; }
+    .band-green { background: var(--green-bg); color: var(--green-ink); border-left-color: #22c55e; }
+    .band-orange { background: var(--orange-bg); color: var(--orange-ink); border-left-color: #f97316; }
+    .band-gray { background: var(--gray-bg); color: var(--ink); border-left-color: var(--line); }
+
+    .students {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 8.5em));
+      gap: 0.75em;
+      margin: 1.15em 0 1em;
+    }
+    .students .chip {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-top: 2px solid var(--accent);
+      padding: 0.65em 0.75em;
+      font-size: 0.78em;
+      text-align: center;
+      color: var(--ink-soft);
+      line-height: 1.35;
+    }
+    .students .chip strong {
+      display: inline-block;
+      margin-top: 0.15em;
+      font-size: 1.15em;
+      color: var(--ink);
+      font-variant-numeric: tabular-nums;
+      font-family: var(--mono);
+      font-weight: 600;
+    }
+
+    .two-col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1em;
+      margin-top: 0.45em;
+    }
+    .two-col .col-head {
+      padding: 0.38em 0.7em;
+      font-weight: 650;
+      font-size: 0.76em;
+      margin-bottom: 0.35em;
+      letter-spacing: -0.01em;
+      border-left: 3px solid transparent;
+    }
+    .two-col .col-head.blue {
+      background: var(--blue-bg);
+      color: var(--blue-ink);
+      border-left-color: #3b82f6;
+    }
+    .two-col .col-head.green {
+      background: var(--green-bg);
+      color: var(--green-ink);
+      border-left-color: #22c55e;
+    }
+    .two-col .col-head.orange {
+      background: var(--orange-bg);
+      color: var(--orange-ink);
+      border-left-color: #f97316;
+    }
+    .two-col ul { margin-top: 0; font-size: 0.8em; }
+    .two-col pre { margin-bottom: 0.45em; }
+
+    .three-col {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 0.7em;
+      margin-top: 0.5em;
+      font-size: 0.72em;
+    }
+    .three-col .box {
+      background: var(--gray-bg);
+      padding: 0.55em 0.65em;
+      min-height: 7.5em;
+    }
+    .three-col .box strong {
+      display: block;
+      margin-bottom: 0.35em;
+      font-size: 1.05em;
+      color: var(--ink);
+    }
+
+    .term-table {
+      display: grid;
+      grid-template-columns: 8em 1fr;
+      gap: 0.4em 0.9em;
+      margin-top: 0.75em;
+      font-size: 0.78em;
+      align-items: stretch;
+    }
+    .term-table .k {
+      font-family: var(--mono);
+      background: var(--code-bg);
+      border-left: 3px solid var(--accent);
+      padding: 0.28em 0.5em;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+    }
+    .term-table > div:nth-child(even) {
+      display: flex;
+      align-items: center;
+      color: var(--ink-soft);
+      border-bottom: 1px solid var(--line);
+      padding: 0.2em 0;
+    }
+
+    .flow-list {
+      margin-top: 0.65em;
+      display: grid;
+      gap: 0.4em;
+      font-size: 0.76em;
+    }
+    .flow-list .row {
+      display: grid;
+      grid-template-columns: 2.4em 1fr;
+      gap: 0.55em;
+      align-items: stretch;
+    }
+    .flow-list .n {
+      background: var(--ink);
+      color: #fff;
+      text-align: center;
+      font-weight: 600;
+      font-family: var(--mono);
+      font-size: 0.9em;
+      letter-spacing: 0.02em;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 1.7em;
+    }
+    .flow-list .row > div:last-child {
+      background: var(--gray-bg);
+      padding: 0.35em 0.65em;
+      display: flex;
+      align-items: center;
+      color: var(--ink);
+    }
+
+    .file-box {
+      font-family: var(--mono);
+      background: var(--code-bg);
+      border-left: 3px solid var(--accent);
+      padding: 0.65em 0.9em;
+      font-size: 0.72em;
+      line-height: 1.55;
+      color: var(--ink);
+      margin: 0.45em 0 0.75em;
+      white-space: pre-wrap;
+    }
+
+    .mode-row {
+      display: grid;
+      grid-template-columns: 3.2em 1fr;
+      gap: 0.6em;
+      align-items: center;
+      margin: 0.4em 0;
+      font-size: 0.8em;
+    }
+    .mode-row .tag {
+      font-family: var(--mono);
+      font-weight: 700;
+      text-align: center;
+      padding: 0.35em 0;
+      background: var(--code-bg);
+    }
+    .mode-row.warn .tag {
+      background: var(--orange-bg);
+      color: var(--orange-ink);
+    }
+
+    .parse-flow {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr auto 1fr;
+      gap: 0.4em;
+      align-items: center;
+      margin: 0.6em 0;
+      font-size: 0.72em;
+    }
+    .parse-flow .cell {
+      background: var(--gray-bg);
+      padding: 0.45em 0.55em;
+      text-align: center;
+      font-family: var(--mono);
+    }
+    .parse-flow .arrow { color: var(--muted); font-family: var(--mono); }
+
+    .goals li {
+      font-size: 0.95em;
+      margin: 0.55em 0 !important;
+    }
+
+    .slide-footer {
+      position: absolute;
+      left: 52px;
+      right: 52px;
+      bottom: 18px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 12px;
+      font-family: var(--mono);
+      font-weight: 500;
+      letter-spacing: 0.02em;
+      color: var(--muted);
+      pointer-events: none;
+      padding-top: 10px;
+      border-top: 1px solid var(--line);
+    }
+    .slide-footer span:last-child {
+      color: var(--accent-deep);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .reveal .controls { color: var(--accent); }
+    .reveal .progress {
+      color: var(--accent);
+      height: 2px;
+      background: rgba(13, 148, 136, 0.12);
+    }
+    .reveal .slide-number { display: none; }
+
+    .back-link {
+      position: fixed;
+      top: 14px;
+      left: 14px;
+      z-index: 30;
+      font-family: var(--font);
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      background: rgba(255, 255, 255, 0.92);
+      backdrop-filter: blur(8px);
+      border: 1px solid var(--line);
+      padding: 6px 12px;
+      text-decoration: none !important;
+      color: var(--accent-deep) !important;
+      transition: border-color 0.15s ease, background 0.15s ease;
+    }
+    .back-link:hover {
+      background: #fff;
+      border-color: var(--accent);
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .reveal .slides section { transition: none !important; }
+    }
+  </style>
+</head>
+<body>
+  <a class="back-link" href="index.html">← 演示列表</a>
+  <div class="reveal">
+    <div class="slides">
+
+      <!-- 01 -->
+      <section data-page="01">
+        <h1>NumPy 数组与数值计算</h1>
+        <p class="subtitle">用 ndarray 高效处理住院天数等数值</p>
+        <div class="students">
+          <div class="chip">数组<br><strong>ndarray</strong></div>
+          <div class="chip">向量化<br><strong>运算</strong></div>
+          <div class="chip">统计<br><strong>mean</strong></div>
+        </div>
+        <div class="band band-blue">列表能算，但大批量数值更适合 NumPy。</div>
+        <div class="slide-footer"><span>Python高级应用 · NumPy 数组与数值计算</span><span>01</span></div>
+      </section>
+
+      <!-- 02 -->
+      <section data-page="02">
+        <h2>今天要完成什么？</h2>
+        <ul class="goals">
+          <li>创建 <code>ndarray</code>，认识 <code>dtype</code> 与形状直觉</li>
+          <li>索引、切片与布尔筛选</li>
+          <li>理解向量化相对循环的优势</li>
+          <li>广播直觉；常用统计 <code>mean / sum / max</code></li>
+          <li>对照 list；用住院天数数组做医学数值示例</li>
+        </ul>
+        <div class="slide-footer"><span>Python高级应用 · NumPy 数组与数值计算</span><span>02</span></div>
+      </section>
+
+      <!-- 03 -->
+      <section data-page="03">
+        <h2>为什么要用 NumPy？</h2>
+        <div class="two-col">
+          <div>
+            <div class="col-head blue">list 循环</div>
+            <pre><code class="language-python">los = [3, 5, 12, 2, 8]
+s = 0
+for x in los:
+    s += x
+avg = s / len(los)</code></pre>
+          </div>
+          <div>
+            <div class="col-head green">NumPy</div>
+            <pre><code class="language-python">import numpy as np
+los = np.array([3, 5, 12, 2, 8])
+avg = los.mean()</code></pre>
+          </div>
+        </div>
+        <div class="band band-blue">写法更短；大数据量时通常更快，且便于矩阵式运算。</div>
+        <div class="slide-footer"><span>Python高级应用 · NumPy 数组与数值计算</span><span>03</span></div>
+      </section>
+
+      <!-- 04 -->
+      <section data-page="04">
+        <h2>创建 ndarray</h2>
+        <pre><code class="language-python">import numpy as np
+
+a = np.array([3, 5, 12, 2, 8])
+b = np.zeros(5)
+c = np.arange(0, 10, 2)   # 0 2 4 6 8
+d = np.linspace(0, 1, 5)  # 0 ~ 1 等分 5 点
+print(a, type(a))</code></pre>
+        <div class="band band-blue"><code>np.array(...)</code> 是最常见入口；同质数值放进一个数组。</div>
+        <div class="slide-footer"><span>Python高级应用 · NumPy 数组与数值计算</span><span>04</span></div>
+      </section>
+
+      <!-- 05 -->
+      <section data-page="05">
+        <h2>dtype：元素类型</h2>
+        <pre><code class="language-python">a = np.array([3, 5, 12], dtype=np.int64)
+b = np.array([3.0, 5.5], dtype=np.float64)
+print(a.dtype, b.dtype)
+
+# 混合输入会被统一类型
+c = np.array([1, 2.5, 3])
+print(c.dtype)  # float64</code></pre>
+        <ul class="small">
+          <li>数组要求元素类型一致（或可安全统一）</li>
+          <li>医学计数常用整数；平均值等结果常为浮点</li>
+        </ul>
+        <div class="slide-footer"><span>Python高级应用 · NumPy 数组与数值计算</span><span>05</span></div>
+      </section>
+
+      <!-- 06 -->
+      <section data-page="06">
+        <h2>形状直觉：一维住院天数</h2>
+        <pre><code class="language-python">los = np.array([3, 5, 12, 2, 8, 6, 4])
+print(los.shape)   # (7,)
+print(los.ndim)    # 1
+print(los.size)    # 7</code></pre>
+        <div class="term-table">
+          <div class="k">shape</div><div>各维长度；(7,) 表示长度 7 的一维数组</div>
+          <div class="k">ndim</div><div>维度个数</div>
+          <div class="k">size</div><div>元素总数</div>
+        </div>
+        <div class="slide-footer"><span>Python高级应用 · NumPy 数组与数值计算</span><span>06</span></div>
+      </section>
+
+      <!-- 07 -->
+      <section data-page="07">
+        <h2>索引与切片</h2>
+        <pre><code class="language-python">los = np.array([3, 5, 12, 2, 8, 6, 4])
+print(los[0])      # 3
+print(los[-1])     # 4
+print(los[1:4])    # [5 12 2]
+print(los[::2])    # [3 12 8 4]</code></pre>
+        <div class="band band-blue">切片语法与 list 相近；注意切片视图与复制的细节可后置，先会用。</div>
+        <div class="slide-footer"><span>Python高级应用 · NumPy 数组与数值计算</span><span>07</span></div>
+      </section>
+
+      <!-- 08 -->
+      <section data-page="08">
+        <h2>布尔索引：按条件筛选</h2>
+        <pre><code class="language-python">los = np.array([3, 5, 12, 2, 8, 6, 4])
+mask = los >= 8
+print(mask)        # [False False True False True False False]
+print(los[mask])   # [12 8]
+print(los[los < 5])  # [3 2 4]</code></pre>
+        <div class="band band-green">医学场景：一句话取出「长住院」子数组。</div>
+        <div class="slide-footer"><span>Python高级应用 · NumPy 数组与数值计算</span><span>08</span></div>
+      </section>
+
+      <!-- 09 -->
+      <section data-page="09">
+        <h2>向量化 vs 循环</h2>
+        <div class="two-col">
+          <div>
+            <div class="col-head orange">循环</div>
+            <pre><code class="language-python">out = []
+for x in los:
+    out.append(x * 2)
+out = np.array(out)</code></pre>
+          </div>
+          <div>
+            <div class="col-head green">向量化</div>
+            <pre><code class="language-python">out = los * 2
+# 每个元素同时 ×2</code></pre>
+          </div>
+        </div>
+        <div class="band band-blue">能写成数组表达式时，优先向量化：更清晰，也通常更快。</div>
+        <div class="slide-footer"><span>Python高级应用 · NumPy 数组与数值计算</span><span>09</span></div>
+      </section>
+
+      <!-- 10 -->
+      <section data-page="10">
+        <h2>常用算术：整体加减乘</h2>
+        <pre><code class="language-python">los = np.array([3, 5, 12, 2, 8], dtype=float)
+# 假设记录偏差，整体校正 +0.5 天
+adj = los + 0.5
+# 与另一数组逐元素运算（长度相同）
+weight = np.array([1, 1, 1.2, 1, 1])
+print(adj * weight)</code></pre>
+        <p class="small">长度相同的数组之间：逐元素运算。</p>
+        <div class="slide-footer"><span>Python高级应用 · NumPy 数组与数值计算</span><span>10</span></div>
+      </section>
+
+      <!-- 11 -->
+      <section data-page="11">
+        <h2>广播直觉（简明）</h2>
+        <pre><code class="language-python">los = np.array([3, 5, 12])
+print(los + 1)          # [4 6 13]  标量扩到每个元素
+
+# 2×3 矩阵的每一列减列均值（示意）
+X = np.array([[1., 2., 3.],
+              [4., 5., 6.]])
+col_mean = X.mean(axis=0)   # shape (3,)
+print(X - col_mean)</code></pre>
+        <div class="band band-blue">广播：尺寸不完整的一侧被「拉齐」后做运算——先建立直觉即可。</div>
+        <div class="slide-footer"><span>Python高级应用 · NumPy 数组与数值计算</span><span>11</span></div>
+      </section>
+
+      <!-- 12 -->
+      <section data-page="12">
+        <h2>统计：mean / sum / max</h2>
+        <pre><code class="language-python">los = np.array([3, 5, 12, 2, 8, 6, 4])
+print(los.mean())   # 平均住院日
+print(los.sum())    # 总床日
+print(los.max())    # 最长
+print(los.min())
+print(los.std())    # 标准差</code></pre>
+        <div class="band band-blue">这些方法直接作用在数组上；二维时可指定 <code>axis</code>。</div>
+        <div class="slide-footer"><span>Python高级应用 · NumPy 数组与数值计算</span><span>12</span></div>
+      </section>
+
+      <!-- 13 -->
+      <section data-page="13">
+        <h2>axis 直觉（二维示意）</h2>
+        <pre><code class="language-python"># 行：患者；列：两次住院天数
+X = np.array([[3, 5],
+              [7, 2],
+              [10, 8]])
+print(X.mean(axis=0))  # 各列平均 → 两次住院的总体均值
+print(X.mean(axis=1))  # 各行平均 → 每位患者均值</code></pre>
+        <div class="band band-orange">口诀：<code>axis=i</code> 表示「沿着 i 这个方向压缩」。</div>
+        <div class="slide-footer"><span>Python高级应用 · NumPy 数组与数值计算</span><span>13</span></div>
+      </section>
+
+      <!-- 14 -->
+      <section data-page="14">
+        <h2>与 list 对比</h2>
+        <div class="term-table">
+          <div class="k">类型</div><div>list 可混装；ndarray 同质数值</div>
+          <div class="k">运算</div><div>list 需循环；ndarray 可向量化</div>
+          <div class="k">内存</div><div>ndarray 更紧凑，适合大批量</div>
+          <div class="k">生态</div><div>科学计算、后续 pandas 多基于数组</div>
+        </div>
+        <div class="band band-blue">结构化「一行一病例」表格下一步用 pandas；纯数值块用 NumPy。</div>
+        <div class="slide-footer"><span>Python高级应用 · NumPy 数组与数值计算</span><span>14</span></div>
+      </section>
+
+      <!-- 15 -->
+      <section data-page="15">
+        <h2>医学示例：住院天数数组</h2>
+        <pre><code class="language-python">los = np.array([1, 2, 3, 3, 4, 5, 7, 8, 10, 14])
+print("n =", los.size)
+print("mean =", round(float(los.mean()), 2))
+print("长住院(≥10)占比 =",
+      float((los >= 10).mean()))</code></pre>
+        <ul class="small">
+          <li>布尔数组 <code>.mean()</code> ≈ 满足条件的比例</li>
+          <li>适合快速描述一列数值型临床指标</li>
+        </ul>
+        <div class="slide-footer"><span>Python高级应用 · NumPy 数组与数值计算</span><span>15</span></div>
+      </section>
+
+      <!-- 16 -->
+      <section data-page="16">
+        <h2>示例：分组阈值后的对比</h2>
+        <pre><code class="language-python">los = np.array([3, 5, 12, 2, 8, 6, 4, 11, 9])
+short = los[los < 5]
+long_ = los[los >= 10]
+print(short.mean(), long_.mean())
+print(short.size, long_.size)</code></pre>
+        <div class="band band-green">先切片出子阵，再分别 <code>mean</code>——无需手写双重循环。</div>
+        <div class="slide-footer"><span>Python高级应用 · NumPy 数组与数值计算</span><span>16</span></div>
+      </section>
+
+      <!-- 17 -->
+      <section data-page="17">
+        <h2>从 Python 列表安全转换</h2>
+        <pre><code class="language-python">raw = ["3", "5", "NA", "12", "2"]
+vals = []
+for x in raw:
+    try:
+        vals.append(int(x))
+    except ValueError:
+        continue
+los = np.array(vals, dtype=np.int64)
+print(los, los.mean())</code></pre>
+        <p class="small">脏数据先在 Python 层清洗或过滤，再进入 ndarray。</p>
+        <div class="slide-footer"><span>Python高级应用 · NumPy 数组与数值计算</span><span>17</span></div>
+      </section>
+
+      <!-- 18 -->
+      <section data-page="18">
+        <h2>综合：一条数值分析小流程</h2>
+        <div class="flow-list">
+          <div class="row"><div class="n">01</div><div>收集 / 转换 → <code>np.array</code></div></div>
+          <div class="row"><div class="n">02</div><div>检查 <code>shape</code>、<code>dtype</code></div></div>
+          <div class="row"><div class="n">03</div><div>描述统计：mean / max / 分位数等</div></div>
+          <div class="row"><div class="n">04</div><div>布尔筛选子群体再对比</div></div>
+        </div>
+        <div class="band band-blue" style="margin-top: 0.7em;">控制流处理规则；NumPy 处理数值块。</div>
+        <div class="slide-footer"><span>Python高级应用 · NumPy 数组与数值计算</span><span>18</span></div>
+      </section>
+
+      <!-- 19 -->
+      <section data-page="19">
+        <h2>思考：这段在算什么？</h2>
+        <pre><code class="language-python">los = np.array([3, 5, 12, 2, 8, 6, 4])
+print(((los - los.mean()) ** 2).mean())</code></pre>
+        <ul class="small">
+          <li>先减均值，再平方，再平均</li>
+          <li>这是总体方差的定义式（与 <code>los.var()</code> 对照）</li>
+          <li>体现「整条表达式向量化」</li>
+        </ul>
+        <div class="slide-footer"><span>Python高级应用 · NumPy 数组与数值计算</span><span>19</span></div>
+      </section>
+
+      <!-- 20 -->
+      <section data-page="20">
+        <h2>代码：住院日描述函数</h2>
+        <pre><code class="language-python">def describe_los(los):
+    los = np.asarray(los, dtype=float)
+    return {
+        "n": los.size,
+        "mean": float(los.mean()),
+        "max": float(los.max()),
+        "p_long": float((los >= 10).mean()),
+    }
+
+print(describe_los([3, 5, 12, 2, 8, 14]))</code></pre>
+        <div class="slide-footer"><span>Python高级应用 · NumPy 数组与数值计算</span><span>20</span></div>
+      </section>
+
+      <!-- 21 -->
+      <section data-page="21">
+        <h2>常见坑（简表）</h2>
+        <div class="three-col">
+          <div class="box"><strong>类型</strong>整数除法预期 vs 浮点；注意 <code>dtype</code></div>
+          <div class="box"><strong>形状</strong>一维 (n,) 与二维 (n,1) 不同，广播易混淆</div>
+          <div class="box"><strong>缺失</strong>ndarray 默认不含「真正的 NA」；脏值先清洗</div>
+        </div>
+        <div class="band band-orange" style="margin-top: 0.8em;">表格级缺失值管理，下一主题 pandas 更合适。</div>
+        <div class="slide-footer"><span>Python高级应用 · NumPy 数组与数值计算</span><span>21</span></div>
+      </section>
+
+      <!-- 22 -->
+      <section data-page="22">
+        <h2>回顾：这节课学到了什么？</h2>
+        <ul>
+          <li><code>ndarray</code> 创建与 <code>dtype</code> / <code>shape</code></li>
+          <li>索引、切片、布尔筛选</li>
+          <li>向量化运算与广播直觉</li>
+          <li><code>mean / sum / max</code> 与 <code>axis</code></li>
+          <li>与 list 的分工；住院天数等医学数值示例</li>
+        </ul>
+        <div class="band band-blue" style="margin-top: 0.6em;">大批量数值：少写循环，多写数组表达式。</div>
+        <div class="slide-footer"><span>Python高级应用 · NumPy 数组与数值计算</span><span>22</span></div>
+      </section>
+
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/reveal.js@4.6.1/dist/reveal.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/reveal.js@4.6.1/plugin/highlight/highlight.js"></script>
+  <script>
+    Reveal.initialize({
+      hash: true,
+      center: false,
+      transition: 'fade',
+      transitionSpeed: 'fast',
+      backgroundTransition: 'fade',
+      width: 960,
+      height: 540,
+      margin: 0.04,
+      minScale: 0.35,
+      maxScale: 1.6,
+      slideNumber: false,
+      plugins: [RevealHighlight]
+    });
+  </script>
+</body>
+</html>
+
+</body>
+</html>

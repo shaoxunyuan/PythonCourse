@@ -1,0 +1,792 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>组合数据类型 · Python 高级应用</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.6.1/dist/reveal.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.6.1/dist/theme/white.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.6.1/plugin/highlight/monokai.css">
+  <style>
+    :root {
+      --ink: #12141a;
+      --ink-soft: #3d4450;
+      --muted: #7a8290;
+      --line: #d8dde6;
+      --code-bg: #e7edf4;
+      --surface: #ffffff;
+      --paper: #f4f5f7;
+      --accent: #0d9488;
+      --accent-deep: #0f766e;
+      --blue-bg: #e8f0fe;
+      --blue-ink: #1e3a5f;
+      --green-bg: #e6f6ed;
+      --green-ink: #14532d;
+      --orange-bg: #fff1e6;
+      --orange-ink: #9a3412;
+      --gray-bg: #eef0f3;
+      --font: "IBM Plex Sans", "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
+      --mono: "IBM Plex Mono", Consolas, ui-monospace, monospace;
+    }
+
+    .reveal {
+      font-family: var(--font);
+      font-size: 30px;
+      color: var(--ink);
+      background: var(--paper);
+      -webkit-font-smoothing: antialiased;
+    }
+    .reveal .slides { text-align: left; }
+    .reveal .slides section {
+      padding: 40px 52px 68px;
+      box-sizing: border-box;
+      background:
+        linear-gradient(180deg, #fbfbfc 0%, var(--surface) 42%, #f7f8fa 100%);
+    }
+    .reveal .slides section::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--accent) 0%, var(--accent) 120px, transparent 320px);
+    }
+
+    .reveal h1, .reveal h2 {
+      color: var(--ink);
+      font-weight: 700;
+      text-transform: none;
+      letter-spacing: -0.025em;
+      margin: 0 0 0.65em;
+      font-size: 1.22em;
+      line-height: 1.25;
+      position: relative;
+      padding-bottom: 0.35em;
+    }
+    .reveal h1::after, .reveal h2::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      bottom: 0;
+      width: 28px;
+      height: 2px;
+      background: var(--accent);
+    }
+    .reveal h1 { font-size: 1.55em; letter-spacing: -0.03em; }
+    .reveal p, .reveal li { color: var(--ink); line-height: 1.55; font-weight: 450; }
+    .reveal ul {
+      margin: 0.35em 0 0;
+      padding: 0;
+      list-style: none;
+    }
+    .reveal ul > li {
+      margin: 0.42em 0;
+      padding-left: 1.05em;
+      position: relative;
+    }
+    .reveal ul > li::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 0.62em;
+      width: 0.42em;
+      height: 2px;
+      background: var(--accent);
+    }
+    .reveal a { color: var(--accent-deep); }
+    .reveal .subtitle {
+      color: var(--ink-soft);
+      font-size: 0.82em;
+      font-weight: 500;
+      margin: -0.15em 0 0.15em;
+      letter-spacing: -0.01em;
+    }
+    .reveal .small {
+      font-size: 0.7em;
+      color: var(--ink-soft);
+      line-height: 1.5;
+    }
+
+    .reveal pre {
+      width: 100%;
+      box-shadow: none !important;
+      border: none !important;
+      border-left: 3px solid var(--accent) !important;
+      background: var(--code-bg) !important;
+      padding: 0.75em 0.95em !important;
+      margin: 0.45em 0 0.75em;
+      border-radius: 0;
+    }
+    .reveal pre code {
+      background: transparent !important;
+      color: var(--ink) !important;
+      font-family: var(--mono);
+      font-size: 0.68em;
+      font-weight: 450;
+      line-height: 1.48;
+      max-height: none;
+      padding: 0 !important;
+      tab-size: 4;
+    }
+    .reveal section.dense pre code { font-size: 0.58em; line-height: 1.42; }
+    .reveal code {
+      font-family: var(--mono);
+      background: var(--code-bg);
+      color: var(--ink);
+      padding: 0.06em 0.28em;
+      border-radius: 2px;
+      font-size: 0.92em;
+      font-weight: 500;
+    }
+    .reveal pre code .hljs-comment,
+    .reveal pre code .hljs-quote { color: #64748b !important; font-style: italic; }
+    .reveal pre code .hljs-keyword,
+    .reveal pre code .hljs-selector-tag,
+    .reveal pre code .hljs-built_in { color: #0b6e99 !important; font-weight: 600; }
+    .reveal pre code .hljs-string { color: var(--accent-deep) !important; }
+    .reveal pre code .hljs-number { color: #b45309 !important; }
+    .reveal pre code .hljs-title,
+    .reveal pre code .hljs-title.class_,
+    .reveal pre code .hljs-title.function_ { color: #1d4ed8 !important; }
+
+    .band {
+      padding: 0.5em 0.8em;
+      margin: 0.5em 0;
+      font-size: 0.78em;
+      line-height: 1.45;
+      font-weight: 500;
+      border-left: 3px solid transparent;
+    }
+    .band-blue { background: var(--blue-bg); color: var(--blue-ink); border-left-color: #3b82f6; }
+    .band-green { background: var(--green-bg); color: var(--green-ink); border-left-color: #22c55e; }
+    .band-orange { background: var(--orange-bg); color: var(--orange-ink); border-left-color: #f97316; }
+    .band-gray { background: var(--gray-bg); color: var(--ink); border-left-color: var(--line); }
+
+    .students {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 8.5em));
+      gap: 0.75em;
+      margin: 1.15em 0 1em;
+    }
+    .students .chip {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-top: 2px solid var(--accent);
+      padding: 0.65em 0.75em;
+      font-size: 0.78em;
+      text-align: center;
+      color: var(--ink-soft);
+      line-height: 1.35;
+    }
+    .students .chip strong {
+      display: inline-block;
+      margin-top: 0.15em;
+      font-size: 1.15em;
+      color: var(--ink);
+      font-variant-numeric: tabular-nums;
+      font-family: var(--mono);
+      font-weight: 600;
+    }
+
+    .two-col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1em;
+      margin-top: 0.45em;
+    }
+    .two-col .col-head {
+      padding: 0.38em 0.7em;
+      font-weight: 650;
+      font-size: 0.76em;
+      margin-bottom: 0.35em;
+      letter-spacing: -0.01em;
+      border-left: 3px solid transparent;
+    }
+    .two-col .col-head.blue {
+      background: var(--blue-bg);
+      color: var(--blue-ink);
+      border-left-color: #3b82f6;
+    }
+    .two-col .col-head.green {
+      background: var(--green-bg);
+      color: var(--green-ink);
+      border-left-color: #22c55e;
+    }
+    .two-col .col-head.orange {
+      background: var(--orange-bg);
+      color: var(--orange-ink);
+      border-left-color: #f97316;
+    }
+    .two-col ul { margin-top: 0; font-size: 0.8em; }
+    .two-col pre { margin-bottom: 0.45em; }
+
+    .three-col {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 0.7em;
+      margin-top: 0.5em;
+      font-size: 0.72em;
+    }
+    .three-col .box {
+      background: var(--gray-bg);
+      padding: 0.55em 0.65em;
+      min-height: 7.5em;
+    }
+    .three-col .box strong {
+      display: block;
+      margin-bottom: 0.35em;
+      font-size: 1.05em;
+      color: var(--ink);
+    }
+
+    .term-table {
+      display: grid;
+      grid-template-columns: 8em 1fr;
+      gap: 0.4em 0.9em;
+      margin-top: 0.75em;
+      font-size: 0.78em;
+      align-items: stretch;
+    }
+    .term-table .k {
+      font-family: var(--mono);
+      background: var(--code-bg);
+      border-left: 3px solid var(--accent);
+      padding: 0.28em 0.5em;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+    }
+    .term-table > div:nth-child(even) {
+      display: flex;
+      align-items: center;
+      color: var(--ink-soft);
+      border-bottom: 1px solid var(--line);
+      padding: 0.2em 0;
+    }
+
+    .flow-list {
+      margin-top: 0.65em;
+      display: grid;
+      gap: 0.4em;
+      font-size: 0.76em;
+    }
+    .flow-list .row {
+      display: grid;
+      grid-template-columns: 2.4em 1fr;
+      gap: 0.55em;
+      align-items: stretch;
+    }
+    .flow-list .n {
+      background: var(--ink);
+      color: #fff;
+      text-align: center;
+      font-weight: 600;
+      font-family: var(--mono);
+      font-size: 0.9em;
+      letter-spacing: 0.02em;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 1.7em;
+    }
+    .flow-list .row > div:last-child {
+      background: var(--gray-bg);
+      padding: 0.35em 0.65em;
+      display: flex;
+      align-items: center;
+      color: var(--ink);
+    }
+
+    .file-box {
+      font-family: var(--mono);
+      background: var(--code-bg);
+      border-left: 3px solid var(--accent);
+      padding: 0.65em 0.9em;
+      font-size: 0.72em;
+      line-height: 1.55;
+      color: var(--ink);
+      margin: 0.45em 0 0.75em;
+      white-space: pre-wrap;
+    }
+
+    .mode-row {
+      display: grid;
+      grid-template-columns: 3.2em 1fr;
+      gap: 0.6em;
+      align-items: center;
+      margin: 0.4em 0;
+      font-size: 0.8em;
+    }
+    .mode-row .tag {
+      font-family: var(--mono);
+      font-weight: 700;
+      text-align: center;
+      padding: 0.35em 0;
+      background: var(--code-bg);
+    }
+    .mode-row.warn .tag {
+      background: var(--orange-bg);
+      color: var(--orange-ink);
+    }
+
+    .parse-flow {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr auto 1fr;
+      gap: 0.4em;
+      align-items: center;
+      margin: 0.6em 0;
+      font-size: 0.72em;
+    }
+    .parse-flow .cell {
+      background: var(--gray-bg);
+      padding: 0.45em 0.55em;
+      text-align: center;
+      font-family: var(--mono);
+    }
+    .parse-flow .arrow { color: var(--muted); font-family: var(--mono); }
+
+    .goals li {
+      font-size: 0.95em;
+      margin: 0.55em 0 !important;
+    }
+
+    .slide-footer {
+      position: absolute;
+      left: 52px;
+      right: 52px;
+      bottom: 18px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 12px;
+      font-family: var(--mono);
+      font-weight: 500;
+      letter-spacing: 0.02em;
+      color: var(--muted);
+      pointer-events: none;
+      padding-top: 10px;
+      border-top: 1px solid var(--line);
+    }
+    .slide-footer span:last-child {
+      color: var(--accent-deep);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .reveal .controls { color: var(--accent); }
+    .reveal .progress {
+      color: var(--accent);
+      height: 2px;
+      background: rgba(13, 148, 136, 0.12);
+    }
+    .reveal .slide-number { display: none; }
+
+    .back-link {
+      position: fixed;
+      top: 14px;
+      left: 14px;
+      z-index: 30;
+      font-family: var(--font);
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      background: rgba(255, 255, 255, 0.92);
+      backdrop-filter: blur(8px);
+      border: 1px solid var(--line);
+      padding: 6px 12px;
+      text-decoration: none !important;
+      color: var(--accent-deep) !important;
+      transition: border-color 0.15s ease, background 0.15s ease;
+    }
+    .back-link:hover {
+      background: #fff;
+      border-color: var(--accent);
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .reveal .slides section { transition: none !important; }
+    }
+  </style>
+</head>
+<body>
+  <a class="back-link" href="index.html">← 演示列表</a>
+  <div class="reveal">
+    <div class="slides">
+
+      <!-- 01 -->
+      <section data-page="01">
+        <h1>组合数据类型</h1>
+        <p class="subtitle">用 list / tuple / dict / set 组织多条就诊记录</p>
+        <div class="students">
+          <div class="chip">list<br><strong>有序可变</strong></div>
+          <div class="chip">dict<br><strong>键值映射</strong></div>
+          <div class="chip">set<br><strong>去重集合</strong></div>
+        </div>
+        <div class="band band-blue">一条记录用变量；一百条记录，需要「组合类型」。</div>
+        <div class="slide-footer"><span>Python高级应用 · 组合数据类型</span><span>01</span></div>
+      </section>
+
+      <!-- 02 -->
+      <section data-page="02">
+        <h2>今天要完成什么？</h2>
+        <ul class="goals">
+          <li>熟练 list 的索引、切片、增删改</li>
+          <li>认识 tuple 的不可变用途</li>
+          <li>用 dict 描述一条就诊的字段</li>
+          <li>用 set 做去重与成员判断</li>
+          <li>选型、嵌套，并建立「病例数据模型」</li>
+        </ul>
+        <div class="slide-footer"><span>Python高级应用 · 组合数据类型</span><span>02</span></div>
+      </section>
+
+      <!-- 03 -->
+      <section data-page="03">
+        <h2>为什么需要组合类型？</h2>
+        <pre><code class="language-python"># 变量很多时难维护
+d1, d2, d3 = 5, 8, 3
+# 用列表统一存放
+days = [5, 8, 3]</code></pre>
+        <div class="three-col">
+          <div class="box"><strong>一批同类值</strong>住院天数列表、药物数列表</div>
+          <div class="box"><strong>一条多字段</strong>一次就诊的多个属性</div>
+          <div class="box"><strong>多条记录</strong>字典组成的列表</div>
+        </div>
+        <div class="slide-footer"><span>Python高级应用 · 组合数据类型</span><span>03</span></div>
+      </section>
+
+      <!-- 04 -->
+      <section data-page="04">
+        <h2>list：有序、可变的序列</h2>
+        <pre><code class="language-python">days = [5, 8, 3, 12, 7]
+genders = ["Female", "Male", "Female"]
+mixed = [100001, "Female", 5, True]</code></pre>
+        <ul class="small">
+          <li>方括号 <code>[]</code> 创建；元素用逗号分隔</li>
+          <li>可以装不同类型，但教学上常保持同构更清晰</li>
+        </ul>
+        <div class="band band-green"><code>len(days)</code> 得到元素个数。</div>
+        <div class="slide-footer"><span>Python高级应用 · 组合数据类型</span><span>04</span></div>
+      </section>
+
+      <!-- 05 -->
+      <section data-page="05">
+        <h2>索引：按位置取出元素</h2>
+        <pre><code class="language-python">days = [5, 8, 3, 12, 7]
+print(days[0])    # 5  第一个
+print(days[2])    # 3
+print(days[-1])   # 7  最后一个
+print(days[-2])   # 12</code></pre>
+        <div class="band band-orange">索引越界会 <code>IndexError</code>；先看 <code>len</code> 再取。</div>
+        <div class="slide-footer"><span>Python高级应用 · 组合数据类型</span><span>05</span></div>
+      </section>
+
+      <!-- 06 -->
+      <section data-page="06">
+        <h2>切片：取出一段子序列</h2>
+        <pre><code class="language-python">days = [5, 8, 3, 12, 7]
+print(days[1:4])   # [8, 3, 12] 含头不含尾
+print(days[:3])    # [5, 8, 3]
+print(days[3:])    # [12, 7]
+print(days[::2])   # [5, 3, 7] 步长 2</code></pre>
+        <div class="band band-blue">切片得到<strong>新列表</strong>，一般不修改原列表。</div>
+        <div class="slide-footer"><span>Python高级应用 · 组合数据类型</span><span>06</span></div>
+      </section>
+
+      <!-- 07 -->
+      <section data-page="07">
+        <h2>增、删、改</h2>
+        <pre><code class="language-python">days = [5, 8, 3]
+days.append(12)      # 末尾追加 → [5, 8, 3, 12]
+days.insert(1, 6)    # 在下标 1 插入
+days[0] = 4          # 修改
+days.pop()           # 弹出最后一个
+days.remove(8)       # 按值删除首次出现</code></pre>
+        <ul class="small">
+          <li><code>append</code> / <code>extend</code> 变长；赋值改内容</li>
+          <li><code>pop(i)</code> 按位置；<code>remove(x)</code> 按值</li>
+        </ul>
+        <div class="slide-footer"><span>Python高级应用 · 组合数据类型</span><span>07</span></div>
+      </section>
+
+      <!-- 08 -->
+      <section data-page="08">
+        <h2>list 常用查询</h2>
+        <pre><code class="language-python">days = [5, 8, 3, 8]
+print(8 in days)        # True
+print(days.count(8))    # 2
+print(days.index(3))    # 2
+print(sorted(days))     # [3, 5, 8, 8] 新列表
+days.sort(reverse=True) # 原地降序</code></pre>
+        <div class="band band-orange">分清：<code>sorted</code> 返回新列表；<code>sort</code> 改原列表。</div>
+        <div class="slide-footer"><span>Python高级应用 · 组合数据类型</span><span>08</span></div>
+      </section>
+
+      <!-- 09 -->
+      <section data-page="09">
+        <h2>tuple：有序但不可变</h2>
+        <pre><code class="language-python">record_key = (100001, 8877)   # 就诊号 + 患者号
+print(record_key[0])
+# record_key[0] = 9  → TypeError</code></pre>
+        <div class="two-col">
+          <div>
+            <div class="col-head blue">适合</div>
+            <ul class="small">
+              <li>坐标、键、固定配对</li>
+              <li>不想被误改的常量组</li>
+              <li>字典的键（元素需可哈希）</li>
+            </ul>
+          </div>
+          <div>
+            <div class="col-head green">对比 list</div>
+            <ul class="small">
+              <li>tuple 用圆括号</li>
+              <li>创建后不能增删改元素</li>
+              <li>可索引、可切片</li>
+            </ul>
+          </div>
+        </div>
+        <div class="slide-footer"><span>Python高级应用 · 组合数据类型</span><span>09</span></div>
+      </section>
+
+      <!-- 10 -->
+      <section data-page="10">
+        <h2>dict：用键访问字段</h2>
+        <pre><code class="language-python">encounter = {
+    "encounter_id": 100001,
+    "patient_nbr": 8877,
+    "gender": "Female",
+    "time_in_hospital": 5,
+    "num_medications": 15,
+    "readmitted": "&lt;30"
+}</code></pre>
+        <div class="band band-green">读字段：<code>encounter["gender"]</code>；比「记住第几个位置」更稳。</div>
+        <div class="slide-footer"><span>Python高级应用 · 组合数据类型</span><span>10</span></div>
+      </section>
+
+      <!-- 11 -->
+      <section data-page="11">
+        <h2>dict 的读、写、删</h2>
+        <pre><code class="language-python">print(encounter["readmitted"])
+encounter["age"] = 55              # 新增或覆盖
+encounter["time_in_hospital"] = 6  # 修改
+print(encounter.get("bmi", None))  # 缺键时给默认
+del encounter["age"]               # 删除键</code></pre>
+        <ul class="small">
+          <li>直接 <code>d[k]</code> 缺键 → <code>KeyError</code></li>
+          <li><code>get</code> 更适合「可能缺失」的字段</li>
+        </ul>
+        <div class="slide-footer"><span>Python高级应用 · 组合数据类型</span><span>11</span></div>
+      </section>
+
+      <!-- 12 -->
+      <section data-page="12">
+        <h2>遍历 dict</h2>
+        <pre><code class="language-python">for key in encounter:
+    print(key, encounter[key])
+
+for k, v in encounter.items():
+    print(f"{k} = {v}")</code></pre>
+        <div class="term-table">
+          <div class="k">keys()</div><div>所有键</div>
+          <div class="k">values()</div><div>所有值</div>
+          <div class="k">items()</div><div>(键, 值) 对</div>
+        </div>
+        <div class="slide-footer"><span>Python高级应用 · 组合数据类型</span><span>12</span></div>
+      </section>
+
+      <!-- 13 -->
+      <section data-page="13">
+        <h2>set：不重复的集合</h2>
+        <pre><code class="language-python">labels = {"&lt;30", "&gt;30", "NO", "&lt;30"}
+print(labels)              # 自动去重
+print("&lt;30" in labels)     # True 成员判断快
+labels.add("OTHER")
+labels.discard("OTHER")</code></pre>
+        <ul class="small">
+          <li>无序、元素唯一；适合去重与集合运算</li>
+          <li><code>set(list)</code> 可对列表快速去重</li>
+        </ul>
+        <div class="band band-blue">再入院标签的合法取值，很适合用 set 描述。</div>
+        <div class="slide-footer"><span>Python高级应用 · 组合数据类型</span><span>13</span></div>
+      </section>
+
+      <!-- 14 -->
+      <section data-page="14">
+        <h2>选型：四种结构怎么选？</h2>
+        <div class="three-col">
+          <div class="box"><strong>list</strong>有序、要改、按位置取<br>一批住院天数</div>
+          <div class="box"><strong>tuple</strong>有序、不改<br>固定主键配对</div>
+          <div class="box"><strong>dict</strong>按名字取字段<br>一条就诊记录</div>
+        </div>
+        <div class="band band-green" style="margin-top: 0.8em;"><strong>set</strong>：只要「有没有、去重」，不要重复与顺序时。</div>
+        <p class="small">多条就诊：常用「字典的列表」。</p>
+        <div class="slide-footer"><span>Python高级应用 · 组合数据类型</span><span>14</span></div>
+      </section>
+
+      <!-- 15 -->
+      <section data-page="15">
+        <h2>嵌套：结构里再放结构</h2>
+        <pre><code class="language-python">patient = {
+    "patient_nbr": 8877,
+    "gender": "Female",
+    "encounters": [100001, 100088]
+}
+print(patient["encounters"][0])</code></pre>
+        <div class="band band-blue">外层 dict 管患者；内层 list 管多次就诊号。</div>
+        <div class="slide-footer"><span>Python高级应用 · 组合数据类型</span><span>15</span></div>
+      </section>
+
+      <!-- 16 -->
+      <section data-page="16">
+        <h2>list of dict：多条就诊的标准形状</h2>
+        <pre><code class="language-python">encounters = [
+    {"encounter_id": 100001, "time_in_hospital": 5,
+     "num_medications": 15, "readmitted": "&lt;30"},
+    {"encounter_id": 100002, "time_in_hospital": 9,
+     "num_medications": 22, "readmitted": "NO"},
+]</code></pre>
+        <ul class="small">
+          <li>每一行（每个 dict）字段名一致，便于循环处理</li>
+          <li>取第二条住院天数：<code>encounters[1]["time_in_hospital"]</code></li>
+        </ul>
+        <div class="slide-footer"><span>Python高级应用 · 组合数据类型</span><span>16</span></div>
+      </section>
+
+      <!-- 17 -->
+      <section data-page="17">
+        <h2>课堂思考</h2>
+        <div class="flow-list">
+          <div class="row"><div class="n">01</div><div>只用 list 存 <code>[id, gender, days, ...]</code>，三个月后还好读吗？</div></div>
+          <div class="row"><div class="n">02</div><div>为何「合法再入院标签」更像 set，而不是 list？</div></div>
+          <div class="row"><div class="n">03</div><div><code>encounters[0]</code> 是 dict 还是 list？如何取 <code>readmitted</code>？</div></div>
+        </div>
+        <div class="slide-footer"><span>Python高级应用 · 组合数据类型</span><span>17</span></div>
+      </section>
+
+      <!-- 18 -->
+      <section data-page="18">
+        <h2>病例数据模型：字段约定</h2>
+        <div class="term-table">
+          <div class="k">encounter_id</div><div>int · 就诊主键</div>
+          <div class="k">patient_nbr</div><div>int · 患者编号</div>
+          <div class="k">gender</div><div>str</div>
+          <div class="k">age</div><div>int 或 str（年龄段）</div>
+          <div class="k">time_in_hospital</div><div>int</div>
+          <div class="k">num_medications</div><div>int</div>
+          <div class="k">readmitted</div><div>str · &lt;30 / &gt;30 / NO</div>
+        </div>
+        <div class="slide-footer"><span>Python高级应用 · 组合数据类型</span><span>18</span></div>
+      </section>
+
+      <!-- 19 -->
+      <section data-page="19">
+        <h2>模型①：单条记录用 dict</h2>
+        <pre><code class="language-python">def show(enc):
+    print(enc["encounter_id"], enc["gender"],
+          enc["time_in_hospital"], enc["readmitted"])
+
+row = {
+    "encounter_id": 100001, "patient_nbr": 8877,
+    "gender": "Female", "age": 55,
+    "time_in_hospital": 5, "num_medications": 15,
+    "readmitted": "&lt;30"
+}
+show(row)</code></pre>
+        <div class="slide-footer"><span>Python高级应用 · 组合数据类型</span><span>19</span></div>
+      </section>
+
+      <!-- 20 -->
+      <section data-page="20">
+        <h2>模型②：从表格式行到 dict</h2>
+        <pre><code class="language-python">header = ["encounter_id", "patient_nbr", "gender",
+          "age", "time_in_hospital", "num_medications", "readmitted"]
+row = [100001, 8877, "Female", 55, 5, 15, "&lt;30"]
+enc = dict(zip(header, row))
+print(enc["num_medications"])</code></pre>
+        <div class="band band-green"><code>zip</code> + <code>dict</code>：把「表头 + 一行」变成字段字典。</div>
+        <div class="slide-footer"><span>Python高级应用 · 组合数据类型</span><span>20</span></div>
+      </section>
+
+      <!-- 21 -->
+      <section data-page="21">
+        <h2>模型③：批量计算日均药物</h2>
+        <pre><code class="language-python">for enc in encounters:
+    avg = enc["num_medications"] / enc["time_in_hospital"]
+    enc["daily_meds"] = round(avg, 2)
+
+long_stays = [
+    e for e in encounters if e["time_in_hospital"] &gt;= 7
+]</code></pre>
+        <ul class="small">
+          <li>在原 dict 上增加派生字段 <code>daily_meds</code></li>
+          <li>用列表推导筛选长住院记录</li>
+        </ul>
+        <div class="slide-footer"><span>Python高级应用 · 组合数据类型</span><span>21</span></div>
+      </section>
+
+      <!-- 22 -->
+      <section data-page="22">
+        <h2>模型④：早期再入院集合</h2>
+        <pre><code class="language-python">early_ids = {
+    e["encounter_id"]
+    for e in encounters
+    if e["readmitted"] == "&lt;30"
+}
+print(100001 in early_ids)</code></pre>
+        <div class="band band-blue">set 存就诊号：去重 + 快速判断「是否早期再入院队列」。</div>
+        <div class="slide-footer"><span>Python高级应用 · 组合数据类型</span><span>22</span></div>
+      </section>
+
+      <!-- 23 -->
+      <section data-page="23">
+        <h2>综合任务：搭建迷你病例库</h2>
+        <div class="flow-list">
+          <div class="row"><div class="n">01</div><div>创建至少 3 条 dict，字段含七个主线名</div></div>
+          <div class="row"><div class="n">02</div><div>放入列表 <code>encounters</code>，打印第 0 条的 <code>gender</code></div></div>
+          <div class="row"><div class="n">03</div><div>为每条计算并写入 <code>daily_meds</code></div></div>
+          <div class="row"><div class="n">04</div><div>筛出长住院；用 set 收集早期再入院的 <code>encounter_id</code></div></div>
+        </div>
+        <div class="band band-green" style="margin-top: 0.7em;">结构选对了，后面的循环与筛选会轻松很多。</div>
+        <div class="slide-footer"><span>Python高级应用 · 组合数据类型</span><span>23</span></div>
+      </section>
+
+      <!-- 24 -->
+      <section data-page="24">
+        <h2>回顾：这节课学到了什么？</h2>
+        <ul>
+          <li>list：索引、切片、增删改、排序</li>
+          <li>tuple：不可变的有序组</li>
+          <li>dict：字段名 → 值；list of dict 管多条记录</li>
+          <li>set：去重与成员判断</li>
+          <li>选型与嵌套；病例数据模型与派生字段</li>
+        </ul>
+        <div class="band band-blue" style="margin-top: 0.6em;">下一课：把「筛选、计算」收成函数，形成工具箱。</div>
+        <div class="slide-footer"><span>Python高级应用 · 组合数据类型</span><span>24</span></div>
+      </section>
+
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/reveal.js@4.6.1/dist/reveal.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/reveal.js@4.6.1/plugin/highlight/highlight.js"></script>
+  <script>
+    Reveal.initialize({
+      hash: true,
+      center: false,
+      transition: 'fade',
+      transitionSpeed: 'fast',
+      backgroundTransition: 'fade',
+      width: 960,
+      height: 540,
+      margin: 0.04,
+      minScale: 0.35,
+      maxScale: 1.6,
+      slideNumber: false,
+      plugins: [RevealHighlight]
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,823 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>函数、参数与模块化 · Python 高级应用</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.6.1/dist/reveal.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.6.1/dist/theme/white.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.6.1/plugin/highlight/monokai.css">
+  <style>
+    :root {
+      --ink: #12141a;
+      --ink-soft: #3d4450;
+      --muted: #7a8290;
+      --line: #d8dde6;
+      --code-bg: #e7edf4;
+      --surface: #ffffff;
+      --paper: #f4f5f7;
+      --accent: #0d9488;
+      --accent-deep: #0f766e;
+      --blue-bg: #e8f0fe;
+      --blue-ink: #1e3a5f;
+      --green-bg: #e6f6ed;
+      --green-ink: #14532d;
+      --orange-bg: #fff1e6;
+      --orange-ink: #9a3412;
+      --gray-bg: #eef0f3;
+      --font: "IBM Plex Sans", "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
+      --mono: "IBM Plex Mono", Consolas, ui-monospace, monospace;
+    }
+
+    .reveal {
+      font-family: var(--font);
+      font-size: 30px;
+      color: var(--ink);
+      background: var(--paper);
+      -webkit-font-smoothing: antialiased;
+    }
+    .reveal .slides { text-align: left; }
+    .reveal .slides section {
+      padding: 40px 52px 68px;
+      box-sizing: border-box;
+      background:
+        linear-gradient(180deg, #fbfbfc 0%, var(--surface) 42%, #f7f8fa 100%);
+    }
+    .reveal .slides section::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--accent) 0%, var(--accent) 120px, transparent 320px);
+    }
+
+    .reveal h1, .reveal h2 {
+      color: var(--ink);
+      font-weight: 700;
+      text-transform: none;
+      letter-spacing: -0.025em;
+      margin: 0 0 0.65em;
+      font-size: 1.22em;
+      line-height: 1.25;
+      position: relative;
+      padding-bottom: 0.35em;
+    }
+    .reveal h1::after, .reveal h2::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      bottom: 0;
+      width: 28px;
+      height: 2px;
+      background: var(--accent);
+    }
+    .reveal h1 { font-size: 1.55em; letter-spacing: -0.03em; }
+    .reveal p, .reveal li { color: var(--ink); line-height: 1.55; font-weight: 450; }
+    .reveal ul {
+      margin: 0.35em 0 0;
+      padding: 0;
+      list-style: none;
+    }
+    .reveal ul > li {
+      margin: 0.42em 0;
+      padding-left: 1.05em;
+      position: relative;
+    }
+    .reveal ul > li::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 0.62em;
+      width: 0.42em;
+      height: 2px;
+      background: var(--accent);
+    }
+    .reveal a { color: var(--accent-deep); }
+    .reveal .subtitle {
+      color: var(--ink-soft);
+      font-size: 0.82em;
+      font-weight: 500;
+      margin: -0.15em 0 0.15em;
+      letter-spacing: -0.01em;
+    }
+    .reveal .small {
+      font-size: 0.7em;
+      color: var(--ink-soft);
+      line-height: 1.5;
+    }
+
+    .reveal pre {
+      width: 100%;
+      box-shadow: none !important;
+      border: none !important;
+      border-left: 3px solid var(--accent) !important;
+      background: var(--code-bg) !important;
+      padding: 0.75em 0.95em !important;
+      margin: 0.45em 0 0.75em;
+      border-radius: 0;
+    }
+    .reveal pre code {
+      background: transparent !important;
+      color: var(--ink) !important;
+      font-family: var(--mono);
+      font-size: 0.68em;
+      font-weight: 450;
+      line-height: 1.48;
+      max-height: none;
+      padding: 0 !important;
+      tab-size: 4;
+    }
+    .reveal section.dense pre code { font-size: 0.58em; line-height: 1.42; }
+    .reveal code {
+      font-family: var(--mono);
+      background: var(--code-bg);
+      color: var(--ink);
+      padding: 0.06em 0.28em;
+      border-radius: 2px;
+      font-size: 0.92em;
+      font-weight: 500;
+    }
+    .reveal pre code .hljs-comment,
+    .reveal pre code .hljs-quote { color: #64748b !important; font-style: italic; }
+    .reveal pre code .hljs-keyword,
+    .reveal pre code .hljs-selector-tag,
+    .reveal pre code .hljs-built_in { color: #0b6e99 !important; font-weight: 600; }
+    .reveal pre code .hljs-string { color: var(--accent-deep) !important; }
+    .reveal pre code .hljs-number { color: #b45309 !important; }
+    .reveal pre code .hljs-title,
+    .reveal pre code .hljs-title.class_,
+    .reveal pre code .hljs-title.function_ { color: #1d4ed8 !important; }
+
+    .band {
+      padding: 0.5em 0.8em;
+      margin: 0.5em 0;
+      font-size: 0.78em;
+      line-height: 1.45;
+      font-weight: 500;
+      border-left: 3px solid transparent;
+    }
+    .band-blue { background: var(--blue-bg); color: var(--blue-ink); border-left-color: #3b82f6; }
+    .band-green { background: var(--green-bg); color: var(--green-ink); border-left-color: #22c55e; }
+    .band-orange { background: var(--orange-bg); color: var(--orange-ink); border-left-color: #f97316; }
+    .band-gray { background: var(--gray-bg); color: var(--ink); border-left-color: var(--line); }
+
+    .students {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 8.5em));
+      gap: 0.75em;
+      margin: 1.15em 0 1em;
+    }
+    .students .chip {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-top: 2px solid var(--accent);
+      padding: 0.65em 0.75em;
+      font-size: 0.78em;
+      text-align: center;
+      color: var(--ink-soft);
+      line-height: 1.35;
+    }
+    .students .chip strong {
+      display: inline-block;
+      margin-top: 0.15em;
+      font-size: 1.15em;
+      color: var(--ink);
+      font-variant-numeric: tabular-nums;
+      font-family: var(--mono);
+      font-weight: 600;
+    }
+
+    .two-col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1em;
+      margin-top: 0.45em;
+    }
+    .two-col .col-head {
+      padding: 0.38em 0.7em;
+      font-weight: 650;
+      font-size: 0.76em;
+      margin-bottom: 0.35em;
+      letter-spacing: -0.01em;
+      border-left: 3px solid transparent;
+    }
+    .two-col .col-head.blue {
+      background: var(--blue-bg);
+      color: var(--blue-ink);
+      border-left-color: #3b82f6;
+    }
+    .two-col .col-head.green {
+      background: var(--green-bg);
+      color: var(--green-ink);
+      border-left-color: #22c55e;
+    }
+    .two-col .col-head.orange {
+      background: var(--orange-bg);
+      color: var(--orange-ink);
+      border-left-color: #f97316;
+    }
+    .two-col ul { margin-top: 0; font-size: 0.8em; }
+    .two-col pre { margin-bottom: 0.45em; }
+
+    .three-col {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 0.7em;
+      margin-top: 0.5em;
+      font-size: 0.72em;
+    }
+    .three-col .box {
+      background: var(--gray-bg);
+      padding: 0.55em 0.65em;
+      min-height: 7.5em;
+    }
+    .three-col .box strong {
+      display: block;
+      margin-bottom: 0.35em;
+      font-size: 1.05em;
+      color: var(--ink);
+    }
+
+    .term-table {
+      display: grid;
+      grid-template-columns: 8em 1fr;
+      gap: 0.4em 0.9em;
+      margin-top: 0.75em;
+      font-size: 0.78em;
+      align-items: stretch;
+    }
+    .term-table .k {
+      font-family: var(--mono);
+      background: var(--code-bg);
+      border-left: 3px solid var(--accent);
+      padding: 0.28em 0.5em;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+    }
+    .term-table > div:nth-child(even) {
+      display: flex;
+      align-items: center;
+      color: var(--ink-soft);
+      border-bottom: 1px solid var(--line);
+      padding: 0.2em 0;
+    }
+
+    .flow-list {
+      margin-top: 0.65em;
+      display: grid;
+      gap: 0.4em;
+      font-size: 0.76em;
+    }
+    .flow-list .row {
+      display: grid;
+      grid-template-columns: 2.4em 1fr;
+      gap: 0.55em;
+      align-items: stretch;
+    }
+    .flow-list .n {
+      background: var(--ink);
+      color: #fff;
+      text-align: center;
+      font-weight: 600;
+      font-family: var(--mono);
+      font-size: 0.9em;
+      letter-spacing: 0.02em;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 1.7em;
+    }
+    .flow-list .row > div:last-child {
+      background: var(--gray-bg);
+      padding: 0.35em 0.65em;
+      display: flex;
+      align-items: center;
+      color: var(--ink);
+    }
+
+    .file-box {
+      font-family: var(--mono);
+      background: var(--code-bg);
+      border-left: 3px solid var(--accent);
+      padding: 0.65em 0.9em;
+      font-size: 0.72em;
+      line-height: 1.55;
+      color: var(--ink);
+      margin: 0.45em 0 0.75em;
+      white-space: pre-wrap;
+    }
+
+    .mode-row {
+      display: grid;
+      grid-template-columns: 3.2em 1fr;
+      gap: 0.6em;
+      align-items: center;
+      margin: 0.4em 0;
+      font-size: 0.8em;
+    }
+    .mode-row .tag {
+      font-family: var(--mono);
+      font-weight: 700;
+      text-align: center;
+      padding: 0.35em 0;
+      background: var(--code-bg);
+    }
+    .mode-row.warn .tag {
+      background: var(--orange-bg);
+      color: var(--orange-ink);
+    }
+
+    .parse-flow {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr auto 1fr;
+      gap: 0.4em;
+      align-items: center;
+      margin: 0.6em 0;
+      font-size: 0.72em;
+    }
+    .parse-flow .cell {
+      background: var(--gray-bg);
+      padding: 0.45em 0.55em;
+      text-align: center;
+      font-family: var(--mono);
+    }
+    .parse-flow .arrow { color: var(--muted); font-family: var(--mono); }
+
+    .goals li {
+      font-size: 0.95em;
+      margin: 0.55em 0 !important;
+    }
+
+    .slide-footer {
+      position: absolute;
+      left: 52px;
+      right: 52px;
+      bottom: 18px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 12px;
+      font-family: var(--mono);
+      font-weight: 500;
+      letter-spacing: 0.02em;
+      color: var(--muted);
+      pointer-events: none;
+      padding-top: 10px;
+      border-top: 1px solid var(--line);
+    }
+    .slide-footer span:last-child {
+      color: var(--accent-deep);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .reveal .controls { color: var(--accent); }
+    .reveal .progress {
+      color: var(--accent);
+      height: 2px;
+      background: rgba(13, 148, 136, 0.12);
+    }
+    .reveal .slide-number { display: none; }
+
+    .back-link {
+      position: fixed;
+      top: 14px;
+      left: 14px;
+      z-index: 30;
+      font-family: var(--font);
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      background: rgba(255, 255, 255, 0.92);
+      backdrop-filter: blur(8px);
+      border: 1px solid var(--line);
+      padding: 6px 12px;
+      text-decoration: none !important;
+      color: var(--accent-deep) !important;
+      transition: border-color 0.15s ease, background 0.15s ease;
+    }
+    .back-link:hover {
+      background: #fff;
+      border-color: var(--accent);
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .reveal .slides section { transition: none !important; }
+    }
+  </style>
+</head>
+<body>
+  <a class="back-link" href="index.html">← 演示列表</a>
+  <div class="reveal">
+    <div class="slides">
+
+      <!-- 01 -->
+      <section data-page="01">
+        <h1>函数、参数与模块化</h1>
+        <p class="subtitle">把病例处理步骤收成可复用的工具</p>
+        <div class="students">
+          <div class="chip">输入<br><strong>参数</strong></div>
+          <div class="chip">处理<br><strong>函数体</strong></div>
+          <div class="chip">输出<br><strong>return</strong></div>
+        </div>
+        <div class="band band-blue">同一套规则要跑很多条记录时，请写成函数。</div>
+        <div class="slide-footer"><span>Python高级应用 · 函数与模块化</span><span>01</span></div>
+      </section>
+
+      <!-- 02 -->
+      <section data-page="02">
+        <h2>今天要完成什么？</h2>
+        <ul class="goals">
+          <li>理解为何需要函数（IPO）</li>
+          <li>会写 <code>def</code>、参数、<code>*args</code>、<code>return</code></li>
+          <li>分清局部作用域与 <code>global</code></li>
+          <li>认识 lambda 与简单递归</li>
+          <li>按模块化原则搭建「病例处理工具箱」</li>
+        </ul>
+        <div class="slide-footer"><span>Python高级应用 · 函数与模块化</span><span>02</span></div>
+      </section>
+
+      <!-- 03 -->
+      <section data-page="03">
+        <h2>为何要函数？</h2>
+        <div class="two-col">
+          <div>
+            <div class="col-head orange">复制粘贴</div>
+            <pre><code class="language-python">avg1 = 15 / 5
+avg2 = 22 / 9
+avg3 = 10 / 2
+# 规则一改，改三处</code></pre>
+          </div>
+          <div>
+            <div class="col-head green">函数</div>
+            <pre><code class="language-python">def daily_meds(m, d):
+    return m / d
+# 一处定义，处处调用</code></pre>
+          </div>
+        </div>
+        <div class="band band-blue">复用、可读、可测：改规则只改函数内部。</div>
+        <div class="slide-footer"><span>Python高级应用 · 函数与模块化</span><span>03</span></div>
+      </section>
+
+      <!-- 04 -->
+      <section data-page="04">
+        <h2>def 与 IPO</h2>
+        <pre><code class="language-python">def is_long_stay(days):
+    # 判断是否长住院（≥7 天）
+    return days &gt;= 7
+
+print(is_long_stay(5))   # False
+print(is_long_stay(9))   # True</code></pre>
+        <div class="flow-list">
+          <div class="row"><div class="n">I</div><div>Input：参数 <code>days</code></div></div>
+          <div class="row"><div class="n">P</div><div>Process：函数体中的比较</div></div>
+          <div class="row"><div class="n">O</div><div>Output：<code>return</code> 的 bool</div></div>
+        </div>
+        <div class="slide-footer"><span>Python高级应用 · 函数与模块化</span><span>04</span></div>
+      </section>
+
+      <!-- 05 -->
+      <section data-page="05">
+        <h2>参数：位置参数与默认值</h2>
+        <pre><code class="language-python">def is_long_stay(days, threshold=7):
+    return days &gt;= threshold
+
+print(is_long_stay(7))        # 用默认 7
+print(is_long_stay(5, 4))     # 临时改阈值
+print(is_long_stay(5, threshold=4))</code></pre>
+        <ul class="small">
+          <li>有默认值的参数要放在后面</li>
+          <li>调用时可用关键字参数，提高可读性</li>
+        </ul>
+        <div class="slide-footer"><span>Python高级应用 · 函数与模块化</span><span>05</span></div>
+      </section>
+
+      <!-- 06 -->
+      <section data-page="06">
+        <h2>多参数与返回多个值</h2>
+        <pre><code class="language-python">def med_stats(meds, days):
+    avg = meds / days
+    dense = avg &gt;= 3
+    return avg, dense
+
+a, flag = med_stats(15, 5)
+print(a, flag)   # 3.0 True</code></pre>
+        <div class="band band-green"><code>return a, b</code> 实际返回 tuple；可用解包接收。</div>
+        <div class="slide-footer"><span>Python高级应用 · 函数与模块化</span><span>06</span></div>
+      </section>
+
+      <!-- 07 -->
+      <section data-page="07">
+        <h2>*args：接收不定数量位置参数</h2>
+        <pre><code class="language-python">def mean_days(*days):
+    return sum(days) / len(days)
+
+print(mean_days(5, 8, 3))
+print(mean_days(5, 8, 3, 12, 7))</code></pre>
+        <ul class="small">
+          <li><code>*days</code> 在函数内是一个 tuple</li>
+          <li>适合「个数事先不确定」的同类输入</li>
+        </ul>
+        <div class="band band-blue">还有 <code>**kwargs</code> 收关键字参数（本课点到即可）。</div>
+        <div class="slide-footer"><span>Python高级应用 · 函数与模块化</span><span>07</span></div>
+      </section>
+
+      <!-- 08 -->
+      <section data-page="08">
+        <h2>return：结束函数并给出结果</h2>
+        <pre><code class="language-python">def early_readmit(label):
+    if label == "&lt;30":
+        return True
+    return False
+
+# 没有 return 时，默认返回 None
+def only_print(x):
+    print(x)</code></pre>
+        <div class="two-col">
+          <div>
+            <div class="col-head blue">有返回值</div>
+            <p class="small">结果可赋给变量、继续运算</p>
+          </div>
+          <div>
+            <div class="col-head orange">只副作用</div>
+            <p class="small">打印/写文件；调用方拿不到计算值</p>
+          </div>
+        </div>
+        <div class="slide-footer"><span>Python高级应用 · 函数与模块化</span><span>08</span></div>
+      </section>
+
+      <!-- 09 -->
+      <section data-page="09">
+        <h2>作用域：局部变量</h2>
+        <pre><code class="language-python">def tag_stay(days):
+    label = "long" if days &gt;= 7 else "short"
+    return label
+
+print(tag_stay(9))
+# print(label)  → NameError：外面看不到</code></pre>
+        <div class="band band-orange">函数内赋值的名字默认是局部的，离开函数就不可见。</div>
+        <div class="slide-footer"><span>Python高级应用 · 函数与模块化</span><span>09</span></div>
+      </section>
+
+      <!-- 10 -->
+      <section data-page="10">
+        <h2>global：何时（少用）修改全局</h2>
+        <pre><code class="language-python">counter = 0
+
+def bump():
+    global counter
+    counter += 1
+
+bump()
+print(counter)  # 1</code></pre>
+        <ul class="small">
+          <li>只读全局变量不必写 <code>global</code></li>
+          <li>要<strong>赋值修改</strong>全局名时才声明 <code>global</code></li>
+          <li>课堂建议：优先 <code>return</code> 新值，少改全局状态</li>
+        </ul>
+        <div class="slide-footer"><span>Python高级应用 · 函数与模块化</span><span>10</span></div>
+      </section>
+
+      <!-- 11 -->
+      <section data-page="11">
+        <h2>lambda：一行匿名小函数</h2>
+        <pre><code class="language-python">daily = lambda m, d: m / d
+print(daily(15, 5))
+
+encounters.sort(key=lambda e: e["time_in_hospital"])</code></pre>
+        <div class="two-col">
+          <div>
+            <div class="col-head blue">适合</div>
+            <p class="small">短表达式；作为 <code>key=</code> 回调</p>
+          </div>
+          <div>
+            <div class="col-head orange">不适合</div>
+            <p class="small">多语句、需文档与复用的业务逻辑</p>
+          </div>
+        </div>
+        <div class="slide-footer"><span>Python高级应用 · 函数与模块化</span><span>11</span></div>
+      </section>
+
+      <!-- 12 -->
+      <section data-page="12">
+        <h2>递归：函数调用自己</h2>
+        <pre><code class="language-python">def factorial(n):
+    if n &lt;= 1:          # 基例：停止条件
+        return 1
+    return n * factorial(n - 1)  # 向更小规模收敛
+
+print(factorial(5))  # 120</code></pre>
+        <div class="band band-blue">递归两要素：<strong>基例</strong> + <strong>问题规模收敛</strong>。</div>
+        <div class="slide-footer"><span>Python高级应用 · 函数与模块化</span><span>12</span></div>
+      </section>
+
+      <!-- 13 -->
+      <section data-page="13">
+        <h2>基例与收敛：缺一不可</h2>
+        <div class="two-col">
+          <div>
+            <div class="col-head green">正确思路</div>
+            <ul class="small">
+              <li>先写清何时停止</li>
+              <li>每次调用让参数更接近基例</li>
+              <li>用小输入手工推演</li>
+            </ul>
+          </div>
+          <div>
+            <div class="col-head orange">常见失败</div>
+            <ul class="small">
+              <li>没有基例 → 无限递归</li>
+              <li>规模不减小 → 栈溢出</li>
+              <li>可用循环时硬套递归</li>
+            </ul>
+          </div>
+        </div>
+        <p class="small">病例筛选一般用循环更直观；递归作思维训练即可。</p>
+        <div class="slide-footer"><span>Python高级应用 · 函数与模块化</span><span>13</span></div>
+      </section>
+
+      <!-- 14 -->
+      <section data-page="14">
+        <h2>模块化原则（写工具箱前）</h2>
+        <div class="flow-list">
+          <div class="row"><div class="n">01</div><div>一个函数只做一件事（算指标 / 筛选 / 格式化分开）</div></div>
+          <div class="row"><div class="n">02</div><div>名字用动词短语：<code>is_long_stay</code>、<code>filter_early</code></div></div>
+          <div class="row"><div class="n">03</div><div>输入输出类型稳定：进 dict/list，出 bool/list</div></div>
+          <div class="row"><div class="n">04</div><div>避免隐式依赖全局；需要的数据从参数传入</div></div>
+        </div>
+        <div class="slide-footer"><span>Python高级应用 · 函数与模块化</span><span>14</span></div>
+      </section>
+
+      <!-- 15 -->
+      <section data-page="15">
+        <h2>课堂思考</h2>
+        <div class="flow-list">
+          <div class="row"><div class="n">01</div><div>函数里 <code>print</code> 了结果但没 <code>return</code>，调用方能排序吗？</div></div>
+          <div class="row"><div class="n">02</div><div>把阈值 7 写死在三处，和做成默认参数，维护成本差在哪？</div></div>
+          <div class="row"><div class="n">03</div><div>筛选函数应返回新列表，还是删除原列表元素？为什么？</div></div>
+        </div>
+        <div class="slide-footer"><span>Python高级应用 · 函数与模块化</span><span>15</span></div>
+      </section>
+
+      <!-- 16 -->
+      <section data-page="16">
+        <h2>工具箱①：日均药物</h2>
+        <pre><code class="language-python">def daily_medications(num_medications, time_in_hospital):
+    if time_in_hospital &lt;= 0:
+        return None
+    return num_medications / time_in_hospital
+
+print(daily_medications(15, 5))  # 3.0</code></pre>
+        <div class="band band-green">先处理异常分母，再做除法。</div>
+        <div class="slide-footer"><span>Python高级应用 · 函数与模块化</span><span>16</span></div>
+      </section>
+
+      <!-- 17 -->
+      <section data-page="17">
+        <h2>工具箱②：长住院判断</h2>
+        <pre><code class="language-python">def is_long_stay(time_in_hospital, threshold=7):
+    return time_in_hospital &gt;= threshold
+
+def filter_long_stay(encounters, threshold=7):
+    return [
+        e for e in encounters
+        if is_long_stay(e["time_in_hospital"], threshold)
+    ]</code></pre>
+        <p class="small">判断与筛选分层：小组件拼成管道。</p>
+        <div class="slide-footer"><span>Python高级应用 · 函数与模块化</span><span>17</span></div>
+      </section>
+
+      <!-- 18 -->
+      <section data-page="18">
+        <h2>工具箱③：早期再入院</h2>
+        <pre><code class="language-python">def is_early_readmit(readmitted):
+    return readmitted == "&lt;30"
+
+def filter_early_readmit(encounters):
+    return [e for e in encounters if is_early_readmit(e["readmitted"])]
+
+def early_id_set(encounters):
+    return {e["encounter_id"] for e in filter_early_readmit(encounters)}</code></pre>
+        <div class="slide-footer"><span>Python高级应用 · 函数与模块化</span><span>18</span></div>
+      </section>
+
+      <!-- 19 -->
+      <section data-page="19">
+        <h2>工具箱④：组合条件</h2>
+        <pre><code class="language-python">def is_high_risk(enc):
+    return (
+        is_long_stay(enc["time_in_hospital"])
+        and is_early_readmit(enc["readmitted"])
+    )
+
+risky = [e for e in encounters if is_high_risk(e)]</code></pre>
+        <div class="band band-blue">复杂条件 = 小谓词用 <code>and</code>/<code>or</code> 组合，避免超长 if。</div>
+        <div class="slide-footer"><span>Python高级应用 · 函数与模块化</span><span>19</span></div>
+      </section>
+
+      <!-- 20 -->
+      <section data-page="20">
+        <h2>工具箱⑤：摘要报告</h2>
+        <pre><code class="language-python">def summarize(enc):
+    avg = daily_medications(
+        enc["num_medications"], enc["time_in_hospital"]
+    )
+    return (
+        f"#{enc['encounter_id']} 住院{enc['time_in_hospital']}天 "
+        f"日均{avg:.2f} 再入院{enc['readmitted']}"
+    )
+
+for e in encounters:
+    print(summarize(e))</code></pre>
+        <div class="slide-footer"><span>Python高级应用 · 函数与模块化</span><span>20</span></div>
+      </section>
+
+      <!-- 21 -->
+      <section data-page="21">
+        <h2>工具箱⑥：把函数放进模块思路</h2>
+        <div class="file-box">encounter_tools.py
+├── daily_medications(...)
+├── is_long_stay(...)
+├── is_early_readmit(...)
+├── filter_long_stay(...)
+├── filter_early_readmit(...)
+└── summarize(...)</div>
+        <pre><code class="language-python"># 在另一文件中
+# from encounter_tools import filter_long_stay</code></pre>
+        <div class="band band-green">相关函数放同一模块，主程序只负责读数据与调用。</div>
+        <div class="slide-footer"><span>Python高级应用 · 函数与模块化</span><span>21</span></div>
+      </section>
+
+      <!-- 22 -->
+      <section data-page="22">
+        <h2>综合任务：病例处理工具箱</h2>
+        <div class="flow-list">
+          <div class="row"><div class="n">01</div><div>准备 <code>encounters</code>（list of dict，≥3 条）</div></div>
+          <div class="row"><div class="n">02</div><div>实现日均药物、长住院、早期再入院三个基础函数</div></div>
+          <div class="row"><div class="n">03</div><div>实现 <code>filter_long_stay</code> 与 <code>filter_early_readmit</code></div></div>
+          <div class="row"><div class="n">04</div><div>增加「长住院且早期再入院」筛选，并 <code>summarize</code> 打印</div></div>
+        </div>
+        <div class="band band-blue" style="margin-top: 0.7em;">要求：筛选函数返回新列表，不修改传入列表。</div>
+        <div class="slide-footer"><span>Python高级应用 · 函数与模块化</span><span>22</span></div>
+      </section>
+
+      <!-- 23 -->
+      <section data-page="23">
+        <h2>回顾：这节课学到了什么？</h2>
+        <ul>
+          <li>函数消除重复：IPO 清晰</li>
+          <li>参数、默认值、<code>*args</code>；用 <code>return</code> 传出结果</li>
+          <li>局部作用域；<code>global</code> 慎用</li>
+          <li>lambda 作短回调；递归需基例与收敛</li>
+          <li>模块化工具箱：判断 → 筛选 → 摘要</li>
+        </ul>
+        <div class="band band-blue" style="margin-top: 0.6em;">小函数组合起来，就是可维护的数据处理流程。</div>
+        <div class="slide-footer"><span>Python高级应用 · 函数与模块化</span><span>23</span></div>
+      </section>
+
+      <!-- 24 -->
+      <section data-page="24">
+        <h2>三条调用关系（总览）</h2>
+        <div class="parse-flow">
+          <div class="cell">原始 encounters</div>
+          <div class="arrow">→</div>
+          <div class="cell">filter_*</div>
+          <div class="arrow">→</div>
+          <div class="cell">summarize</div>
+        </div>
+        <ul class="small">
+          <li>数据进、列表出：中间不打印也没关系</li>
+          <li>打印放最后一层，便于测试中间函数</li>
+          <li>阈值（如 7、'&lt;30'）集中在少数函数里</li>
+        </ul>
+        <div class="slide-footer"><span>Python高级应用 · 函数与模块化</span><span>24</span></div>
+      </section>
+
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/reveal.js@4.6.1/dist/reveal.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/reveal.js@4.6.1/plugin/highlight/highlight.js"></script>
+  <script>
+    Reveal.initialize({
+      hash: true,
+      center: false,
+      transition: 'fade',
+      transitionSpeed: 'fast',
+      backgroundTransition: 'fade',
+      width: 960,
+      height: 540,
+      margin: 0.04,
+      minScale: 0.35,
+      maxScale: 1.6,
+      slideNumber: false,
+      plugins: [RevealHighlight]
+    });
+  </script>
+</body>
+</html>

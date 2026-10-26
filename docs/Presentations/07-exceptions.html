@@ -1,0 +1,820 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>异常处理与课程数据读写 · Python 高级应用</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.6.1/dist/reveal.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.6.1/dist/theme/white.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.6.1/plugin/highlight/monokai.css">
+  <style>
+    :root {
+      --ink: #12141a;
+      --ink-soft: #3d4450;
+      --muted: #7a8290;
+      --line: #d8dde6;
+      --code-bg: #e7edf4;
+      --surface: #ffffff;
+      --paper: #f4f5f7;
+      --accent: #0d9488;
+      --accent-deep: #0f766e;
+      --blue-bg: #e8f0fe;
+      --blue-ink: #1e3a5f;
+      --green-bg: #e6f6ed;
+      --green-ink: #14532d;
+      --orange-bg: #fff1e6;
+      --orange-ink: #9a3412;
+      --gray-bg: #eef0f3;
+      --font: "IBM Plex Sans", "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
+      --mono: "IBM Plex Mono", Consolas, ui-monospace, monospace;
+    }
+
+    .reveal {
+      font-family: var(--font);
+      font-size: 30px;
+      color: var(--ink);
+      background: var(--paper);
+      -webkit-font-smoothing: antialiased;
+    }
+    .reveal .slides { text-align: left; }
+    .reveal .slides section {
+      padding: 40px 52px 68px;
+      box-sizing: border-box;
+      background:
+        linear-gradient(180deg, #fbfbfc 0%, var(--surface) 42%, #f7f8fa 100%);
+    }
+    .reveal .slides section::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--accent) 0%, var(--accent) 120px, transparent 320px);
+    }
+
+    .reveal h1, .reveal h2 {
+      color: var(--ink);
+      font-weight: 700;
+      text-transform: none;
+      letter-spacing: -0.025em;
+      margin: 0 0 0.65em;
+      font-size: 1.22em;
+      line-height: 1.25;
+      position: relative;
+      padding-bottom: 0.35em;
+    }
+    .reveal h1::after, .reveal h2::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      bottom: 0;
+      width: 28px;
+      height: 2px;
+      background: var(--accent);
+    }
+    .reveal h1 { font-size: 1.55em; letter-spacing: -0.03em; }
+    .reveal p, .reveal li { color: var(--ink); line-height: 1.55; font-weight: 450; }
+    .reveal ul {
+      margin: 0.35em 0 0;
+      padding: 0;
+      list-style: none;
+    }
+    .reveal ul > li {
+      margin: 0.42em 0;
+      padding-left: 1.05em;
+      position: relative;
+    }
+    .reveal ul > li::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 0.62em;
+      width: 0.42em;
+      height: 2px;
+      background: var(--accent);
+    }
+    .reveal a { color: var(--accent-deep); }
+    .reveal .subtitle {
+      color: var(--ink-soft);
+      font-size: 0.82em;
+      font-weight: 500;
+      margin: -0.15em 0 0.15em;
+      letter-spacing: -0.01em;
+    }
+    .reveal .small {
+      font-size: 0.7em;
+      color: var(--ink-soft);
+      line-height: 1.5;
+    }
+
+    .reveal pre {
+      width: 100%;
+      box-shadow: none !important;
+      border: none !important;
+      border-left: 3px solid var(--accent) !important;
+      background: var(--code-bg) !important;
+      padding: 0.75em 0.95em !important;
+      margin: 0.45em 0 0.75em;
+      border-radius: 0;
+    }
+    .reveal pre code {
+      background: transparent !important;
+      color: var(--ink) !important;
+      font-family: var(--mono);
+      font-size: 0.68em;
+      font-weight: 450;
+      line-height: 1.48;
+      max-height: none;
+      padding: 0 !important;
+      tab-size: 4;
+    }
+    .reveal section.dense pre code { font-size: 0.58em; line-height: 1.42; }
+    .reveal code {
+      font-family: var(--mono);
+      background: var(--code-bg);
+      color: var(--ink);
+      padding: 0.06em 0.28em;
+      border-radius: 2px;
+      font-size: 0.92em;
+      font-weight: 500;
+    }
+    .reveal pre code .hljs-comment,
+    .reveal pre code .hljs-quote { color: #64748b !important; font-style: italic; }
+    .reveal pre code .hljs-keyword,
+    .reveal pre code .hljs-selector-tag,
+    .reveal pre code .hljs-built_in { color: #0b6e99 !important; font-weight: 600; }
+    .reveal pre code .hljs-string { color: var(--accent-deep) !important; }
+    .reveal pre code .hljs-number { color: #b45309 !important; }
+    .reveal pre code .hljs-title,
+    .reveal pre code .hljs-title.class_,
+    .reveal pre code .hljs-title.function_ { color: #1d4ed8 !important; }
+
+    .band {
+      padding: 0.5em 0.8em;
+      margin: 0.5em 0;
+      font-size: 0.78em;
+      line-height: 1.45;
+      font-weight: 500;
+      border-left: 3px solid transparent;
+    }
+    .band-blue { background: var(--blue-bg); color: var(--blue-ink); border-left-color: #3b82f6; }
+    .band-green { background: var(--green-bg); color: var(--green-ink); border-left-color: #22c55e; }
+    .band-orange { background: var(--orange-bg); color: var(--orange-ink); border-left-color: #f97316; }
+    .band-gray { background: var(--gray-bg); color: var(--ink); border-left-color: var(--line); }
+
+    .students {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 8.5em));
+      gap: 0.75em;
+      margin: 1.15em 0 1em;
+    }
+    .students .chip {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-top: 2px solid var(--accent);
+      padding: 0.65em 0.75em;
+      font-size: 0.78em;
+      text-align: center;
+      color: var(--ink-soft);
+      line-height: 1.35;
+    }
+    .students .chip strong {
+      display: inline-block;
+      margin-top: 0.15em;
+      font-size: 1.15em;
+      color: var(--ink);
+      font-variant-numeric: tabular-nums;
+      font-family: var(--mono);
+      font-weight: 600;
+    }
+
+    .two-col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1em;
+      margin-top: 0.45em;
+    }
+    .two-col .col-head {
+      padding: 0.38em 0.7em;
+      font-weight: 650;
+      font-size: 0.76em;
+      margin-bottom: 0.35em;
+      letter-spacing: -0.01em;
+      border-left: 3px solid transparent;
+    }
+    .two-col .col-head.blue {
+      background: var(--blue-bg);
+      color: var(--blue-ink);
+      border-left-color: #3b82f6;
+    }
+    .two-col .col-head.green {
+      background: var(--green-bg);
+      color: var(--green-ink);
+      border-left-color: #22c55e;
+    }
+    .two-col .col-head.orange {
+      background: var(--orange-bg);
+      color: var(--orange-ink);
+      border-left-color: #f97316;
+    }
+    .two-col ul { margin-top: 0; font-size: 0.8em; }
+    .two-col pre { margin-bottom: 0.45em; }
+
+    .three-col {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 0.7em;
+      margin-top: 0.5em;
+      font-size: 0.72em;
+    }
+    .three-col .box {
+      background: var(--gray-bg);
+      padding: 0.55em 0.65em;
+      min-height: 7.5em;
+    }
+    .three-col .box strong {
+      display: block;
+      margin-bottom: 0.35em;
+      font-size: 1.05em;
+      color: var(--ink);
+    }
+
+    .term-table {
+      display: grid;
+      grid-template-columns: 8em 1fr;
+      gap: 0.4em 0.9em;
+      margin-top: 0.75em;
+      font-size: 0.78em;
+      align-items: stretch;
+    }
+    .term-table .k {
+      font-family: var(--mono);
+      background: var(--code-bg);
+      border-left: 3px solid var(--accent);
+      padding: 0.28em 0.5em;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+    }
+    .term-table > div:nth-child(even) {
+      display: flex;
+      align-items: center;
+      color: var(--ink-soft);
+      border-bottom: 1px solid var(--line);
+      padding: 0.2em 0;
+    }
+
+    .flow-list {
+      margin-top: 0.65em;
+      display: grid;
+      gap: 0.4em;
+      font-size: 0.76em;
+    }
+    .flow-list .row {
+      display: grid;
+      grid-template-columns: 2.4em 1fr;
+      gap: 0.55em;
+      align-items: stretch;
+    }
+    .flow-list .n {
+      background: var(--ink);
+      color: #fff;
+      text-align: center;
+      font-weight: 600;
+      font-family: var(--mono);
+      font-size: 0.9em;
+      letter-spacing: 0.02em;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 1.7em;
+    }
+    .flow-list .row > div:last-child {
+      background: var(--gray-bg);
+      padding: 0.35em 0.65em;
+      display: flex;
+      align-items: center;
+      color: var(--ink);
+    }
+
+    .file-box {
+      font-family: var(--mono);
+      background: var(--code-bg);
+      border-left: 3px solid var(--accent);
+      padding: 0.65em 0.9em;
+      font-size: 0.72em;
+      line-height: 1.55;
+      color: var(--ink);
+      margin: 0.45em 0 0.75em;
+      white-space: pre-wrap;
+    }
+
+    .mode-row {
+      display: grid;
+      grid-template-columns: 3.2em 1fr;
+      gap: 0.6em;
+      align-items: center;
+      margin: 0.4em 0;
+      font-size: 0.8em;
+    }
+    .mode-row .tag {
+      font-family: var(--mono);
+      font-weight: 700;
+      text-align: center;
+      padding: 0.35em 0;
+      background: var(--code-bg);
+    }
+    .mode-row.warn .tag {
+      background: var(--orange-bg);
+      color: var(--orange-ink);
+    }
+
+    .parse-flow {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr auto 1fr;
+      gap: 0.4em;
+      align-items: center;
+      margin: 0.6em 0;
+      font-size: 0.72em;
+    }
+    .parse-flow .cell {
+      background: var(--gray-bg);
+      padding: 0.45em 0.55em;
+      text-align: center;
+      font-family: var(--mono);
+    }
+    .parse-flow .arrow { color: var(--muted); font-family: var(--mono); }
+
+    .goals li {
+      font-size: 0.95em;
+      margin: 0.55em 0 !important;
+    }
+
+    .slide-footer {
+      position: absolute;
+      left: 52px;
+      right: 52px;
+      bottom: 18px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 12px;
+      font-family: var(--mono);
+      font-weight: 500;
+      letter-spacing: 0.02em;
+      color: var(--muted);
+      pointer-events: none;
+      padding-top: 10px;
+      border-top: 1px solid var(--line);
+    }
+    .slide-footer span:last-child {
+      color: var(--accent-deep);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .reveal .controls { color: var(--accent); }
+    .reveal .progress {
+      color: var(--accent);
+      height: 2px;
+      background: rgba(13, 148, 136, 0.12);
+    }
+    .reveal .slide-number { display: none; }
+
+    .back-link {
+      position: fixed;
+      top: 14px;
+      left: 14px;
+      z-index: 30;
+      font-family: var(--font);
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      background: rgba(255, 255, 255, 0.92);
+      backdrop-filter: blur(8px);
+      border: 1px solid var(--line);
+      padding: 6px 12px;
+      text-decoration: none !important;
+      color: var(--accent-deep) !important;
+      transition: border-color 0.15s ease, background 0.15s ease;
+    }
+    .back-link:hover {
+      background: #fff;
+      border-color: var(--accent);
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .reveal .slides section { transition: none !important; }
+    }
+  </style>
+</head>
+<body>
+  <a class="back-link" href="index.html">← 演示列表</a>
+  <div class="reveal">
+    <div class="slides">
+
+      <!-- 01 -->
+      <section data-page="01">
+        <h1>异常处理与课程数据读写</h1>
+        <p class="subtitle">文件打不开、编码不对、坏行混入时怎么办</p>
+        <div class="students">
+          <div class="chip">捕获<br><strong>except</strong></div>
+          <div class="chip">收尾<br><strong>finally</strong></div>
+          <div class="chip">稳健读写<br><strong>流程</strong></div>
+        </div>
+        <div class="band band-blue">假定已会 <code>with open</code> 与 CSV / JSON 基础；本节聚焦「出错时怎么办」。</div>
+        <div class="slide-footer"><span>Python高级应用 · 异常处理与数据读写</span><span>01</span></div>
+      </section>
+
+      <!-- 02 -->
+      <section data-page="02">
+        <h2>今天要完成什么？</h2>
+        <ul class="goals">
+          <li>认识常见异常：文件找不到、编码、类型转换、缺键</li>
+          <li>掌握 <code>try / except / else / finally</code></li>
+          <li>理解路径与当前工作目录</li>
+          <li>读课程规模数据时：跳过坏行、简单校验、错误日志思路</li>
+        </ul>
+        <div class="band band-blue" style="margin-top: 1em;">目标：写出不易「一炸就停」的读写小流程。</div>
+        <div class="slide-footer"><span>Python高级应用 · 异常处理与数据读写</span><span>02</span></div>
+      </section>
+
+      <!-- 03 -->
+      <section data-page="03">
+        <h2>读数据时，常见会出什么错？</h2>
+        <div class="term-table">
+          <div class="k">FileNotFoundError</div><div>路径错了，或工作目录不是你以为的位置</div>
+          <div class="k">UnicodeDecodeError</div><div>按 utf-8 去读 GBK 文件（或反过来）</div>
+          <div class="k">ValueError</div><div><code>int("NA")</code> 之类转换失败</div>
+          <div class="k">KeyError</div><div>字典 / 表头缺字段</div>
+        </div>
+        <div class="band band-orange" style="margin-top: 0.8em;">课程数据常有缺失标记、混编码、坏行——需要策略，而不是假装永远干净。</div>
+        <div class="slide-footer"><span>Python高级应用 · 异常处理与数据读写</span><span>03</span></div>
+      </section>
+
+      <!-- 04 -->
+      <section data-page="04">
+        <h2>FileNotFoundError：文件在哪？</h2>
+        <pre><code class="language-python">with open("diabetic_data.csv", encoding="utf-8") as f:
+    text = f.read()</code></pre>
+        <ul class="small">
+          <li>报错不等于「磁盘没有这个文件」一种可能</li>
+          <li>更常见：相对路径相对于<strong>当前工作目录</strong>，不是脚本所在目录</li>
+        </ul>
+        <div class="band band-blue">先确认「程序从哪个目录启动」，再谈文件名。</div>
+        <div class="slide-footer"><span>Python高级应用 · 异常处理与数据读写</span><span>04</span></div>
+      </section>
+
+      <!-- 05 -->
+      <section data-page="05">
+        <h2>路径与工作目录</h2>
+        <div class="two-col">
+          <div>
+            <div class="col-head blue">相对路径</div>
+            <pre><code class="language-python">"diabetic_data.csv"
+"data/diabetic_data.csv"</code></pre>
+            <p class="small">相对当前工作目录</p>
+          </div>
+          <div>
+            <div class="col-head green">更稳妥</div>
+            <pre><code class="language-python">from pathlib import Path
+root = Path(__file__).resolve().parent
+path = root / "data" / "diabetic_data.csv"</code></pre>
+          </div>
+        </div>
+        <div class="band band-orange">想一想：在 IDE 里点运行，工作目录一定是项目根吗？</div>
+        <div class="slide-footer"><span>Python高级应用 · 异常处理与数据读写</span><span>05</span></div>
+      </section>
+
+      <!-- 06 -->
+      <section data-page="06">
+        <h2>捕获 FileNotFoundError</h2>
+        <pre><code class="language-python">from pathlib import Path
+path = Path("data/diabetic_data.csv")
+try:
+    with open(path, encoding="utf-8") as f:
+        head = f.readline()
+except FileNotFoundError:
+    print(f"找不到文件：{path.resolve()}")
+    head = None</code></pre>
+        <div class="band band-blue">捕获后给出<strong>可行动</strong>的信息（解析后的绝对路径），比只 print「出错了」有用。</div>
+        <div class="slide-footer"><span>Python高级应用 · 异常处理与数据读写</span><span>06</span></div>
+      </section>
+
+      <!-- 07 -->
+      <section data-page="07">
+        <h2>UnicodeDecodeError：编码不对</h2>
+        <pre><code class="language-python">try:
+    with open(path, encoding="utf-8") as f:
+        text = f.read()
+except UnicodeDecodeError:
+    with open(path, encoding="gbk") as f:
+        text = f.read()
+    print("已用 gbk 回退读取")</code></pre>
+        <ul class="small">
+          <li>课程导出文件有时是系统默认编码</li>
+          <li>也可在打开时用 <code>errors="replace"</code>（会丢信息，仅作权宜）</li>
+        </ul>
+        <div class="slide-footer"><span>Python高级应用 · 异常处理与数据读写</span><span>07</span></div>
+      </section>
+
+      <!-- 08 -->
+      <section data-page="08">
+        <h2>ValueError：类型转换失败</h2>
+        <pre><code class="language-python">raw = "NA"   # 课程表里常见缺失标记
+try:
+    los = int(raw)
+except ValueError:
+    los = None
+print(los)  # None</code></pre>
+        <div class="band band-blue">读入的几乎全是字符串；转 <code>int</code> / <code>float</code> 前要准备「转不动」的分支。</div>
+        <div class="slide-footer"><span>Python高级应用 · 异常处理与数据读写</span><span>08</span></div>
+      </section>
+
+      <!-- 09 -->
+      <section data-page="09">
+        <h2>KeyError：缺字段 / 缺列名</h2>
+        <pre><code class="language-python">row = {"encounter_id": "100", "race": "Caucasian"}
+try:
+    gender = row["gender"]
+except KeyError:
+    gender = "未知"
+    print("缺少 gender 列")</code></pre>
+        <div class="two-col" style="margin-top:0.5em;">
+          <div>
+            <div class="col-head blue">也可用</div>
+            <pre><code class="language-python">gender = row.get("gender", "未知")</code></pre>
+          </div>
+          <div>
+            <div class="col-head green">何时 except</div>
+            <p class="small">缺键应被视为异常事件、需要记日志时</p>
+          </div>
+        </div>
+        <div class="slide-footer"><span>Python高级应用 · 异常处理与数据读写</span><span>09</span></div>
+      </section>
+
+      <!-- 10 -->
+      <section data-page="10">
+        <h2>try / except 基本结构</h2>
+        <pre><code class="language-python">try:
+    # 可能失败的操作
+    value = int(text)
+except ValueError:
+    # 只处理这一类错误
+    value = None</code></pre>
+        <ul class="small">
+          <li><code>try</code>：把「可能炸」的最小代码块包起来</li>
+          <li><code>except 具体类型</code>：避免裸 <code>except:</code> 吞掉所有错误</li>
+        </ul>
+        <div class="band band-orange">不要用空的 <code>except:</code> 把真实 bug 藏起来。</div>
+        <div class="slide-footer"><span>Python高级应用 · 异常处理与数据读写</span><span>10</span></div>
+      </section>
+
+      <!-- 11 -->
+      <section data-page="11">
+        <h2>多个 except：分类处理</h2>
+        <pre><code class="language-python">try:
+    with open(path, encoding="utf-8") as f:
+        line = f.readline()
+    n = int(line.strip().split(",")[3])
+except FileNotFoundError:
+    print("文件不存在")
+except UnicodeDecodeError:
+    print("编码问题")
+except (ValueError, IndexError):
+    print("这一行字段无法解析")</code></pre>
+        <div class="band band-blue">不同异常 → 不同对策；不要用同一个「失败」糊弄过去。</div>
+        <div class="slide-footer"><span>Python高级应用 · 异常处理与数据读写</span><span>11</span></div>
+      </section>
+
+      <!-- 12 -->
+      <section data-page="12">
+        <h2>else：没有异常才执行</h2>
+        <pre><code class="language-python">try:
+    with open(path, encoding="utf-8") as f:
+        data = f.read()
+except FileNotFoundError:
+    print("打开失败")
+else:
+    print("读取成功，长度", len(data))
+    # 仅在成功时做后续解析</code></pre>
+        <p class="small"><code>else</code> 里的代码不在「防护罩」内；它表示「try 成功完成」。</p>
+        <div class="slide-footer"><span>Python高级应用 · 异常处理与数据读写</span><span>12</span></div>
+      </section>
+
+      <!-- 13 -->
+      <section data-page="13">
+        <h2>finally：无论成败都收尾</h2>
+        <pre><code class="language-python">f = None
+try:
+    f = open(path, encoding="utf-8")
+    data = f.read()
+except OSError as e:
+    print("读写失败", e)
+    data = ""
+finally:
+    if f is not None:
+        f.close()
+    print("收尾完成")</code></pre>
+        <div class="band band-blue">日常文本读写仍优先 <code>with open</code>；理解 <code>finally</code> 有助于写更复杂的资源清理。</div>
+        <div class="slide-footer"><span>Python高级应用 · 异常处理与数据读写</span><span>13</span></div>
+      </section>
+
+      <!-- 14 -->
+      <section data-page="14">
+        <h2>课程规模数据：不必一次读十万行进内存</h2>
+        <div class="file-box">diabetic_data.csv  （概念示意）
+encounter_id,race,gender,age,time_in_hospital,...
+100000,Caucasian,Female,[70-80),3,...
+... 约十万行量级 ...</div>
+        <ul class="small">
+          <li>流式：逐行 <code>for line in f</code>，边读边处理</li>
+          <li>本节重点不是算全表统计，而是<strong>坏行策略</strong></li>
+        </ul>
+        <div class="slide-footer"><span>Python高级应用 · 异常处理与数据读写</span><span>14</span></div>
+      </section>
+
+      <!-- 15 -->
+      <section data-page="15">
+        <h2>坏行跳过：逐行 try</h2>
+        <pre><code class="language-python">rows = []
+bad = 0
+with open(path, encoding="utf-8") as f:
+    header = f.readline()
+    for i, line in enumerate(f, start=2):
+        try:
+            parts = line.rstrip("\n").split(",")
+            los = int(parts[4])          # 示意：住院天数字段
+            rows.append({"los": los})
+        except (ValueError, IndexError):
+            bad += 1
+            continue
+print(len(rows), "ok,", bad, "bad")</code></pre>
+        <div class="slide-footer"><span>Python高级应用 · 异常处理与数据读写</span><span>15</span></div>
+      </section>
+
+      <!-- 16 -->
+      <section data-page="16">
+        <h2>简单校验：读入后先问三件事</h2>
+        <div class="flow-list">
+          <div class="row"><div class="n">01</div><div>列数是否与表头一致？</div></div>
+          <div class="row"><div class="n">02</div><div>关键字段能否转为数字 / 类别？</div></div>
+          <div class="row"><div class="n">03</div><div>合理范围？（如住院天数 ≥ 0）</div></div>
+        </div>
+        <pre><code class="language-python">def valid_los(x):
+    return isinstance(x, int) and x >= 0</code></pre>
+        <div class="band band-blue">校验失败：跳过、记日志、或写入「问题行」文件。</div>
+        <div class="slide-footer"><span>Python高级应用 · 异常处理与数据读写</span><span>16</span></div>
+      </section>
+
+      <!-- 17 -->
+      <section data-page="17">
+        <h2>错误日志思路</h2>
+        <pre><code class="language-python">import datetime as dt
+
+def log_bad(path_log, line_no, reason, raw):
+    with open(path_log, "a", encoding="utf-8") as log:
+        ts = dt.datetime.now().isoformat(timespec="seconds")
+        log.write(f"{ts}\tL{line_no}\t{reason}\t{raw[:80]}\n")</code></pre>
+        <ul class="small">
+          <li>记：时间、行号、原因、原始片段</li>
+          <li>便于事后抽查，而不是只在终端闪一下</li>
+        </ul>
+        <div class="slide-footer"><span>Python高级应用 · 异常处理与数据读写</span><span>17</span></div>
+      </section>
+
+      <!-- 18 -->
+      <section data-page="18">
+        <h2>稳健读取：小流程</h2>
+        <div class="flow-list">
+          <div class="row"><div class="n">01</div><div>用 pathlib 拼路径；先检查 <code>path.exists()</code></div></div>
+          <div class="row"><div class="n">02</div><div><code>try</code> 打开（处理找不到 / 编码）</div></div>
+          <div class="row"><div class="n">03</div><div>逐行解析；坏行 <code>log_bad</code> + <code>continue</code></div></div>
+          <div class="row"><div class="n">04</div><div>简单校验后收入结果列表 / 计数器</div></div>
+          <div class="row"><div class="n">05</div><div>结束时打印 ok / bad 摘要</div></div>
+        </div>
+        <div class="slide-footer"><span>Python高级应用 · 异常处理与数据读写</span><span>18</span></div>
+      </section>
+
+      <!-- 19 -->
+      <section data-page="19">
+        <h2>稳健写入：小流程</h2>
+        <pre><code class="language-python">out = Path("output/summary.csv")
+try:
+    out.parent.mkdir(parents=True, exist_ok=True)
+    with open(out, "w", encoding="utf-8") as f:
+        f.write("metric,value\n")
+        f.write(f"n_ok,{n_ok}\n")
+except OSError as e:
+    print("写入失败：", e)</code></pre>
+        <div class="band band-blue">写之前确保目录存在；捕获磁盘满、权限等 <code>OSError</code>。</div>
+        <div class="slide-footer"><span>Python高级应用 · 异常处理与数据读写</span><span>19</span></div>
+      </section>
+
+      <!-- 20 -->
+      <section data-page="20">
+        <h2>综合：读示意 CSV → 统计有效住院日</h2>
+        <pre><code class="language-python">def load_los(path, log_path):
+    ok, values = 0, []
+    with open(path, encoding="utf-8") as f:
+        next(f)  # 跳过表头
+        for i, line in enumerate(f, start=2):
+            try:
+                los = int(line.split(",")[4])
+                if los < 0:
+                    raise ValueError("negative")
+                values.append(los); ok += 1
+            except (ValueError, IndexError) as e:
+                log_bad(log_path, i, type(e).__name__, line)
+    return values, ok</code></pre>
+        <div class="slide-footer"><span>Python高级应用 · 异常处理与数据读写</span><span>20</span></div>
+      </section>
+
+      <!-- 21 -->
+      <section data-page="21">
+        <h2>思考：该不该捕获？</h2>
+        <div class="two-col">
+          <div>
+            <div class="col-head green">适合捕获</div>
+            <ul class="small">
+              <li>外部输入：文件、用户录入</li>
+              <li>单行坏数据不影响整批</li>
+              <li>可恢复：换编码、跳过、默认值</li>
+            </ul>
+          </div>
+          <div>
+            <div class="col-head orange">不宜乱捕</div>
+            <ul class="small">
+              <li>自己的逻辑错误（应修代码）</li>
+              <li>裸 <code>except:</code> 吞掉一切</li>
+              <li>捕获后静默忽略、无日志</li>
+            </ul>
+          </div>
+        </div>
+        <div class="slide-footer"><span>Python高级应用 · 异常处理与数据读写</span><span>21</span></div>
+      </section>
+
+      <!-- 22 -->
+      <section data-page="22">
+        <h2>代码：完整骨架（示意）</h2>
+        <pre><code class="language-python">def safe_load(path):
+    path = Path(path)
+    if not path.exists():
+        raise FileNotFoundError(path)
+    rows, bad = [], 0
+    with open(path, encoding="utf-8") as f:
+        header = f.readline().strip().split(",")
+        for i, line in enumerate(f, start=2):
+            try:
+                row = dict(zip(header, line.strip().split(",")))
+                row["time_in_hospital"] = int(row["time_in_hospital"])
+                rows.append(row)
+            except (KeyError, ValueError):
+                bad += 1
+    return rows, bad</code></pre>
+        <div class="slide-footer"><span>Python高级应用 · 异常处理与数据读写</span><span>22</span></div>
+      </section>
+
+      <!-- 23 -->
+      <section data-page="23">
+        <h2>回顾：这节课学到了什么？</h2>
+        <ul>
+          <li>四类常见异常：找不到文件、编码、转换、缺键</li>
+          <li><code>try / except / else / finally</code> 的分工</li>
+          <li>路径相对「工作目录」；用 pathlib 更稳</li>
+          <li>课程规模 CSV：逐行解析、坏行跳过、校验与错误日志</li>
+          <li>稳健读写：先存在性 / 目录，再打开，最后摘要</li>
+        </ul>
+        <div class="band band-blue" style="margin-top: 0.6em;">数据会脏；程序要有策略，而不是假设永远完美。</div>
+        <div class="slide-footer"><span>Python高级应用 · 异常处理与数据读写</span><span>23</span></div>
+      </section>
+
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/reveal.js@4.6.1/dist/reveal.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/reveal.js@4.6.1/plugin/highlight/highlight.js"></script>
+  <script>
+    Reveal.initialize({
+      hash: true,
+      center: false,
+      transition: 'fade',
+      transitionSpeed: 'fast',
+      backgroundTransition: 'fade',
+      width: 960,
+      height: 540,
+      margin: 0.04,
+      minScale: 0.35,
+      maxScale: 1.6,
+      slideNumber: false,
+      plugins: [RevealHighlight]
+    });
+  </script>
+</body>
+</html>
+
+</body>
+</html>

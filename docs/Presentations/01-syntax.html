@@ -1,0 +1,807 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Python语法元素、基本数据类型与表达式 · Python 高级应用</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.6.1/dist/reveal.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.6.1/dist/theme/white.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.6.1/plugin/highlight/monokai.css">
+  <style>
+    :root {
+      --ink: #12141a;
+      --ink-soft: #3d4450;
+      --muted: #7a8290;
+      --line: #d8dde6;
+      --code-bg: #e7edf4;
+      --surface: #ffffff;
+      --paper: #f4f5f7;
+      --accent: #0d9488;
+      --accent-deep: #0f766e;
+      --blue-bg: #e8f0fe;
+      --blue-ink: #1e3a5f;
+      --green-bg: #e6f6ed;
+      --green-ink: #14532d;
+      --orange-bg: #fff1e6;
+      --orange-ink: #9a3412;
+      --gray-bg: #eef0f3;
+      --font: "IBM Plex Sans", "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
+      --mono: "IBM Plex Mono", Consolas, ui-monospace, monospace;
+    }
+
+    .reveal {
+      font-family: var(--font);
+      font-size: 30px;
+      color: var(--ink);
+      background: var(--paper);
+      -webkit-font-smoothing: antialiased;
+    }
+    .reveal .slides { text-align: left; }
+    .reveal .slides section {
+      padding: 40px 52px 68px;
+      box-sizing: border-box;
+      background:
+        linear-gradient(180deg, #fbfbfc 0%, var(--surface) 42%, #f7f8fa 100%);
+    }
+    .reveal .slides section::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--accent) 0%, var(--accent) 120px, transparent 320px);
+    }
+
+    .reveal h1, .reveal h2 {
+      color: var(--ink);
+      font-weight: 700;
+      text-transform: none;
+      letter-spacing: -0.025em;
+      margin: 0 0 0.65em;
+      font-size: 1.22em;
+      line-height: 1.25;
+      position: relative;
+      padding-bottom: 0.35em;
+    }
+    .reveal h1::after, .reveal h2::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      bottom: 0;
+      width: 28px;
+      height: 2px;
+      background: var(--accent);
+    }
+    .reveal h1 { font-size: 1.55em; letter-spacing: -0.03em; }
+    .reveal p, .reveal li { color: var(--ink); line-height: 1.55; font-weight: 450; }
+    .reveal ul {
+      margin: 0.35em 0 0;
+      padding: 0;
+      list-style: none;
+    }
+    .reveal ul > li {
+      margin: 0.42em 0;
+      padding-left: 1.05em;
+      position: relative;
+    }
+    .reveal ul > li::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 0.62em;
+      width: 0.42em;
+      height: 2px;
+      background: var(--accent);
+    }
+    .reveal a { color: var(--accent-deep); }
+    .reveal .subtitle {
+      color: var(--ink-soft);
+      font-size: 0.82em;
+      font-weight: 500;
+      margin: -0.15em 0 0.15em;
+      letter-spacing: -0.01em;
+    }
+    .reveal .small {
+      font-size: 0.7em;
+      color: var(--ink-soft);
+      line-height: 1.5;
+    }
+
+    .reveal pre {
+      width: 100%;
+      box-shadow: none !important;
+      border: none !important;
+      border-left: 3px solid var(--accent) !important;
+      background: var(--code-bg) !important;
+      padding: 0.75em 0.95em !important;
+      margin: 0.45em 0 0.75em;
+      border-radius: 0;
+    }
+    .reveal pre code {
+      background: transparent !important;
+      color: var(--ink) !important;
+      font-family: var(--mono);
+      font-size: 0.68em;
+      font-weight: 450;
+      line-height: 1.48;
+      max-height: none;
+      padding: 0 !important;
+      tab-size: 4;
+    }
+    .reveal section.dense pre code { font-size: 0.58em; line-height: 1.42; }
+    .reveal code {
+      font-family: var(--mono);
+      background: var(--code-bg);
+      color: var(--ink);
+      padding: 0.06em 0.28em;
+      border-radius: 2px;
+      font-size: 0.92em;
+      font-weight: 500;
+    }
+    .reveal pre code .hljs-comment,
+    .reveal pre code .hljs-quote { color: #64748b !important; font-style: italic; }
+    .reveal pre code .hljs-keyword,
+    .reveal pre code .hljs-selector-tag,
+    .reveal pre code .hljs-built_in { color: #0b6e99 !important; font-weight: 600; }
+    .reveal pre code .hljs-string { color: var(--accent-deep) !important; }
+    .reveal pre code .hljs-number { color: #b45309 !important; }
+    .reveal pre code .hljs-title,
+    .reveal pre code .hljs-title.class_,
+    .reveal pre code .hljs-title.function_ { color: #1d4ed8 !important; }
+
+    .band {
+      padding: 0.5em 0.8em;
+      margin: 0.5em 0;
+      font-size: 0.78em;
+      line-height: 1.45;
+      font-weight: 500;
+      border-left: 3px solid transparent;
+    }
+    .band-blue { background: var(--blue-bg); color: var(--blue-ink); border-left-color: #3b82f6; }
+    .band-green { background: var(--green-bg); color: var(--green-ink); border-left-color: #22c55e; }
+    .band-orange { background: var(--orange-bg); color: var(--orange-ink); border-left-color: #f97316; }
+    .band-gray { background: var(--gray-bg); color: var(--ink); border-left-color: var(--line); }
+
+    .students {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 8.5em));
+      gap: 0.75em;
+      margin: 1.15em 0 1em;
+    }
+    .students .chip {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-top: 2px solid var(--accent);
+      padding: 0.65em 0.75em;
+      font-size: 0.78em;
+      text-align: center;
+      color: var(--ink-soft);
+      line-height: 1.35;
+    }
+    .students .chip strong {
+      display: inline-block;
+      margin-top: 0.15em;
+      font-size: 1.15em;
+      color: var(--ink);
+      font-variant-numeric: tabular-nums;
+      font-family: var(--mono);
+      font-weight: 600;
+    }
+
+    .two-col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1em;
+      margin-top: 0.45em;
+    }
+    .two-col .col-head {
+      padding: 0.38em 0.7em;
+      font-weight: 650;
+      font-size: 0.76em;
+      margin-bottom: 0.35em;
+      letter-spacing: -0.01em;
+      border-left: 3px solid transparent;
+    }
+    .two-col .col-head.blue {
+      background: var(--blue-bg);
+      color: var(--blue-ink);
+      border-left-color: #3b82f6;
+    }
+    .two-col .col-head.green {
+      background: var(--green-bg);
+      color: var(--green-ink);
+      border-left-color: #22c55e;
+    }
+    .two-col .col-head.orange {
+      background: var(--orange-bg);
+      color: var(--orange-ink);
+      border-left-color: #f97316;
+    }
+    .two-col ul { margin-top: 0; font-size: 0.8em; }
+    .two-col pre { margin-bottom: 0.45em; }
+
+    .three-col {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 0.7em;
+      margin-top: 0.5em;
+      font-size: 0.72em;
+    }
+    .three-col .box {
+      background: var(--gray-bg);
+      padding: 0.55em 0.65em;
+      min-height: 7.5em;
+    }
+    .three-col .box strong {
+      display: block;
+      margin-bottom: 0.35em;
+      font-size: 1.05em;
+      color: var(--ink);
+    }
+
+    .term-table {
+      display: grid;
+      grid-template-columns: 8em 1fr;
+      gap: 0.4em 0.9em;
+      margin-top: 0.75em;
+      font-size: 0.78em;
+      align-items: stretch;
+    }
+    .term-table .k {
+      font-family: var(--mono);
+      background: var(--code-bg);
+      border-left: 3px solid var(--accent);
+      padding: 0.28em 0.5em;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+    }
+    .term-table > div:nth-child(even) {
+      display: flex;
+      align-items: center;
+      color: var(--ink-soft);
+      border-bottom: 1px solid var(--line);
+      padding: 0.2em 0;
+    }
+
+    .flow-list {
+      margin-top: 0.65em;
+      display: grid;
+      gap: 0.4em;
+      font-size: 0.76em;
+    }
+    .flow-list .row {
+      display: grid;
+      grid-template-columns: 2.4em 1fr;
+      gap: 0.55em;
+      align-items: stretch;
+    }
+    .flow-list .n {
+      background: var(--ink);
+      color: #fff;
+      text-align: center;
+      font-weight: 600;
+      font-family: var(--mono);
+      font-size: 0.9em;
+      letter-spacing: 0.02em;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 1.7em;
+    }
+    .flow-list .row > div:last-child {
+      background: var(--gray-bg);
+      padding: 0.35em 0.65em;
+      display: flex;
+      align-items: center;
+      color: var(--ink);
+    }
+
+    .file-box {
+      font-family: var(--mono);
+      background: var(--code-bg);
+      border-left: 3px solid var(--accent);
+      padding: 0.65em 0.9em;
+      font-size: 0.72em;
+      line-height: 1.55;
+      color: var(--ink);
+      margin: 0.45em 0 0.75em;
+      white-space: pre-wrap;
+    }
+
+    .mode-row {
+      display: grid;
+      grid-template-columns: 3.2em 1fr;
+      gap: 0.6em;
+      align-items: center;
+      margin: 0.4em 0;
+      font-size: 0.8em;
+    }
+    .mode-row .tag {
+      font-family: var(--mono);
+      font-weight: 700;
+      text-align: center;
+      padding: 0.35em 0;
+      background: var(--code-bg);
+    }
+    .mode-row.warn .tag {
+      background: var(--orange-bg);
+      color: var(--orange-ink);
+    }
+
+    .parse-flow {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr auto 1fr;
+      gap: 0.4em;
+      align-items: center;
+      margin: 0.6em 0;
+      font-size: 0.72em;
+    }
+    .parse-flow .cell {
+      background: var(--gray-bg);
+      padding: 0.45em 0.55em;
+      text-align: center;
+      font-family: var(--mono);
+    }
+    .parse-flow .arrow { color: var(--muted); font-family: var(--mono); }
+
+    .goals li {
+      font-size: 0.95em;
+      margin: 0.55em 0 !important;
+    }
+
+    .slide-footer {
+      position: absolute;
+      left: 52px;
+      right: 52px;
+      bottom: 18px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 12px;
+      font-family: var(--mono);
+      font-weight: 500;
+      letter-spacing: 0.02em;
+      color: var(--muted);
+      pointer-events: none;
+      padding-top: 10px;
+      border-top: 1px solid var(--line);
+    }
+    .slide-footer span:last-child {
+      color: var(--accent-deep);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .reveal .controls { color: var(--accent); }
+    .reveal .progress {
+      color: var(--accent);
+      height: 2px;
+      background: rgba(13, 148, 136, 0.12);
+    }
+    .reveal .slide-number { display: none; }
+
+    .back-link {
+      position: fixed;
+      top: 14px;
+      left: 14px;
+      z-index: 30;
+      font-family: var(--font);
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      background: rgba(255, 255, 255, 0.92);
+      backdrop-filter: blur(8px);
+      border: 1px solid var(--line);
+      padding: 6px 12px;
+      text-decoration: none !important;
+      color: var(--accent-deep) !important;
+      transition: border-color 0.15s ease, background 0.15s ease;
+    }
+    .back-link:hover {
+      background: #fff;
+      border-color: var(--accent);
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .reveal .slides section { transition: none !important; }
+    }
+  </style>
+</head>
+<body>
+  <a class="back-link" href="index.html">← 演示列表</a>
+  <div class="reveal">
+    <div class="slides">
+
+      <!-- 01 -->
+      <section data-page="01">
+        <h1>Python语法元素、基本数据类型与表达式</h1>
+        <p class="subtitle">用一条就诊记录认识变量、类型与运算</p>
+        <div class="students">
+          <div class="chip">encounter<br><strong>100001</strong></div>
+          <div class="chip">住院天数<br><strong>5</strong> 天</div>
+          <div class="chip">药物数<br><strong>15</strong> 种</div>
+        </div>
+        <div class="band band-blue">程序如何描述一名患者的一次就诊？从变量与类型开始。</div>
+        <div class="slide-footer"><span>Python高级应用 · 语法与数据类型</span><span>01</span></div>
+      </section>
+
+      <!-- 02 -->
+      <section data-page="02">
+        <h2>今天要完成什么？</h2>
+        <ul class="goals">
+          <li>会用变量保存就诊字段</li>
+          <li>分清 int / float / str / bool / None</li>
+          <li>理解类型决定能做什么运算</li>
+          <li>会用算术、比较、逻辑与 f-string</li>
+          <li>完成一个「病例信息处理器」小程序</li>
+        </ul>
+        <div class="band band-blue" style="margin-top: 1em;">目标：读懂数据 → 计算指标 → 清晰输出。</div>
+        <div class="slide-footer"><span>Python高级应用 · 语法与数据类型</span><span>02</span></div>
+      </section>
+
+      <!-- 03 -->
+      <section data-page="03">
+        <h2>变量：给值起一个名字</h2>
+        <pre><code class="language-python">encounter_id = 100001
+patient_nbr = 8877
+time_in_hospital = 5
+num_medications = 15</code></pre>
+        <ul class="small">
+          <li>左边是名字，右边是值；<code>=</code> 表示赋值，不是数学相等</li>
+          <li>名字应能看出含义：天数、药物数、就诊号</li>
+        </ul>
+        <div class="band band-green">变量让后面的计算可以引用同一份数据。</div>
+        <div class="slide-footer"><span>Python高级应用 · 语法与数据类型</span><span>03</span></div>
+      </section>
+
+      <!-- 04 -->
+      <section data-page="04">
+        <h2>赋值可以覆盖，也可以引用</h2>
+        <pre><code class="language-python">age = 55
+age = 56                    # 覆盖旧值
+days = time_in_hospital     # 引用另一个变量
+print(age, days)</code></pre>
+        <div class="two-col">
+          <div>
+            <div class="col-head blue">覆盖</div>
+            <p class="small">同一名字指向新值，旧值不再通过该名访问</p>
+          </div>
+          <div>
+            <div class="col-head green">引用</div>
+            <p class="small">把已有变量的值赋给新名字，便于阅读</p>
+          </div>
+        </div>
+        <div class="slide-footer"><span>Python高级应用 · 语法与数据类型</span><span>04</span></div>
+      </section>
+
+      <!-- 05 -->
+      <section data-page="05">
+        <h2>整数 int 与浮点 float</h2>
+        <pre><code class="language-python">time_in_hospital = 5      # int：整天数
+num_medications = 15      # int：药物种数
+avg = 15 / 5              # float：3.0 日均药物
+weight = 72.5             # float：可带小数</code></pre>
+        <div class="term-table">
+          <div class="k">int</div><div>计数、天数、编号等「完整个」的量</div>
+          <div class="k">float</div><div>除法结果、测量值等带小数的量</div>
+        </div>
+        <div class="band band-orange" style="margin-top: 0.7em;">注意：<code>/</code> 在 Python 3 中总是得到 float。</div>
+        <div class="slide-footer"><span>Python高级应用 · 语法与数据类型</span><span>05</span></div>
+      </section>
+
+      <!-- 06 -->
+      <section data-page="06">
+        <h2>字符串 str：文字与标签</h2>
+        <pre><code class="language-python">gender = "Female"
+readmitted = "&lt;30"
+note = 'early readmit'</code></pre>
+        <ul class="small">
+          <li>用单引号或双引号包起来；内容是字符序列</li>
+          <li>病例里常见：性别、再入院标签、科室名</li>
+          <li><code>"&lt;30"</code> 是字符串，不是「小于 30」这个比较运算</li>
+        </ul>
+        <div class="band band-blue">标签型字段往往先以 str 保存，再按规则解释含义。</div>
+        <div class="slide-footer"><span>Python高级应用 · 语法与数据类型</span><span>06</span></div>
+      </section>
+
+      <!-- 07 -->
+      <section data-page="07">
+        <h2>布尔 bool 与空值 None</h2>
+        <pre><code class="language-python">long_stay = True          # 是否长住院
+early_readmit = False
+middle_name = None        # 尚无该字段 / 未知</code></pre>
+        <div class="two-col">
+          <div>
+            <div class="col-head blue">bool</div>
+            <ul class="small">
+              <li>只有 <code>True</code> / <code>False</code></li>
+              <li>来自比较或逻辑运算</li>
+              <li>用于分支与筛选</li>
+            </ul>
+          </div>
+          <div>
+            <div class="col-head orange">None</div>
+            <ul class="small">
+              <li>表示「没有值」</li>
+              <li>不同于 0、空字符串</li>
+              <li>缺字段时常用占位</li>
+            </ul>
+          </div>
+        </div>
+        <div class="slide-footer"><span>Python高级应用 · 语法与数据类型</span><span>07</span></div>
+      </section>
+
+      <!-- 08 -->
+      <section data-page="08">
+        <h2>用 type() 查看类型</h2>
+        <pre><code class="language-python">print(type(time_in_hospital))   # &lt;class 'int'&gt;
+print(type(15 / 5))             # &lt;class 'float'&gt;
+print(type(gender))             # &lt;class 'str'&gt;
+print(type(long_stay))          # &lt;class 'bool'&gt;
+print(type(None))               # &lt;class 'NoneType'&gt;</code></pre>
+        <div class="band band-blue">不确定手里是什么时，先 <code>type()</code>，再决定怎么算。</div>
+        <div class="slide-footer"><span>Python高级应用 · 语法与数据类型</span><span>08</span></div>
+      </section>
+
+      <!-- 09 -->
+      <section data-page="09">
+        <h2>类型转换：读入后常要「纠正」</h2>
+        <pre><code class="language-python">days = int("5")
+meds = float("15")
+label = str(100001)
+flag = bool(1)          # True；bool(0) 为 False</code></pre>
+        <div class="term-table">
+          <div class="k">int(x)</div><div>转整数；不能转无意义文本会报错</div>
+          <div class="k">float(x)</div><div>转浮点</div>
+          <div class="k">str(x)</div><div>转成文字，便于拼接与显示</div>
+          <div class="k">bool(x)</div><div>按「空/零为假」规则转换</div>
+        </div>
+        <div class="slide-footer"><span>Python高级应用 · 语法与数据类型</span><span>09</span></div>
+      </section>
+
+      <!-- 10 -->
+      <section data-page="10">
+        <h2>类型决定能做什么操作</h2>
+        <div class="two-col">
+          <div>
+            <div class="col-head green">合法</div>
+            <pre><code class="language-python">5 + 2
+"A" + "B"
+15 / 5
+"&lt;30" == readmitted</code></pre>
+          </div>
+          <div>
+            <div class="col-head orange">常出问题</div>
+            <pre><code class="language-python">"5" + 2      # TypeError
+int("&lt;30")   # ValueError
+True + "天"  # TypeError</code></pre>
+          </div>
+        </div>
+        <div class="band band-orange">先统一类型，再运算；不要把标签字符串当成数字去加减。</div>
+        <div class="slide-footer"><span>Python高级应用 · 语法与数据类型</span><span>10</span></div>
+      </section>
+
+      <!-- 11 -->
+      <section data-page="11">
+        <h2>算术运算符</h2>
+        <pre><code class="language-python">a, b = 15, 5
+print(a + b, a - b, a * b)   # 20 10 75
+print(a / b)                 # 3.0
+print(a // b, a % b)         # 3 0 整除与取余
+print(2 ** 3)                # 8 幂运算</code></pre>
+        <ul class="small">
+          <li>日均药物：<code>num_medications / time_in_hospital</code></li>
+          <li>需要整数份数时用 <code>//</code>；余数用 <code>%</code></li>
+        </ul>
+        <div class="slide-footer"><span>Python高级应用 · 语法与数据类型</span><span>11</span></div>
+      </section>
+
+      <!-- 12 -->
+      <section data-page="12">
+        <h2>比较运算符 → 得到 bool</h2>
+        <pre><code class="language-python">time_in_hospital = 5
+print(time_in_hospital &gt;= 7)   # False 长住院阈值
+print(time_in_hospital == 5)   # True
+print(time_in_hospital != 0)   # True
+readmitted = "&lt;30"
+print(readmitted == "&lt;30")      # True 早期再入院</code></pre>
+        <div class="band band-blue">比较的结果是 <code>True</code>/<code>False</code>，可直接赋给变量或用于筛选。</div>
+        <div class="slide-footer"><span>Python高级应用 · 语法与数据类型</span><span>12</span></div>
+      </section>
+
+      <!-- 13 -->
+      <section data-page="13">
+        <h2>逻辑运算：and / or / not</h2>
+        <pre><code class="language-python">long_stay = time_in_hospital &gt;= 7
+early = readmitted == "&lt;30"
+print(long_stay and early)   # 同时满足
+print(long_stay or early)    # 至少一个
+print(not early)             # 取反</code></pre>
+        <div class="three-col">
+          <div class="box"><strong>and</strong>两边都真才真<br>严格联合条件</div>
+          <div class="box"><strong>or</strong>有一个真就真<br>宽松纳入条件</div>
+          <div class="box"><strong>not</strong>真变假、假变真<br>排除某类记录</div>
+        </div>
+        <div class="slide-footer"><span>Python高级应用 · 语法与数据类型</span><span>13</span></div>
+      </section>
+
+      <!-- 14 -->
+      <section data-page="14">
+        <h2>字符串基础操作</h2>
+        <pre><code class="language-python">gender = "Female"
+print(len(gender))          # 6
+print(gender.lower())       # female
+print("Fe" in gender)       # True
+print(gender[0], gender[-1])  # F e</code></pre>
+        <ul class="small">
+          <li>索引从 0 开始；<code>-1</code> 表示最后一个字符</li>
+          <li>拼接用 <code>+</code>；重复用 <code>*</code>（如 <code>"-" * 10</code>）</li>
+        </ul>
+        <div class="band band-green">文本字段清洗前，先弄清大小写与空格。</div>
+        <div class="slide-footer"><span>Python高级应用 · 语法与数据类型</span><span>14</span></div>
+      </section>
+
+      <!-- 15 -->
+      <section data-page="15">
+        <h2>input()：从键盘读入（得到的是 str）</h2>
+        <pre><code class="language-python">raw_days = input("住院天数：")
+time_in_hospital = int(raw_days)
+raw_meds = input("药物种数：")
+num_medications = int(raw_meds)</code></pre>
+        <div class="band band-orange">记住：<code>input</code> 返回字符串；要做算术必须先 <code>int</code>/<code>float</code>。</div>
+        <p class="small">课堂演示可先写死变量，再换成 <code>input</code> 交互。</p>
+        <div class="slide-footer"><span>Python高级应用 · 语法与数据类型</span><span>15</span></div>
+      </section>
+
+      <!-- 16 -->
+      <section data-page="16">
+        <h2>f-string：把变量嵌进一句话</h2>
+        <pre><code class="language-python">encounter_id = 100001
+avg = 15 / 5
+print(f"就诊 {encounter_id}：日均药物 {avg:.2f}")
+# 就诊 100001：日均药物 3.00</code></pre>
+        <div class="term-table">
+          <div class="k">f"..."</div><div>前缀 f 开启格式化</div>
+          <div class="k">{avg:.2f}</div><div>显示两位小数，不改原值</div>
+        </div>
+        <div class="slide-footer"><span>Python高级应用 · 语法与数据类型</span><span>16</span></div>
+      </section>
+
+      <!-- 17 -->
+      <section data-page="17">
+        <h2>课堂思考</h2>
+        <div class="flow-list">
+          <div class="row"><div class="n">01</div><div><code>"7" &gt;= 7</code> 会怎样？该怎么改才合理？</div></div>
+          <div class="row"><div class="n">02</div><div><code>readmitted = "&lt;30"</code> 时，<code>readmitted &lt; 30</code> 对吗？</div></div>
+          <div class="row"><div class="n">03</div><div>日均药物用 <code>/</code> 还是 <code>//</code>？各自适合什么场景？</div></div>
+        </div>
+        <div class="band band-blue" style="margin-top: 0.8em;">先说类型，再说运算符——多数错误出在「类型不匹配」。</div>
+        <div class="slide-footer"><span>Python高级应用 · 语法与数据类型</span><span>17</span></div>
+      </section>
+
+      <!-- 18 -->
+      <section data-page="18">
+        <h2>病例字段一览（本课主线）</h2>
+        <div class="term-table">
+          <div class="k">encounter_id</div><div>本次就诊编号</div>
+          <div class="k">patient_nbr</div><div>患者编号</div>
+          <div class="k">gender</div><div>性别（字符串）</div>
+          <div class="k">age</div><div>年龄段或年龄</div>
+          <div class="k">time_in_hospital</div><div>住院天数</div>
+          <div class="k">num_medications</div><div>药物种数</div>
+          <div class="k">readmitted</div><div>再入院标签，如 &lt;30 / &gt;30 / NO</div>
+        </div>
+        <div class="slide-footer"><span>Python高级应用 · 语法与数据类型</span><span>18</span></div>
+      </section>
+
+      <!-- 19 -->
+      <section data-page="19">
+        <h2>处理器①：准备一条就诊记录</h2>
+        <pre><code class="language-python">encounter_id = 100001
+patient_nbr = 8877
+gender = "Female"
+age = 55
+time_in_hospital = 5
+num_medications = 15
+readmitted = "&lt;30"</code></pre>
+        <div class="band band-green">先把字段落到变量上，后续计算都引用这些名字。</div>
+        <div class="slide-footer"><span>Python高级应用 · 语法与数据类型</span><span>19</span></div>
+      </section>
+
+      <!-- 20 -->
+      <section data-page="20">
+        <h2>处理器②：日均药物</h2>
+        <pre><code class="language-python">daily_meds = num_medications / time_in_hospital
+print(f"日均药物：{daily_meds:.2f}")</code></pre>
+        <ul class="small">
+          <li>含义：平均每天使用的药物种数（简化指标）</li>
+          <li>分母为 0 时要单独判断，避免除零错误</li>
+        </ul>
+        <div class="band band-blue">类型：int ÷ int → float。</div>
+        <div class="slide-footer"><span>Python高级应用 · 语法与数据类型</span><span>20</span></div>
+      </section>
+
+      <!-- 21 -->
+      <section data-page="21">
+        <h2>处理器③：长住院与早期再入院</h2>
+        <pre><code class="language-python">long_stay = time_in_hospital &gt;= 7
+early_readmit = readmitted == "&lt;30"
+print(long_stay, early_readmit)
+# 例：False True</code></pre>
+        <div class="two-col">
+          <div>
+            <div class="col-head blue">长住院</div>
+            <p class="small"><code>time_in_hospital &gt;= 7</code></p>
+          </div>
+          <div>
+            <div class="col-head green">早期再入院</div>
+            <p class="small"><code>readmitted == "&lt;30"</code></p>
+          </div>
+        </div>
+        <div class="slide-footer"><span>Python高级应用 · 语法与数据类型</span><span>21</span></div>
+      </section>
+
+      <!-- 22 -->
+      <section data-page="22">
+        <h2>处理器④：汇总输出</h2>
+        <pre><code class="language-python">print(f"就诊{encounter_id} | 患者{patient_nbr} | {gender} | {age}岁")
+print(f"住院{time_in_hospital}天 | 药物{num_medications}种 | 日均{daily_meds:.2f}")
+print(f"长住院：{long_stay} | 早期再入院：{early_readmit}")</code></pre>
+        <div class="band band-green">同一套变量：计算指标 → 布尔标记 → 可读报告。</div>
+        <div class="slide-footer"><span>Python高级应用 · 语法与数据类型</span><span>22</span></div>
+      </section>
+
+      <!-- 23 -->
+      <section data-page="23">
+        <h2>综合任务：病例信息处理器</h2>
+        <div class="flow-list">
+          <div class="row"><div class="n">01</div><div>用变量保存七个主线字段（可写死或 <code>input</code>）</div></div>
+          <div class="row"><div class="n">02</div><div>计算 <code>daily_meds = num_medications / time_in_hospital</code></div></div>
+          <div class="row"><div class="n">03</div><div>得到 <code>long_stay</code>（≥7）与 <code>early_readmit</code>（== '&lt;30'）</div></div>
+          <div class="row"><div class="n">04</div><div>用 f-string 打印一行完整摘要</div></div>
+        </div>
+        <div class="band band-blue" style="margin-top: 0.7em;">加分：用 <code>and</code> 判断「长住院且早期再入院」。</div>
+        <div class="slide-footer"><span>Python高级应用 · 语法与数据类型</span><span>23</span></div>
+      </section>
+
+      <!-- 24 -->
+      <section data-page="24">
+        <h2>回顾：这节课学到了什么？</h2>
+        <ul>
+          <li>变量赋值：命名、覆盖、引用</li>
+          <li>五大基础：int / float / str / bool / None</li>
+          <li><code>type</code> 与转换；类型决定合法运算</li>
+          <li>算术、比较、逻辑；字符串与 f-string</li>
+          <li><code>input</code> 得 str；病例指标：日均药物、长住院、早期再入院</li>
+        </ul>
+        <div class="band band-blue" style="margin-top: 0.6em;">下一课：用列表与字典组织多条就诊记录。</div>
+        <div class="slide-footer"><span>Python高级应用 · 语法与数据类型</span><span>24</span></div>
+      </section>
+
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/reveal.js@4.6.1/dist/reveal.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/reveal.js@4.6.1/plugin/highlight/highlight.js"></script>
+  <script>
+    Reveal.initialize({
+      hash: true,
+      center: false,
+      transition: 'fade',
+      transitionSpeed: 'fast',
+      backgroundTransition: 'fade',
+      width: 960,
+      height: 540,
+      margin: 0.04,
+      minScale: 0.35,
+      maxScale: 1.6,
+      slideNumber: false,
+      plugins: [RevealHighlight]
+    });
+  </script>
+</body>
+</html>
