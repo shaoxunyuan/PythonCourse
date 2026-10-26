@@ -725,16 +725,15 @@ with open("students.txt", "r", encoding="utf-8") as f:
 
       <!-- 20 -->
       <section class="dense" data-page="20">
-        <h2>用 csv.writer() 写表格</h2>
+        <h2>用 csv.DictWriter() 写表格</h2>
         <pre><code class="language-python">import csv
 
 with open("students.csv", "w", encoding="utf-8", newline="") as f:
-    writer = csv.writer(f)
-    writer.writerow(["name", "score"])
-    for s in students:
-        writer.writerow([s["name"], s["score"]])</code></pre>
+    writer = csv.DictWriter(f, fieldnames=["name", "score"])
+    writer.writeheader()
+    writer.writerows(students)</code></pre>
         <div class="band band-green">students.csv：name,score 表头 + 三行数据</div>
-        <p class="small"><code>newline=""</code> 可避免 Windows 上多余空行；字段含逗号/引号时，标准库会帮你处理转义。</p>
+        <p class="small"><code>newline=""</code> 可避免 Windows 上多余空行；字典列表可直接交给 <code>writerows</code>。</p>
         <div class="slide-footer"><span>Python高级应用 · 文件与数据格式化</span><span>20</span></div>
       </section>
 
