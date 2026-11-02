@@ -1,0 +1,832 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Web 应用与项目交付 · Python 高级应用</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.6.1/dist/reveal.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.6.1/dist/theme/white.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.6.1/plugin/highlight/monokai.css">
+  <style>
+    :root {
+      --ink: #12141a;
+      --ink-soft: #3d4450;
+      --muted: #7a8290;
+      --line: #d8dde6;
+      --code-bg: #e7edf4;
+      --surface: #ffffff;
+      --paper: #f4f5f7;
+      --accent: #0d9488;
+      --accent-deep: #0f766e;
+      --blue-bg: #e8f0fe;
+      --blue-ink: #1e3a5f;
+      --green-bg: #e6f6ed;
+      --green-ink: #14532d;
+      --orange-bg: #fff1e6;
+      --orange-ink: #9a3412;
+      --gray-bg: #eef0f3;
+      --font: "IBM Plex Sans", "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
+      --mono: "IBM Plex Mono", Consolas, ui-monospace, monospace;
+    }
+
+    .reveal {
+      font-family: var(--font);
+      font-size: 30px;
+      color: var(--ink);
+      background: var(--paper);
+      -webkit-font-smoothing: antialiased;
+    }
+    .reveal .slides { text-align: left; }
+    .reveal .slides section {
+      padding: 40px 52px 68px;
+      box-sizing: border-box;
+      background:
+        linear-gradient(180deg, #fbfbfc 0%, var(--surface) 42%, #f7f8fa 100%);
+    }
+    .reveal .slides section::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--accent) 0%, var(--accent) 120px, transparent 320px);
+    }
+
+    .reveal h1, .reveal h2 {
+      color: var(--ink);
+      font-weight: 700;
+      text-transform: none;
+      letter-spacing: -0.025em;
+      margin: 0 0 0.65em;
+      font-size: 1.22em;
+      line-height: 1.25;
+      position: relative;
+      padding-bottom: 0.35em;
+    }
+    .reveal h1::after, .reveal h2::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      bottom: 0;
+      width: 28px;
+      height: 2px;
+      background: var(--accent);
+    }
+    .reveal h1 { font-size: 1.55em; letter-spacing: -0.03em; }
+    .reveal p, .reveal li { color: var(--ink); line-height: 1.55; font-weight: 450; }
+    .reveal ul {
+      margin: 0.35em 0 0;
+      padding: 0;
+      list-style: none;
+    }
+    .reveal ul > li {
+      margin: 0.42em 0;
+      padding-left: 1.05em;
+      position: relative;
+    }
+    .reveal ul > li::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 0.62em;
+      width: 0.42em;
+      height: 2px;
+      background: var(--accent);
+    }
+    .reveal a { color: var(--accent-deep); }
+    .reveal .subtitle {
+      color: var(--ink-soft);
+      font-size: 0.82em;
+      font-weight: 500;
+      margin: -0.15em 0 0.15em;
+      letter-spacing: -0.01em;
+    }
+    .reveal .small {
+      font-size: 0.7em;
+      color: var(--ink-soft);
+      line-height: 1.5;
+    }
+
+    .reveal pre {
+      width: 100%;
+      box-shadow: none !important;
+      border: none !important;
+      border-left: 3px solid var(--accent) !important;
+      background: var(--code-bg) !important;
+      padding: 0.75em 0.95em !important;
+      margin: 0.45em 0 0.75em;
+      border-radius: 0;
+    }
+    .reveal pre code {
+      background: transparent !important;
+      color: var(--ink) !important;
+      font-family: var(--mono);
+      font-size: 0.68em;
+      font-weight: 450;
+      line-height: 1.48;
+      max-height: none;
+      padding: 0 !important;
+      tab-size: 4;
+    }
+    .reveal section.dense pre code { font-size: 0.58em; line-height: 1.42; }
+    .reveal code {
+      font-family: var(--mono);
+      background: var(--code-bg);
+      color: var(--ink);
+      padding: 0.06em 0.28em;
+      border-radius: 2px;
+      font-size: 0.92em;
+      font-weight: 500;
+    }
+    .reveal pre code .hljs-comment,
+    .reveal pre code .hljs-quote { color: #64748b !important; font-style: italic; }
+    .reveal pre code .hljs-keyword,
+    .reveal pre code .hljs-selector-tag,
+    .reveal pre code .hljs-built_in { color: #0b6e99 !important; font-weight: 600; }
+    .reveal pre code .hljs-string { color: var(--accent-deep) !important; }
+    .reveal pre code .hljs-number { color: #b45309 !important; }
+    .reveal pre code .hljs-title,
+    .reveal pre code .hljs-title.class_,
+    .reveal pre code .hljs-title.function_ { color: #1d4ed8 !important; }
+
+    .band {
+      padding: 0.5em 0.8em;
+      margin: 0.5em 0;
+      font-size: 0.78em;
+      line-height: 1.45;
+      font-weight: 500;
+      border-left: 3px solid transparent;
+    }
+    .band-blue { background: var(--blue-bg); color: var(--blue-ink); border-left-color: #3b82f6; }
+    .band-green { background: var(--green-bg); color: var(--green-ink); border-left-color: #22c55e; }
+    .band-orange { background: var(--orange-bg); color: var(--orange-ink); border-left-color: #f97316; }
+    .band-gray { background: var(--gray-bg); color: var(--ink); border-left-color: var(--line); }
+
+    .students {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 8.5em));
+      gap: 0.75em;
+      margin: 1.15em 0 1em;
+    }
+    .students .chip {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-top: 2px solid var(--accent);
+      padding: 0.65em 0.75em;
+      font-size: 0.78em;
+      text-align: center;
+      color: var(--ink-soft);
+      line-height: 1.35;
+    }
+    .students .chip strong {
+      display: inline-block;
+      margin-top: 0.15em;
+      font-size: 1.15em;
+      color: var(--ink);
+      font-variant-numeric: tabular-nums;
+      font-family: var(--mono);
+      font-weight: 600;
+    }
+
+    .two-col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1em;
+      margin-top: 0.45em;
+    }
+    .two-col .col-head {
+      padding: 0.38em 0.7em;
+      font-weight: 650;
+      font-size: 0.76em;
+      margin-bottom: 0.35em;
+      letter-spacing: -0.01em;
+      border-left: 3px solid transparent;
+    }
+    .two-col .col-head.blue {
+      background: var(--blue-bg);
+      color: var(--blue-ink);
+      border-left-color: #3b82f6;
+    }
+    .two-col .col-head.green {
+      background: var(--green-bg);
+      color: var(--green-ink);
+      border-left-color: #22c55e;
+    }
+    .two-col .col-head.orange {
+      background: var(--orange-bg);
+      color: var(--orange-ink);
+      border-left-color: #f97316;
+    }
+    .two-col ul { margin-top: 0; font-size: 0.8em; }
+    .two-col pre { margin-bottom: 0.45em; }
+
+    .three-col {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 0.7em;
+      margin-top: 0.5em;
+      font-size: 0.72em;
+    }
+    .three-col .box {
+      background: var(--gray-bg);
+      padding: 0.55em 0.65em;
+      min-height: 7.5em;
+    }
+    .three-col .box strong {
+      display: block;
+      margin-bottom: 0.35em;
+      font-size: 1.05em;
+      color: var(--ink);
+    }
+
+    .term-table {
+      display: grid;
+      grid-template-columns: 8em 1fr;
+      gap: 0.4em 0.9em;
+      margin-top: 0.75em;
+      font-size: 0.78em;
+      align-items: stretch;
+    }
+    .term-table .k {
+      font-family: var(--mono);
+      background: var(--code-bg);
+      border-left: 3px solid var(--accent);
+      padding: 0.28em 0.5em;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+    }
+    .term-table > div:nth-child(even) {
+      display: flex;
+      align-items: center;
+      color: var(--ink-soft);
+      border-bottom: 1px solid var(--line);
+      padding: 0.2em 0;
+    }
+
+    .flow-list {
+      margin-top: 0.65em;
+      display: grid;
+      gap: 0.4em;
+      font-size: 0.76em;
+    }
+    .flow-list .row {
+      display: grid;
+      grid-template-columns: 2.4em 1fr;
+      gap: 0.55em;
+      align-items: stretch;
+    }
+    .flow-list .n {
+      background: var(--ink);
+      color: #fff;
+      text-align: center;
+      font-weight: 600;
+      font-family: var(--mono);
+      font-size: 0.9em;
+      letter-spacing: 0.02em;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 1.7em;
+    }
+    .flow-list .row > div:last-child {
+      background: var(--gray-bg);
+      padding: 0.35em 0.65em;
+      display: flex;
+      align-items: center;
+      color: var(--ink);
+    }
+
+    .file-box {
+      font-family: var(--mono);
+      background: var(--code-bg);
+      border-left: 3px solid var(--accent);
+      padding: 0.65em 0.9em;
+      font-size: 0.72em;
+      line-height: 1.55;
+      color: var(--ink);
+      margin: 0.45em 0 0.75em;
+      white-space: pre-wrap;
+    }
+
+    .mode-row {
+      display: grid;
+      grid-template-columns: 3.2em 1fr;
+      gap: 0.6em;
+      align-items: center;
+      margin: 0.4em 0;
+      font-size: 0.8em;
+    }
+    .mode-row .tag {
+      font-family: var(--mono);
+      font-weight: 700;
+      text-align: center;
+      padding: 0.35em 0;
+      background: var(--code-bg);
+    }
+    .mode-row.warn .tag {
+      background: var(--orange-bg);
+      color: var(--orange-ink);
+    }
+
+    .parse-flow {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr auto 1fr;
+      gap: 0.4em;
+      align-items: center;
+      margin: 0.6em 0;
+      font-size: 0.72em;
+    }
+    .parse-flow .cell {
+      background: var(--gray-bg);
+      padding: 0.45em 0.55em;
+      text-align: center;
+      font-family: var(--mono);
+    }
+    .parse-flow .arrow { color: var(--muted); font-family: var(--mono); }
+
+    .goals li {
+      font-size: 0.95em;
+      margin: 0.55em 0 !important;
+    }
+
+    .slide-footer {
+      position: absolute;
+      left: 52px;
+      right: 52px;
+      bottom: 18px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 12px;
+      font-family: var(--mono);
+      font-weight: 500;
+      letter-spacing: 0.02em;
+      color: var(--muted);
+      pointer-events: none;
+      padding-top: 10px;
+      border-top: 1px solid var(--line);
+    }
+    .slide-footer span:last-child {
+      color: var(--accent-deep);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .reveal .controls { color: var(--accent); }
+    .reveal .progress {
+      color: var(--accent);
+      height: 2px;
+      background: rgba(13, 148, 136, 0.12);
+    }
+    .reveal .slide-number { display: none; }
+
+    .back-link {
+      position: fixed;
+      top: 14px;
+      left: 14px;
+      z-index: 30;
+      font-family: var(--font);
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      background: rgba(255, 255, 255, 0.92);
+      backdrop-filter: blur(8px);
+      border: 1px solid var(--line);
+      padding: 6px 12px;
+      text-decoration: none !important;
+      color: var(--accent-deep) !important;
+      transition: border-color 0.15s ease, background 0.15s ease;
+    }
+    .back-link:hover {
+      background: #fff;
+      border-color: var(--accent);
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .reveal .slides section { transition: none !important; }
+    }
+  </style>
+</head>
+<body>
+  <a class="back-link" href="index.html">← 演示列表</a>
+  <div class="reveal">
+    <div class="slides">
+      <!-- 01 -->
+      <section data-page="01">
+        <h1>Web 应用与项目交付</h1>
+        <p class="subtitle">让别人用浏览器用上你的分析能力</p>
+        <div class="students">
+          <div class="chip">页面<br><strong>入口</strong></div>
+          <div class="chip">模块<br><strong>串联</strong></div>
+          <div class="chip">交付<br><strong>可运行</strong></div>
+        </div>
+        <div class="band band-blue">脚本能跑，只是第一步；交付要让他人稳定复现。</div>
+      <div class="slide-footer"><span>Python高级应用 · Web 应用与项目交付</span><span>01</span></div>
+      </section>
+
+      <!-- 02 -->
+      <section data-page="02">
+        <h2>今天要完成什么？</h2>
+        <ul class="goals">
+          <li>理解为何需要 Web 形态</li>
+          <li>认识最小页面结构</li>
+          <li>建立前后端分工直觉</li>
+          <li>把读写 / 清洗 / 图表 / 报告串成模块</li>
+          <li>对照可运行交付检查清单</li>
+        </ul>
+        <div class="band band-blue" style="margin-top: 1em;">从「自己能跑」走向「别人也能用」。</div>
+      <div class="slide-footer"><span>Python高级应用 · Web 应用与项目交付</span><span>02</span></div>
+      </section>
+
+      <!-- 03 -->
+      <section data-page="03">
+        <h2>为何要 Web？</h2>
+        <div class="two-col">
+          <div>
+            <div class="col-head blue">命令行脚本</div>
+            <ul class="small">
+              <li>适合开发者本机使用</li>
+              <li>要装环境、记参数</li>
+              <li>协作与演示门槛高</li>
+            </ul>
+          </div>
+          <div>
+            <div class="col-head green">Web 应用</div>
+            <ul class="small">
+              <li>浏览器即可交互</li>
+              <li>上传、点选、看结果</li>
+              <li>更接近真实工作流</li>
+            </ul>
+          </div>
+        </div>
+        <div class="band band-blue">Web 把分析能力包装成「可点击的服务」。</div>
+      <div class="slide-footer"><span>Python高级应用 · Web 应用与项目交付</span><span>03</span></div>
+      </section>
+
+      <!-- 04 -->
+      <section data-page="04">
+        <h2>用户实际在做什么？</h2>
+        <div class="flow-list">
+          <div class="row"><div class="n">01</div><div>打开页面，上传病例表或粘贴文本</div></div>
+          <div class="row"><div class="n">02</div><div>点击「分析 / 出图 / 生成摘要」</div></div>
+          <div class="row"><div class="n">03</div><div>在页面查看图表、下载报告</div></div>
+        </div>
+        <p class="small">背后仍是你熟悉的 Python；变的是交互入口。</p>
+      <div class="slide-footer"><span>Python高级应用 · Web 应用与项目交付</span><span>04</span></div>
+      </section>
+
+      <!-- 05 -->
+      <section data-page="05">
+        <h2>最小页面结构</h2>
+        <pre><code class="language-html">&lt;!DOCTYPE html&gt;
+&lt;html lang="zh-CN"&gt;
+&lt;head&gt;
+  &lt;meta charset="UTF-8"&gt;
+  &lt;title&gt;病例分析&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;h1&gt;病例分析&lt;/h1&gt;
+  &lt;form&gt;...上传与按钮...&lt;/form&gt;
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+        <div class="band band-blue">先有可打开的页面，再谈样式与交互增强。</div>
+      <div class="slide-footer"><span>Python高级应用 · Web 应用与项目交付</span><span>05</span></div>
+      </section>
+
+      <!-- 06 -->
+      <section data-page="06">
+        <h2>页面里通常有什么？</h2>
+        <div class="three-col">
+          <div class="box">
+            <strong>输入区</strong>
+            文件上传、文本框、选项
+          </div>
+          <div class="box">
+            <strong>操作区</strong>
+            按钮：开始分析、导出
+          </div>
+          <div class="box">
+            <strong>结果区</strong>
+            表格、图片、摘要文本
+          </div>
+        </div>
+        <div class="band band-blue" style="margin-top: 0.8em;">一个页面完成一件主任务，比堆满功能更清晰。</div>
+      <div class="slide-footer"><span>Python高级应用 · Web 应用与项目交付</span><span>06</span></div>
+      </section>
+
+      <!-- 07 -->
+      <section data-page="07">
+        <h2>前后端分工直觉</h2>
+        <div class="two-col">
+          <div>
+            <div class="col-head blue">前端（浏览器）</div>
+            <ul class="small">
+              <li>展示页面与表单</li>
+              <li>收集用户输入</li>
+              <li>展示返回的图与文字</li>
+            </ul>
+          </div>
+          <div>
+            <div class="col-head green">后端（服务器 / Python）</div>
+            <ul class="small">
+              <li>接收请求与文件</li>
+              <li>清洗、统计、出图、调 API</li>
+              <li>返回 JSON 或生成文件</li>
+            </ul>
+          </div>
+        </div>
+        <p class="small">课程里的数据分析逻辑，主要落在后端模块。</p>
+      <div class="slide-footer"><span>Python高级应用 · Web 应用与项目交付</span><span>07</span></div>
+      </section>
+
+      <!-- 08 -->
+      <section data-page="08">
+        <h2>一次点击背后发生了什么？</h2>
+        <div class="parse-flow">
+          <div class="cell">浏览器</div>
+          <div class="arrow">→</div>
+          <div class="cell">后端路由</div>
+          <div class="arrow">→</div>
+          <div class="cell">分析模块</div>
+        </div>
+        <div class="parse-flow">
+          <div class="cell">分析模块</div>
+          <div class="arrow">→</div>
+          <div class="cell">图表/摘要</div>
+          <div class="arrow">→</div>
+          <div class="cell">页面展示</div>
+        </div>
+        <div class="band band-blue">前端负责「问」与「看」；后端负责「算」。</div>
+      <div class="slide-footer"><span>Python高级应用 · Web 应用与项目交付</span><span>08</span></div>
+      </section>
+
+      <!-- 09 -->
+      <section data-page="09">
+        <h2>把课程能力串成模块</h2>
+        <div class="flow-list">
+          <div class="row"><div class="n">01</div><div>读写：CSV / JSON 载入与保存</div></div>
+          <div class="row"><div class="n">02</div><div>清洗：缺失、类型、异常值</div></div>
+          <div class="row"><div class="n">03</div><div>图表：Matplotlib 出图并保存</div></div>
+          <div class="row"><div class="n">04</div><div>报告：汇总文字 + 可选大模型摘要</div></div>
+        </div>
+        <div class="band band-green" style="margin-top: 0.7em;">每个模块可单独测试，再接到 Web 入口。</div>
+      <div class="slide-footer"><span>Python高级应用 · Web 应用与项目交付</span><span>09</span></div>
+      </section>
+
+      <!-- 10 -->
+      <section data-page="10">
+        <h2>模块一：读写</h2>
+        <pre><code class="language-python"># io_data.py（示意）
+def load_cases(path: str) -> list[dict]:
+    ...
+
+def save_report(path: str, text: str) -> None:
+    ...</code></pre>
+        <ul class="small">
+          <li>统一入口：别处只调用函数，不散落 <code>open</code></li>
+          <li>明确编码与路径约定</li>
+          <li>错误信息要对使用者友好</li>
+        </ul>
+      <div class="slide-footer"><span>Python高级应用 · Web 应用与项目交付</span><span>10</span></div>
+      </section>
+
+      <!-- 11 -->
+      <section data-page="11">
+        <h2>模块二：清洗</h2>
+        <pre><code class="language-python"># clean.py（示意）
+def clean_cases(rows: list[dict]) -> list[dict]:
+    # 去空行、转数值、规范科室名等
+    ...
+    return cleaned</code></pre>
+        <div class="band band-blue">清洗规则写进函数，Web 与命令行可共用同一套逻辑。</div>
+      <div class="slide-footer"><span>Python高级应用 · Web 应用与项目交付</span><span>11</span></div>
+      </section>
+
+      <!-- 12 -->
+      <section data-page="12">
+        <h2>模块三：图表</h2>
+        <pre><code class="language-python"># charts.py（示意）
+def plot_monthly_trend(months, counts, out_path: str) -> str:
+    # 出图并 savefig
+    return out_path</code></pre>
+        <ul class="small">
+          <li>返回图片路径，供页面引用或打包下载</li>
+          <li>字体与 dpi 在模块内约定好</li>
+        </ul>
+      <div class="slide-footer"><span>Python高级应用 · Web 应用与项目交付</span><span>12</span></div>
+      </section>
+
+      <!-- 13 -->
+      <section data-page="13">
+        <h2>模块四：报告</h2>
+        <pre><code class="language-python"># report.py（示意）
+def build_report(stats: dict, summary: str) -> str:
+    lines = [
+        "# 病例分析报告",
+        "## 统计概览",
+        str(stats),
+        "## 摘要",
+        summary,
+    ]
+    return "\n".join(lines)</code></pre>
+        <div class="band band-blue">报告可以是 Markdown / HTML / 纯文本；关键是结构稳定。</div>
+      <div class="slide-footer"><span>Python高级应用 · Web 应用与项目交付</span><span>13</span></div>
+      </section>
+
+      <!-- 14 -->
+      <section data-page="14">
+        <h2>模块如何衔接？</h2>
+        <div class="flow-list">
+          <div class="row"><div class="n">01</div><div><code>load_cases</code> → <code>clean_cases</code></div></div>
+          <div class="row"><div class="n">02</div><div>统计指标 → <code>plot_*</code> 出图</div></div>
+          <div class="row"><div class="n">03</div><div>可选：调用大模型生成摘要</div></div>
+          <div class="row"><div class="n">04</div><div><code>build_report</code> → 返回页面或写文件</div></div>
+        </div>
+        <p class="small">Web 路由函数应「很薄」：只编排模块，不塞进全部细节。</p>
+      <div class="slide-footer"><span>Python高级应用 · Web 应用与项目交付</span><span>14</span></div>
+      </section>
+
+      <!-- 15 -->
+      <section data-page="15">
+        <h2>项目结构示意</h2>
+        <div class="file-box">project/
+  app.py          # Web 入口与路由
+  io_data.py
+  clean.py
+  charts.py
+  report.py
+  static/         # 样式、生成的图片
+  templates/      # 页面模板
+  README.md       # 如何安装与运行</div>
+        <div class="band band-blue">名字可变；「入口清晰、模块分离、说明齐全」不变。</div>
+      <div class="slide-footer"><span>Python高级应用 · Web 应用与项目交付</span><span>15</span></div>
+      </section>
+
+      <!-- 16 -->
+      <section data-page="16">
+        <h2>什么叫「可运行交付」？</h2>
+        <ul class="goals">
+          <li>他人按说明能在约定环境装好依赖</li>
+          <li>一条（或少数几条）命令能启动</li>
+          <li>用示例数据能看到完整结果</li>
+          <li>密钥与隐私按规范配置，不靠口头传授</li>
+        </ul>
+        <div class="band band-orange" style="margin-top: 0.8em;">「我电脑能跑」不等于「已交付」。</div>
+      <div class="slide-footer"><span>Python高级应用 · Web 应用与项目交付</span><span>16</span></div>
+      </section>
+
+      <!-- 17 -->
+      <section data-page="17">
+        <h2>交付检查清单（环境与代码）</h2>
+        <div class="mode-row">
+          <div class="tag">01</div>
+          <div>依赖列表完整（如 requirements.txt）</div>
+        </div>
+        <div class="mode-row">
+          <div class="tag">02</div>
+          <div>README：安装、配置、启动步骤可照做</div>
+        </div>
+        <div class="mode-row">
+          <div class="tag">03</div>
+          <div>示例数据与预期输出说明</div>
+        </div>
+        <div class="mode-row">
+          <div class="tag">04</div>
+          <div>无密钥硬编码；敏感文件已忽略</div>
+        </div>
+      <div class="slide-footer"><span>Python高级应用 · Web 应用与项目交付</span><span>17</span></div>
+      </section>
+
+      <!-- 18 -->
+      <section data-page="18">
+        <h2>交付检查清单（功能与体验）</h2>
+        <div class="mode-row">
+          <div class="tag">05</div>
+          <div>主流程：上传 → 分析 → 出图/报告 跑通</div>
+        </div>
+        <div class="mode-row">
+          <div class="tag">06</div>
+          <div>失败时有可读提示（缺文件、格式错）</div>
+        </div>
+        <div class="mode-row">
+          <div class="tag">07</div>
+          <div>中文图表字体在目标环境可显示</div>
+        </div>
+        <div class="mode-row">
+          <div class="tag">08</div>
+          <div>临时文件有清理或目录约定</div>
+        </div>
+      <div class="slide-footer"><span>Python高级应用 · Web 应用与项目交付</span><span>18</span></div>
+      </section>
+
+      <!-- 19 -->
+      <section data-page="19">
+        <h2>演示与文档要准备什么？</h2>
+        <div class="three-col">
+          <div class="box">
+            <strong>一句话</strong>
+            这个应用解决什么问题
+          </div>
+          <div class="box">
+            <strong>三分钟</strong>
+            示例数据走完主流程
+          </div>
+          <div class="box">
+            <strong>一张图</strong>
+            模块关系或使用步骤
+          </div>
+        </div>
+        <div class="band band-blue" style="margin-top: 0.8em;">交付既看代码，也看别人能否跟得上你的说明。</div>
+      <div class="slide-footer"><span>Python高级应用 · Web 应用与项目交付</span><span>19</span></div>
+      </section>
+
+      <!-- 20 -->
+      <section data-page="20">
+        <h2>常见交付漏洞</h2>
+        <ul>
+          <li>路径写死本机盘符，换电脑即失效</li>
+          <li>依赖装了但版本未记录</li>
+          <li>只有截图，没有可运行示例</li>
+          <li>把调试打印当错误处理</li>
+          <li>README 过时，步骤与代码不一致</li>
+        </ul>
+        <div class="band band-orange" style="margin-top: 0.6em;">交付前：换一个干净目录，按 README 重走一遍。</div>
+      <div class="slide-footer"><span>Python高级应用 · Web 应用与项目交付</span><span>20</span></div>
+      </section>
+
+      <!-- 21 -->
+      <section data-page="21">
+        <h2>从脚本到应用：迁移顺序</h2>
+        <div class="flow-list">
+          <div class="row"><div class="n">01</div><div>先把分析逻辑拆成可导入模块</div></div>
+          <div class="row"><div class="n">02</div><div>命令行能对示例数据跑通</div></div>
+          <div class="row"><div class="n">03</div><div>再包一层 Web：表单进、结果出</div></div>
+          <div class="row"><div class="n">04</div><div>补 README 与检查清单，做交付预演</div></div>
+        </div>
+        <p class="small">不要一上来堆页面；核心算法稳了再接界面。</p>
+      <div class="slide-footer"><span>Python高级应用 · Web 应用与项目交付</span><span>21</span></div>
+      </section>
+
+      <!-- 22 -->
+      <section data-page="22">
+        <h2>课程能力地图（收束）</h2>
+        <div class="three-col">
+          <div class="box">
+            <strong>数据层</strong>
+            文件、格式、异常、数组与表
+          </div>
+          <div class="box">
+            <strong>分析层</strong>
+            清洗、统计、可视化、API
+          </div>
+          <div class="box">
+            <strong>交付层</strong>
+            模块化、Web、清单与文档
+          </div>
+        </div>
+        <div class="band band-green" style="margin-top: 0.8em;">每一层都服务同一目标：可信、可复现、可交付。</div>
+      <div class="slide-footer"><span>Python高级应用 · Web 应用与项目交付</span><span>22</span></div>
+      </section>
+
+      <!-- 23 -->
+      <section data-page="23">
+        <h2>回顾：这节课学到了什么？</h2>
+        <ul>
+          <li>Web：降低使用门槛的交互形态</li>
+          <li>最小页面：输入、操作、结果</li>
+          <li>前后端：展示与计算的分工</li>
+          <li>读写 / 清洗 / 图表 / 报告 模块串联</li>
+          <li>可运行交付：环境、示例、文档、安全</li>
+          <li>先模块后界面，再用清单验收</li>
+        </ul>
+        <div class="band band-blue" style="margin-top: 0.6em;">把本课能力收成一个别人也能运行的项目。</div>
+      <div class="slide-footer"><span>Python高级应用 · Web 应用与项目交付</span><span>23</span></div>
+      </section>
+
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/reveal.js@4.6.1/dist/reveal.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/reveal.js@4.6.1/plugin/highlight/highlight.js"></script>
+  <script>
+    Reveal.initialize({
+      hash: true,
+      center: false,
+      transition: 'fade',
+      transitionSpeed: 'fast',
+      backgroundTransition: 'fade',
+      width: 960,
+      height: 540,
+      margin: 0.04,
+      minScale: 0.35,
+      maxScale: 1.6,
+      slideNumber: false,
+      plugins: [RevealHighlight]
+    });
+  </script>
+</body>
+</html>

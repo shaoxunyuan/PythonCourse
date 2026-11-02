@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>实验11：Python网络请求与网页解析</title>
+  <link rel="stylesheet" href="../style.css">
+  <link rel="stylesheet" href="./practice.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css" crossorigin="anonymous" referrerpolicy="no-referrer">
+</head>
+<body>
+  <div class="book-shell practice-page">
+    <aside class="book-sidebar" aria-label="本页目录">
+      <div class="toc-scroll">
+        <div class="toc__title">目录</div>
+        <ul class="book-nav toc">
+          <li>
+            <a class="lv1" href="#p1">1. 练习</a>
+            <div class="lv2">
+              <a href="#p1-1"><span class="n">1.1</span>网页获取</a>
+              <a href="#p1-2"><span class="n">1.2</span>HTML 解析</a>
+              <a href="#p1-3"><span class="n">1.3</span>图书信息提取</a>
+              <a href="#p1-4"><span class="n">1.4</span>条件筛选</a>
+              <a href="#p1-5"><span class="n">1.5</span>分页访问</a>
+              <a href="#p1-6"><span class="n">1.6</span>详情页解析</a>
+              <a href="#p1-7"><span class="n">1.7</span>CSV 保存</a>
+              <a href="#p1-8"><span class="n">1.8</span>常见错误</a>
+            </div>
+          </li>
+          <li>
+            <a class="lv1" href="#p2">2. 任务</a>
+            <div class="lv2">
+              <a href="#p2-1"><span class="n">2.1</span>任务 A：多页筛选导出</a>
+              <a href="#p2-2"><span class="n">2.2</span>任务 B：详情页增强</a>
+            </div>
+          </li>
+          <li>
+            <a class="lv1" href="#p3">3. 实验结果与作业</a>
+            <div class="lv2">
+              <a href="#p3-1"><span class="n">3.1</span>本次实验结果要求</a>
+              <a href="#p3-2"><span class="n">3.2</span>作业</a>
+              <a href="#p3-3"><span class="n">3.3</span>实验提交</a>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </aside>
+
+    <main class="book-main">
+      <article class="article">
+        <div class="practice-breadcrumb">
+          <a href="./">Practice</a><span class="sep">/</span>实验11
+        </div>
+        <h1>实验11：Python网络请求与网页解析</h1>
+        <p class="practice-lead">从打开 books.toscrape.com 开始。完成本节后，能用 requests 获取页面，用 Beautiful Soup 提取图书信息，完成筛选、分页并保存 CSV。</p>
+
+        <div class="meta-row">
+          <div>
+            <strong>本课目标</strong>
+            <span>掌握 requests 获取 HTML、Beautiful Soup 解析、字段提取、条件筛选、分页与详情页、CSV 导出</span>
+          </div>
+          <div>
+            <strong>项目阶段</strong>
+            <span>网页解析专训。只打 requests + BS4，不引入 API Key / 大模型（留给实验12）</span>
+          </div>
+          <div>
+            <strong>练习方式</strong>
+            <span>本地运行代码并完成任务，再通过雨课堂填写实验记录</span>
+          </div>
+        </div>
+
+
+        <section class="exercise" id="p1">
+          <h2>1. 练习</h2>
+          <div class="book-callout">本节只使用第三方库 <code>requests</code> 与 <code>beautifulsoup4</code>。统一练习网站：<a href="https://books.toscrape.com/" target="_blank" rel="noopener">https://books.toscrape.com/</a>（专为教学爬取设计的沙箱站点）。请遵守课堂节奏，不要高频连续请求。</div>
+
+          <h3 id="p1-1">1.1 安装与第一次网页获取</h3>
+          <p style="margin: 0 0 10px; color: var(--ink-light);">先安装依赖，再用 GET 获取首页 HTML 文本。注意设置 <code>timeout</code>，并检查状态码。</p>
+          <pre><code class="language-python"># pip install requests beautifulsoup4
+import requests
+
+URL = &quot;https://books.toscrape.com/&quot;
+resp = requests.get(URL, timeout=15)
+print(&quot;状态码:&quot;, resp.status_code)
+resp.raise_for_status()
+resp.encoding = &quot;utf-8&quot;  # 避免 £ 等字符显示异常
+html = resp.text
+print(&quot;文本长度:&quot;, len(html))
+print(html[:200])</code></pre>
+          <div class="check-point"><strong>检查点：</strong>状态码为 200；能打印一段以 <code>&lt;!DOCTYPE html&gt;</code> 开头的文本。</div>
+
+          <h3 id="p1-2">1.2 用 Beautiful Soup 解析 HTML</h3>
+          <p style="margin: 0 0 10px; color: var(--ink-light);">HTML 是带标签的文档。Beautiful Soup 把它解析成可查询的树，而不是当成普通字符串硬切。</p>
+          <pre><code class="language-python">from bs4 import BeautifulSoup
+import requests
+
+html = requests.get(&quot;https://books.toscrape.com/&quot;, timeout=15).text
+soup = BeautifulSoup(html, &quot;html.parser&quot;)
+print(&quot;页面标题:&quot;, soup.title.get_text(strip=True) if soup.title else None)
+print(&quot;一级标题数量 h1:&quot;, len(soup.select(&quot;h1&quot;)))
+print(&quot;图书卡片数量:&quot;, len(soup.select(&quot;article.product_pod&quot;)))</code></pre>
+          <div class="check-point"><strong>检查点：</strong>首页应能找到 20 个 <code>article.product_pod</code>（每页 20 本）。</div>
+
+          <h3 id="p1-3">1.3 提取单本图书：书名、价格、评分</h3>
+          <div class="step-label">Step 1 / 观察一张卡片的结构</div>
+          <p style="margin: 0 0 10px; color: var(--ink-light);">每本书在 <code>article.product_pod</code> 中：完整书名在 <code>h3 &gt; a</code> 的 <code>title</code> 属性；价格在 <code>p.price_color</code>；星级在 <code>p.star-rating</code> 的 class（如 <code>Three</code>）。</p>
+          <pre><code class="language-python">from bs4 import BeautifulSoup
+import requests
+
+html = requests.get(&quot;https://books.toscrape.com/&quot;, timeout=15).text
+soup = BeautifulSoup(html, &quot;html.parser&quot;)
+pod = soup.select_one(&quot;article.product_pod&quot;)
+
+title = pod.h3.a[&quot;title&quot;]
+price_text = pod.select_one(&quot;p.price_color&quot;).get_text(strip=True)  # 如 £51.77
+rating_class = pod.select_one(&quot;p.star-rating&quot;)[&quot;class&quot;]  # [&#x27;star-rating&#x27;, &#x27;Three&#x27;]
+rating_word = [c for c in rating_class if c != &quot;star-rating&quot;][0]
+
+WORD_TO_NUM = {&quot;One&quot;: 1, &quot;Two&quot;: 2, &quot;Three&quot;: 3, &quot;Four&quot;: 4, &quot;Five&quot;: 5}
+price = float(price_text.replace(&quot;£&quot;, &quot;&quot;))
+rating = WORD_TO_NUM[rating_word]
+print(title, price, rating)</code></pre>
+          <div class="check-point"><strong>检查点：</strong>能打印书名、浮点价格与 1–5 的整数评分。</div>
+
+          <h3 id="p1-4">1.4 提取本页全部图书并做条件筛选</h3>
+          <pre><code class="language-python">from bs4 import BeautifulSoup
+import requests
+
+WORD_TO_NUM = {&quot;One&quot;: 1, &quot;Two&quot;: 2, &quot;Three&quot;: 3, &quot;Four&quot;: 4, &quot;Five&quot;: 5}
+
+def parse_list_page(url):
+    html = requests.get(url, timeout=15).text
+    soup = BeautifulSoup(html, &quot;html.parser&quot;)
+    books = []
+    for pod in soup.select(&quot;article.product_pod&quot;):
+        title = pod.h3.a[&quot;title&quot;]
+        href = pod.h3.a[&quot;href&quot;]
+        price = float(pod.select_one(&quot;p.price_color&quot;).get_text(strip=True).replace(&quot;£&quot;, &quot;&quot;))
+        rating_word = [c for c in pod.select_one(&quot;p.star-rating&quot;)[&quot;class&quot;] if c != &quot;star-rating&quot;][0]
+        rating = WORD_TO_NUM[rating_word]
+        books.append({&quot;title&quot;: title, &quot;price&quot;: price, &quot;rating&quot;: rating, &quot;href&quot;: href})
+    return books
+
+books = parse_list_page(&quot;https://books.toscrape.com/&quot;)
+cheap_high = [b for b in books if b[&quot;price&quot;] &lt; 30 and b[&quot;rating&quot;] &gt;= 4]
+print(&quot;本页图书数:&quot;, len(books))
+print(&quot;价格&amp;lt;30 且评分≥4:&quot;, len(cheap_high))
+for b in cheap_high[:5]:
+    print(f&#x27;{b[&quot;rating&quot;]}星 £{b[&quot;price&quot;]:.2f} {b[&quot;title&quot;]}&#x27;)</code></pre>
+          <div class="check-point"><strong>检查点：</strong>本页 20 本；筛选结果随页面内容变化，但代码逻辑正确。</div>
+
+          <h3 id="p1-5">1.5 分页访问：跟随 “next”</h3>
+          <p style="margin: 0 0 10px; color: var(--ink-light);">列表页底栏有 <code>li.next &gt; a</code>。相对链接需用 <code>urllib.parse.urljoin</code> 拼成绝对 URL。</p>
+          <pre><code class="language-python">from urllib.parse import urljoin
+from bs4 import BeautifulSoup
+import requests
+import time
+
+BASE = &quot;https://books.toscrape.com/&quot;
+WORD_TO_NUM = {&quot;One&quot;: 1, &quot;Two&quot;: 2, &quot;Three&quot;: 3, &quot;Four&quot;: 4, &quot;Five&quot;: 5}
+
+def parse_list_page(url):
+    resp = requests.get(url, timeout=15)
+    resp.raise_for_status()
+    soup = BeautifulSoup(resp.text, &quot;html.parser&quot;)
+    books = []
+    for pod in soup.select(&quot;article.product_pod&quot;):
+        title = pod.h3.a[&quot;title&quot;]
+        href = urljoin(url, pod.h3.a[&quot;href&quot;])
+        price = float(pod.select_one(&quot;p.price_color&quot;).get_text(strip=True).replace(&quot;£&quot;, &quot;&quot;))
+        rating_word = [c for c in pod.select_one(&quot;p.star-rating&quot;)[&quot;class&quot;] if c != &quot;star-rating&quot;][0]
+        books.append({&quot;title&quot;: title, &quot;price&quot;: price, &quot;rating&quot;: WORD_TO_NUM[rating_word], &quot;url&quot;: href})
+    next_a = soup.select_one(&quot;li.next &gt; a&quot;)
+    next_url = urljoin(url, next_a[&quot;href&quot;]) if next_a else None
+    return books, next_url
+
+all_books = []
+url = BASE
+for page_i in range(1, 4):  # 课堂先抓前 3 页
+    books, url = parse_list_page(url)
+    all_books.extend(books)
+    print(f&quot;第{page_i}页: {len(books)} 本，累计 {len(all_books)}&quot;)
+    if not url:
+        break
+    time.sleep(0.5)  # 礼貌间隔
+
+print(&quot;合计:&quot;, len(all_books))</code></pre>
+          <div class="check-point"><strong>检查点：</strong>前 3 页合计约 60 本；每页请求之间有短暂停顿。</div>
+
+          <h3 id="p1-6">1.6 详情页解析：库存与品类</h3>
+          <p style="margin: 0 0 10px; color: var(--ink-light);">列表页信息有限。进入详情页可读取品类面包屑、产品信息表（UPC、库存等）。</p>
+          <pre><code class="language-python">from urllib.parse import urljoin
+from bs4 import BeautifulSoup
+import requests
+
+list_html = requests.get(&quot;https://books.toscrape.com/&quot;, timeout=15).text
+list_soup = BeautifulSoup(list_html, &quot;html.parser&quot;)
+first_href = list_soup.select_one(&quot;article.product_pod h3 a&quot;)[&quot;href&quot;]
+detail_url = urljoin(&quot;https://books.toscrape.com/&quot;, first_href)
+
+detail = BeautifulSoup(requests.get(detail_url, timeout=15).text, &quot;html.parser&quot;)
+title = detail.select_one(&quot;div.product_main h1&quot;).get_text(strip=True)
+# 面包屑：Home &gt; Books &gt; Category &gt; Title
+crumbs = [a.get_text(strip=True) for a in detail.select(&quot;ul.breadcrumb li a&quot;)]
+category = crumbs[2] if len(crumbs) &gt;= 3 else &quot;&quot;
+
+info = {}
+for row in detail.select(&quot;table.table.table-striped tr&quot;):
+    key = row.th.get_text(strip=True)
+    val = row.td.get_text(strip=True)
+    info[key] = val
+
+print(&quot;书名:&quot;, title)
+print(&quot;品类:&quot;, category)
+print(&quot;UPC:&quot;, info.get(&quot;UPC&quot;))
+print(&quot;库存原文:&quot;, info.get(&quot;Availability&quot;))</code></pre>
+          <div class="check-point"><strong>检查点：</strong>能打印书名、品类、UPC 与库存原文。</div>
+
+          <h3 id="p1-7">1.7 保存为 CSV</h3>
+          <pre><code class="language-python">import csv
+from pathlib import Path
+
+rows = [
+    {&quot;title&quot;: &quot;Demo Book&quot;, &quot;price&quot;: 12.5, &quot;rating&quot;: 4, &quot;category&quot;: &quot;Poetry&quot;, &quot;url&quot;: &quot;https://books.toscrape.com/&quot;}
+]
+out = Path(&quot;books_sample.csv&quot;)
+with out.open(&quot;w&quot;, encoding=&quot;utf-8-sig&quot;, newline=&quot;&quot;) as f:
+    writer = csv.DictWriter(f, fieldnames=[&quot;title&quot;, &quot;price&quot;, &quot;rating&quot;, &quot;category&quot;, &quot;url&quot;])
+    writer.writeheader()
+    writer.writerows(rows)
+print(&quot;已写入&quot;, out.resolve())</code></pre>
+          <div class="check-point"><strong>检查点：</strong>生成带表头的 CSV，可用表格软件打开且中文不乱码（utf-8-sig）。</div>
+
+          <h3 id="p1-8">1.8 常见错误</h3>
+          <p style="margin: 0 0 10px; color: var(--ink-light);"><strong>错误 1：</strong>用字符串 <code>split</code> 硬拆 HTML，页面稍变就全错。</p>
+          <p style="margin: 16px 0 10px; color: var(--ink-light);"><strong>错误 2：</strong>忘记 <code>urljoin</code>，相对链接打不开详情页。</p>
+          <p style="margin: 16px 0 10px; color: var(--ink-light);"><strong>错误 3：</strong>把价格字符串 <code>£51.77</code> 直接当数字运算。</p>
+          <p style="margin: 16px 0 10px; color: var(--ink-light);"><strong>错误 4：</strong>循环抓取不加 <code>timeout</code> / 间隔，请求失败难排查。</p>
+          <p style="margin: 16px 0 10px; color: var(--ink-light);"><strong>错误 5：</strong>只取 <code>a</code> 标签可见文本（可能被截断），忽略 <code>title</code> 属性中的全名。</p>
+        </section>
+
+        <section class="exercise" id="p2">
+          <h2>2. 任务</h2>
+          <p style="margin: 0 0 10px; color: var(--ink-light);">依赖：<code>pip install requests beautifulsoup4</code>。若教室网络不稳定，可先保存 1～2 页 HTML 到本地文件，用 <code>BeautifulSoup(Path(...).read_text(), "html.parser")</code> 完成解析练习。</p>
+
+          <h3 id="p2-1">2.1 任务 A：多页采集并筛选导出（必做）</h3>
+          <ul class="tasks">
+            <li>抓取至少 3 个列表页（或本地保存的等价 HTML）</li>
+            <li>提取每本书的 title、price、rating、详情 url</li>
+            <li>筛选：rating ≥ 4 且 price &lt; 40（阈值可在注释中写明）</li>
+            <li>将筛选结果保存为 <code>books_filtered.csv</code>（utf-8-sig）</li>
+            <li>打印：抓取总数、筛选后数量、价格均值</li>
+          </ul>
+
+          <h3 id="p2-2">2.2 任务 B：详情页增强（拓展）</h3>
+          <ul class="tasks">
+            <li>对筛选结果中的前 5 本书访问详情页</li>
+            <li>补充 category 与 Availability（库存原文）字段</li>
+            <li>另存 <code>books_enriched.csv</code></li>
+            <li>用 2～3 句话说明列表页与详情页各自适合提取什么信息</li>
+          </ul>
+        </section>
+
+        <section class="exercise" id="p3">
+          <h2>3. 实验结果与作业</h2>
+          <h3 id="p3-1">3.1 本次实验结果要求</h3>
+          <ul class="tasks">
+            <li>使用 requests 获取网页并处理状态码 / timeout</li>
+            <li>使用 Beautiful Soup 选择卡片与字段</li>
+            <li>完成价格与星级的类型转换</li>
+            <li>实现分页或本地多页解析</li>
+            <li>将结果保存为 CSV</li>
+          </ul>
+          <h3 id="p3-2">3.2 作业</h3>
+          <p style="margin: 16px 0 10px; color: var(--ink-light);"><strong>题目1：</strong>为什么完整书名应读 <code>title</code> 属性而不是链接可见文本？</p>
+          <p style="margin: 16px 0 10px; color: var(--ink-light);"><strong>题目2：</strong>写出任务 A 的抓取总数、筛选数量与均价。</p>
+          <p style="margin: 16px 0 10px; color: var(--ink-light);"><strong>题目3：</strong>提交核心解析函数与 CSV 表头截图。</p>
+          <h3 id="p3-3">3.3 实验提交</h3>
+          <p style="margin: 0 0 10px; color: var(--ink-light);">提交 <code>.py</code>、CSV、两处关键步骤截图。按雨课堂要求填写实验记录。仅使用 books.toscrape.com 教学站点。</p>
+        </section>
+
+        <p class="practice-footer-note">上一节：<a href="sop10-matplotlib.html">实验10：Matplotlib数据可视化</a>　|　下一节：<a href="sop12-api.html">实验12：Python API与大模型调用</a></p>
+      </article>
+    </main>
+  </div>
+
+  <script>
+    (function () {
+      document.querySelectorAll('pre > code').forEach((code) => {
+        const pre = code.parentElement;
+        if (!pre || pre.querySelector('.copy-btn')) return;
+        const btn = document.createElement('button');
+        btn.className = 'copy-btn';
+        btn.type = 'button';
+        btn.textContent = '复制';
+        btn.addEventListener('click', async () => {
+          try {
+            await navigator.clipboard.writeText(code.innerText);
+            btn.dataset.state = 'ok';
+            btn.textContent = '已复制';
+            setTimeout(() => { delete btn.dataset.state; btn.textContent = '复制'; }, 1200);
+          } catch (e) {
+            const range = document.createRange();
+            range.selectNodeContents(code);
+            const sel = window.getSelection();
+            sel.removeAllRanges();
+            sel.addRange(range);
+            btn.textContent = '请 Ctrl+C';
+            setTimeout(() => { btn.textContent = '复制'; }, 1200);
+          }
+        });
+        pre.appendChild(btn);
+      });
+    })();
+  </script>
+  <script>
+    (function () {
+      const links = Array.from(document.querySelectorAll('.toc a[href^="#"]'));
+      const idToLink = new Map();
+      links.forEach((a) => {
+        const id = decodeURIComponent(a.getAttribute('href').slice(1));
+        if (id) idToLink.set(id, a);
+      });
+      const headings = Array.from(document.querySelectorAll('h2[id], h3[id], section[id]'))
+        .filter((h) => idToLink.has(h.id));
+      if (headings.length === 0) return;
+      const clear = () => links.forEach((a) => a.classList.remove('is-active'));
+      const setActive = (id) => { clear(); const a = idToLink.get(id); if (a) a.classList.add('is-active'); };
+      const initial = (location.hash && location.hash.slice(1)) || headings[0].id;
+      setActive(decodeURIComponent(initial));
+      const obs = new IntersectionObserver((entries) => {
+        const visible = entries.filter((e) => e.isIntersecting).sort((a, b) => (a.boundingClientRect.top - b.boundingClientRect.top));
+        if (visible.length > 0) setActive(visible[0].target.id);
+      }, { rootMargin: '-15% 0px -75% 0px', threshold: [0, 1] });
+      headings.forEach((h) => obs.observe(h));
+    })();
+  </script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/python.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script>hljs.highlightAll();</script>
+  <script src="./split.js"></script>
+
+</body>
+</html>

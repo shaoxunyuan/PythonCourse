@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>实验13：Python综合项目与Streamlit Web应用</title>
+  <link rel="stylesheet" href="../style.css">
+  <link rel="stylesheet" href="./practice.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css" crossorigin="anonymous" referrerpolicy="no-referrer">
+</head>
+<body>
+  <div class="book-shell practice-page">
+    <aside class="book-sidebar" aria-label="本页目录">
+      <div class="toc-scroll">
+        <div class="toc__title">目录</div>
+        <ul class="book-nav toc">
+          <li>
+            <a class="lv1" href="#p1">1. 练习</a>
+            <div class="lv2">
+              <a href="#p1-1"><span class="n">1.1</span>最小页面</a>
+              <a href="#p1-2"><span class="n">1.2</span>上传与默认数据</a>
+              <a href="#p1-3"><span class="n">1.3</span>预览与质量</a>
+              <a href="#p1-4"><span class="n">1.4</span>侧栏筛选</a>
+              <a href="#p1-5"><span class="n">1.5</span>统计分析</a>
+              <a href="#p1-6"><span class="n">1.6</span>图表展示</a>
+              <a href="#p1-7"><span class="n">1.7</span>结果下载</a>
+              <a href="#p1-8"><span class="n">1.8</span>项目结构</a>
+              <a href="#p1-9"><span class="n">1.9</span>常见错误</a>
+            </div>
+          </li>
+          <li>
+            <a class="lv1" href="#p2">2. 任务</a>
+            <div class="lv2">
+              <a href="#p2-1"><span class="n">2.1</span>任务 A：完整应用</a>
+              <a href="#p2-2"><span class="n">2.2</span>任务 B：增强说明</a>
+            </div>
+          </li>
+          <li>
+            <a class="lv1" href="#p3">3. 实验结果与作业</a>
+            <div class="lv2">
+              <a href="#p3-1"><span class="n">3.1</span>本次实验结果要求</a>
+              <a href="#p3-2"><span class="n">3.2</span>作业</a>
+              <a href="#p3-3"><span class="n">3.3</span>实验提交</a>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </aside>
+
+    <main class="book-main">
+      <article class="article">
+        <div class="practice-breadcrumb">
+          <a href="./">Practice</a><span class="sep">/</span>实验13
+        </div>
+        <h1>实验13：Python综合项目与Streamlit Web应用</h1>
+        <p class="practice-lead">把本学期的数据读取、清洗思路、统计与绘图接到一个可交互页面上。完成本节后，能交付具备上传、预览、筛选、统计、图表与下载的 Streamlit 应用。</p>
+
+        <div class="meta-row">
+          <div>
+            <strong>本课目标</strong>
+            <span>整合 pandas / Matplotlib 与 Streamlit，完成端到端教学演示应用</span>
+          </div>
+          <div>
+            <strong>项目阶段</strong>
+            <span>综合交付。输入 → 预览 → 筛选 → 统计 → 可视化 → 下载</span>
+          </div>
+          <div>
+            <strong>练习方式</strong>
+            <span>本地运行应用并完成任务，再通过雨课堂填写实验记录</span>
+          </div>
+        </div>
+
+
+        <section class="exercise" id="p1">
+          <h2>1. 练习</h2>
+          <div class="book-callout">本实验整合文件读写、异常处理思路、pandas 与 Matplotlib，交付可本地运行的 Streamlit 应用。教学演示 ≠ 生产上云，勿上传真实患者身份信息。</div>
+
+          <h3 id="p1-1">1.1 最小可运行页面</h3>
+          <pre><code class="language-python">import streamlit as st
+
+st.title(&quot;病例数据分析平台&quot;)
+st.write(&quot;实验13：综合项目与 Streamlit Web 应用&quot;)</code></pre>
+          <p style="margin: 16px 0 10px; color: var(--ink-light);">启动命令：<code>streamlit run app.py</code>（不要只用 <code>python app.py</code>）。</p>
+          <div class="check-point"><strong>检查点：</strong>浏览器能打开本地页面并看到标题。</div>
+
+          <h3 id="p1-2">1.2 数据上传与默认演示数据</h3>
+          <pre><code class="language-python">import streamlit as st
+import pandas as pd
+
+st.title(&quot;病例数据分析平台&quot;)
+
+def default_df():
+    return pd.DataFrame({
+        &quot;case_id&quot;: [&quot;C001&quot;, &quot;C002&quot;, &quot;C003&quot;, &quot;C004&quot;, &quot;C005&quot;],
+        &quot;group&quot;: [&quot;A&quot;, &quot;B&quot;, &quot;A&quot;, &quot;B&quot;, &quot;A&quot;],
+        &quot;stay_days&quot;: [4, 7, 5, 8, 6],
+        &quot;age&quot;: [45, 52, 38, 61, 47],
+    })
+
+uploaded = st.file_uploader(&quot;上传 CSV（可选）&quot;, type=[&quot;csv&quot;])
+if uploaded is None:
+    df = default_df()
+    st.info(&quot;未上传文件，使用内置教学模拟数据。&quot;)
+else:
+    try:
+        df = pd.read_csv(uploaded)
+    except Exception as exc:
+        st.error(f&quot;读取失败：{exc}&quot;)
+        df = default_df()
+
+required = {&quot;group&quot;, &quot;stay_days&quot;}
+missing = required - set(df.columns)
+if missing:
+    st.warning(f&quot;缺少列：{missing}。已回退到演示数据。&quot;)
+    df = default_df()
+
+st.session_state[&quot;df&quot;] = df
+st.dataframe(df)</code></pre>
+          <div class="check-point"><strong>检查点：</strong>无上传、坏文件、缺列时都有可读提示，并仍能继续演示。</div>
+
+          <h3 id="p1-3">1.3 数据预览与质量概览</h3>
+          <pre><code class="language-python">import streamlit as st
+import pandas as pd
+
+df = st.session_state.get(&quot;df&quot;, pd.DataFrame({&quot;group&quot;: [&quot;A&quot;], &quot;stay_days&quot;: [4]}))
+c1, c2, c3 = st.columns(3)
+c1.metric(&quot;记录数&quot;, len(df))
+c2.metric(&quot;字段数&quot;, df.shape[1])
+c3.metric(&quot;分组数&quot;, df[&quot;group&quot;].nunique(dropna=True) if &quot;group&quot; in df.columns else 0)
+st.write(&quot;缺失率（%）&quot;)
+st.write((df.isna().mean() * 100).round(1))
+st.dataframe(df.head(20))</code></pre>
+          <div class="check-point"><strong>检查点：</strong>页面同时显示指标、缺失概况与表预览。</div>
+
+          <h3 id="p1-4">1.4 侧栏筛选</h3>
+          <p style="margin: 0 0 10px; color: var(--ink-light);">每次控件变化都会重新执行脚本。把筛选条件放在 sidebar。</p>
+          <pre><code class="language-python">import streamlit as st
+import pandas as pd
+
+df = pd.DataFrame({
+    &quot;group&quot;: [&quot;A&quot;, &quot;B&quot;, &quot;A&quot;, &quot;B&quot;, &quot;A&quot;],
+    &quot;stay_days&quot;: [4, 7, 5, 8, 6],
+    &quot;age&quot;: [45, 52, 38, 61, 47],
+})
+groups = sorted(df[&quot;group&quot;].dropna().unique().tolist())
+sel = st.sidebar.multiselect(&quot;组别&quot;, groups, default=groups)
+min_stay, max_stay = st.sidebar.slider(
+    &quot;住院天数范围&quot;,
+    int(df[&quot;stay_days&quot;].min()),
+    int(df[&quot;stay_days&quot;].max()),
+    (int(df[&quot;stay_days&quot;].min()), int(df[&quot;stay_days&quot;].max())),
+)
+subset = df[df[&quot;group&quot;].isin(sel) &amp; df[&quot;stay_days&quot;].between(min_stay, max_stay)]
+if subset.empty:
+    st.info(&quot;当前筛选无数据，请调整侧栏条件。&quot;)
+else:
+    st.success(f&quot;筛选后 {len(subset)} 条&quot;)
+    st.dataframe(subset)</code></pre>
+          <div class="check-point"><strong>检查点：</strong>改变组别或天数范围后，表格同步更新。</div>
+
+          <h3 id="p1-5">1.5 统计分析</h3>
+          <pre><code class="language-python">import streamlit as st
+import pandas as pd
+
+subset = pd.DataFrame({&quot;group&quot;: [&quot;A&quot;, &quot;A&quot;, &quot;B&quot;], &quot;stay_days&quot;: [4, 6, 8]})
+st.subheader(&quot;统计分析&quot;)
+st.metric(&quot;平均住院天数&quot;, round(subset[&quot;stay_days&quot;].mean(), 2))
+st.metric(&quot;最大住院天数&quot;, int(subset[&quot;stay_days&quot;].max()))
+summary = (
+    subset.groupby(&quot;group&quot;, as_index=False)[&quot;stay_days&quot;]
+    .agg(count=&quot;count&quot;, mean_stay=&quot;mean&quot;)
+)
+st.dataframe(summary)</code></pre>
+          <div class="check-point"><strong>检查点：</strong>至少两个总体指标 + 一张分组汇总表。</div>
+
+          <h3 id="p1-6">1.6 图表展示（Matplotlib）</h3>
+          <pre><code class="language-python">import streamlit as st
+import pandas as pd
+import matplotlib.pyplot as plt
+
+subset = pd.DataFrame({
+    &quot;group&quot;: [&quot;A&quot;, &quot;B&quot;, &quot;A&quot;, &quot;B&quot;, &quot;A&quot;],
+    &quot;stay_days&quot;: [4, 7, 5, 8, 6],
+    &quot;age&quot;: [45, 52, 38, 61, 47],
+})
+summary = subset.groupby(&quot;group&quot;, as_index=False)[&quot;stay_days&quot;].mean()
+
+fig1, ax1 = plt.subplots(figsize=(5, 3))
+ax1.bar(summary[&quot;group&quot;], summary[&quot;stay_days&quot;], color=&quot;black&quot;)
+ax1.set(xlabel=&quot;Group&quot;, ylabel=&quot;Mean stay&quot;, title=&quot;Mean stay by group&quot;)
+fig1.tight_layout()
+st.pyplot(fig1)
+
+fig2, ax2 = plt.subplots(figsize=(5, 3))
+ax2.scatter(subset[&quot;age&quot;], subset[&quot;stay_days&quot;], color=&quot;black&quot;)
+ax2.set(xlabel=&quot;Age&quot;, ylabel=&quot;Stay days&quot;, title=&quot;Age vs stay&quot;)
+fig2.tight_layout()
+st.pyplot(fig2)</code></pre>
+          <div class="check-point"><strong>检查点：</strong>至少两张图，且基于<strong>当前筛选后</strong>的数据。</div>
+
+          <h3 id="p1-7">1.7 结果下载</h3>
+          <pre><code class="language-python">import streamlit as st
+import pandas as pd
+
+subset = pd.DataFrame({&quot;group&quot;: [&quot;A&quot;], &quot;stay_days&quot;: [4]})
+csv_bytes = subset.to_csv(index=False).encode(&quot;utf-8-sig&quot;)
+st.download_button(
+    &quot;下载当前筛选结果 CSV&quot;,
+    data=csv_bytes,
+    file_name=&quot;filtered_cases.csv&quot;,
+    mime=&quot;text/csv&quot;,
+)</code></pre>
+          <div class="check-point"><strong>检查点：</strong>下载内容与页面当前筛选一致。</div>
+
+          <h3 id="p1-8">1.8 项目结构建议</h3>
+          <pre><code class="language-python"># 推荐提交结构
+# app.py
+# requirements.txt
+# README.md
+# sample_data/demo_cases.csv
+
+# requirements.txt 示例
+# streamlit
+# pandas
+# matplotlib</code></pre>
+          <p style="margin: 16px 0 10px; color: var(--ink-light);">README 至少写清：安装命令、启动命令、功能截图说明、演示数据说明。</p>
+          <div class="check-point"><strong>检查点：</strong>换一台电脑按 README 能安装并启动。</div>
+
+          <h3 id="p1-9">1.9 常见错误</h3>
+          <p style="margin: 0 0 10px; color: var(--ink-light);"><strong>错误 1：</strong>用 <code>python app.py</code> 启动。</p>
+          <p style="margin: 16px 0 10px; color: var(--ink-light);"><strong>错误 2：</strong>图表/下载仍基于全表，未使用筛选后子集。</p>
+          <p style="margin: 16px 0 10px; color: var(--ink-light);"><strong>错误 3：</strong>缺列时直接 KeyError 崩溃。</p>
+          <p style="margin: 16px 0 10px; color: var(--ink-light);"><strong>错误 4：</strong>缺少 requirements.txt / README。</p>
+          <p style="margin: 16px 0 10px; color: var(--ink-light);"><strong>错误 5：</strong>上传含真实身份信息的数据。</p>
+        </section>
+
+        <section class="exercise" id="p2">
+          <h2>2. 任务</h2>
+          <h3 id="p2-1">2.1 任务 A：完整 Streamlit 应用（必做）</h3>
+          <ul class="tasks">
+            <li>数据上传（可选）+ 内置演示数据回退</li>
+            <li>数据预览与至少两个质量/规模指标</li>
+            <li>侧栏筛选（至少两个条件）</li>
+            <li>统计分析（总体指标 + groupby 表）</li>
+            <li>至少两张 Matplotlib 图</li>
+            <li>下载当前筛选结果</li>
+            <li>提供 requirements.txt 与 README</li>
+          </ul>
+          <h3 id="p2-2">2.2 任务 B：增强与说明（拓展）</h3>
+          <ul class="tasks">
+            <li>增加数据质量提示（缺失率阈值告警）或数值范围自定义</li>
+            <li>可选：读取实验11导出的 CSV 作为默认数据</li>
+            <li>用 3～5 句话说明本应用串联了哪些已学技能</li>
+          </ul>
+        </section>
+
+        <section class="exercise" id="p3">
+          <h2>3. 实验结果与作业</h2>
+          <h3 id="p3-1">3.1 本次实验结果要求</h3>
+          <ul class="tasks">
+            <li>独立运行 Streamlit 应用</li>
+            <li>完成上传→预览→筛选→统计→图表→下载闭环</li>
+            <li>异常与空数据有提示</li>
+            <li>提交可复现材料</li>
+          </ul>
+          <h3 id="p3-2">3.2 作业</h3>
+          <p style="margin: 16px 0 10px; color: var(--ink-light);"><strong>题目1：</strong>正确启动命令是？</p>
+          <p style="margin: 16px 0 10px; color: var(--ink-light);"><strong>题目2：</strong>列出两个指标与两张图的含义。</p>
+          <p style="margin: 16px 0 10px; color: var(--ink-light);"><strong>题目3：</strong>描述一次缺列或空筛选时的页面提示。</p>
+          <h3 id="p3-3">3.3 实验提交</h3>
+          <p style="margin: 0 0 10px; color: var(--ink-light);">提交应用代码、requirements.txt、README、至少两张运行截图。勿提交真实隐私数据或 API 密钥。</p>
+        </section>
+
+        <p class="practice-footer-note">上一节：<a href="sop12-api.html">实验12：Python API与大模型调用</a></p>
+      </article>
+    </main>
+  </div>
+
+  <script>
+    (function () {
+      document.querySelectorAll('pre > code').forEach((code) => {
+        const pre = code.parentElement;
+        if (!pre || pre.querySelector('.copy-btn')) return;
+        const btn = document.createElement('button');
+        btn.className = 'copy-btn';
+        btn.type = 'button';
+        btn.textContent = '复制';
+        btn.addEventListener('click', async () => {
+          try {
+            await navigator.clipboard.writeText(code.innerText);
+            btn.dataset.state = 'ok';
+            btn.textContent = '已复制';
+            setTimeout(() => { delete btn.dataset.state; btn.textContent = '复制'; }, 1200);
+          } catch (e) {
+            const range = document.createRange();
+            range.selectNodeContents(code);
+            const sel = window.getSelection();
+            sel.removeAllRanges();
+            sel.addRange(range);
+            btn.textContent = '请 Ctrl+C';
+            setTimeout(() => { btn.textContent = '复制'; }, 1200);
+          }
+        });
+        pre.appendChild(btn);
+      });
+    })();
+  </script>
+  <script>
+    (function () {
+      const links = Array.from(document.querySelectorAll('.toc a[href^="#"]'));
+      const idToLink = new Map();
+      links.forEach((a) => {
+        const id = decodeURIComponent(a.getAttribute('href').slice(1));
+        if (id) idToLink.set(id, a);
+      });
+      const headings = Array.from(document.querySelectorAll('h2[id], h3[id], section[id]'))
+        .filter((h) => idToLink.has(h.id));
+      if (headings.length === 0) return;
+      const clear = () => links.forEach((a) => a.classList.remove('is-active'));
+      const setActive = (id) => { clear(); const a = idToLink.get(id); if (a) a.classList.add('is-active'); };
+      const initial = (location.hash && location.hash.slice(1)) || headings[0].id;
+      setActive(decodeURIComponent(initial));
+      const obs = new IntersectionObserver((entries) => {
+        const visible = entries.filter((e) => e.isIntersecting).sort((a, b) => (a.boundingClientRect.top - b.boundingClientRect.top));
+        if (visible.length > 0) setActive(visible[0].target.id);
+      }, { rootMargin: '-15% 0px -75% 0px', threshold: [0, 1] });
+      headings.forEach((h) => obs.observe(h));
+    })();
+  </script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/python.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script>hljs.highlightAll();</script>
+  <script src="./split.js"></script>
+
+</body>
+</html>

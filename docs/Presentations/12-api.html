@@ -1,0 +1,796 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>网络、API 与大模型 · Python 高级应用</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.6.1/dist/reveal.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.6.1/dist/theme/white.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.6.1/plugin/highlight/monokai.css">
+  <style>
+    :root {
+      --ink: #12141a;
+      --ink-soft: #3d4450;
+      --muted: #7a8290;
+      --line: #d8dde6;
+      --code-bg: #e7edf4;
+      --surface: #ffffff;
+      --paper: #f4f5f7;
+      --accent: #0d9488;
+      --accent-deep: #0f766e;
+      --blue-bg: #e8f0fe;
+      --blue-ink: #1e3a5f;
+      --green-bg: #e6f6ed;
+      --green-ink: #14532d;
+      --orange-bg: #fff1e6;
+      --orange-ink: #9a3412;
+      --gray-bg: #eef0f3;
+      --font: "IBM Plex Sans", "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
+      --mono: "IBM Plex Mono", Consolas, ui-monospace, monospace;
+    }
+
+    .reveal {
+      font-family: var(--font);
+      font-size: 30px;
+      color: var(--ink);
+      background: var(--paper);
+      -webkit-font-smoothing: antialiased;
+    }
+    .reveal .slides { text-align: left; }
+    .reveal .slides section {
+      padding: 40px 52px 68px;
+      box-sizing: border-box;
+      background:
+        linear-gradient(180deg, #fbfbfc 0%, var(--surface) 42%, #f7f8fa 100%);
+    }
+    .reveal .slides section::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--accent) 0%, var(--accent) 120px, transparent 320px);
+    }
+
+    .reveal h1, .reveal h2 {
+      color: var(--ink);
+      font-weight: 700;
+      text-transform: none;
+      letter-spacing: -0.025em;
+      margin: 0 0 0.65em;
+      font-size: 1.22em;
+      line-height: 1.25;
+      position: relative;
+      padding-bottom: 0.35em;
+    }
+    .reveal h1::after, .reveal h2::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      bottom: 0;
+      width: 28px;
+      height: 2px;
+      background: var(--accent);
+    }
+    .reveal h1 { font-size: 1.55em; letter-spacing: -0.03em; }
+    .reveal p, .reveal li { color: var(--ink); line-height: 1.55; font-weight: 450; }
+    .reveal ul {
+      margin: 0.35em 0 0;
+      padding: 0;
+      list-style: none;
+    }
+    .reveal ul > li {
+      margin: 0.42em 0;
+      padding-left: 1.05em;
+      position: relative;
+    }
+    .reveal ul > li::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 0.62em;
+      width: 0.42em;
+      height: 2px;
+      background: var(--accent);
+    }
+    .reveal a { color: var(--accent-deep); }
+    .reveal .subtitle {
+      color: var(--ink-soft);
+      font-size: 0.82em;
+      font-weight: 500;
+      margin: -0.15em 0 0.15em;
+      letter-spacing: -0.01em;
+    }
+    .reveal .small {
+      font-size: 0.7em;
+      color: var(--ink-soft);
+      line-height: 1.5;
+    }
+
+    .reveal pre {
+      width: 100%;
+      box-shadow: none !important;
+      border: none !important;
+      border-left: 3px solid var(--accent) !important;
+      background: var(--code-bg) !important;
+      padding: 0.75em 0.95em !important;
+      margin: 0.45em 0 0.75em;
+      border-radius: 0;
+    }
+    .reveal pre code {
+      background: transparent !important;
+      color: var(--ink) !important;
+      font-family: var(--mono);
+      font-size: 0.68em;
+      font-weight: 450;
+      line-height: 1.48;
+      max-height: none;
+      padding: 0 !important;
+      tab-size: 4;
+    }
+    .reveal section.dense pre code { font-size: 0.58em; line-height: 1.42; }
+    .reveal code {
+      font-family: var(--mono);
+      background: var(--code-bg);
+      color: var(--ink);
+      padding: 0.06em 0.28em;
+      border-radius: 2px;
+      font-size: 0.92em;
+      font-weight: 500;
+    }
+    .reveal pre code .hljs-comment,
+    .reveal pre code .hljs-quote { color: #64748b !important; font-style: italic; }
+    .reveal pre code .hljs-keyword,
+    .reveal pre code .hljs-selector-tag,
+    .reveal pre code .hljs-built_in { color: #0b6e99 !important; font-weight: 600; }
+    .reveal pre code .hljs-string { color: var(--accent-deep) !important; }
+    .reveal pre code .hljs-number { color: #b45309 !important; }
+    .reveal pre code .hljs-title,
+    .reveal pre code .hljs-title.class_,
+    .reveal pre code .hljs-title.function_ { color: #1d4ed8 !important; }
+
+    .band {
+      padding: 0.5em 0.8em;
+      margin: 0.5em 0;
+      font-size: 0.78em;
+      line-height: 1.45;
+      font-weight: 500;
+      border-left: 3px solid transparent;
+    }
+    .band-blue { background: var(--blue-bg); color: var(--blue-ink); border-left-color: #3b82f6; }
+    .band-green { background: var(--green-bg); color: var(--green-ink); border-left-color: #22c55e; }
+    .band-orange { background: var(--orange-bg); color: var(--orange-ink); border-left-color: #f97316; }
+    .band-gray { background: var(--gray-bg); color: var(--ink); border-left-color: var(--line); }
+
+    .students {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 8.5em));
+      gap: 0.75em;
+      margin: 1.15em 0 1em;
+    }
+    .students .chip {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-top: 2px solid var(--accent);
+      padding: 0.65em 0.75em;
+      font-size: 0.78em;
+      text-align: center;
+      color: var(--ink-soft);
+      line-height: 1.35;
+    }
+    .students .chip strong {
+      display: inline-block;
+      margin-top: 0.15em;
+      font-size: 1.15em;
+      color: var(--ink);
+      font-variant-numeric: tabular-nums;
+      font-family: var(--mono);
+      font-weight: 600;
+    }
+
+    .two-col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1em;
+      margin-top: 0.45em;
+    }
+    .two-col .col-head {
+      padding: 0.38em 0.7em;
+      font-weight: 650;
+      font-size: 0.76em;
+      margin-bottom: 0.35em;
+      letter-spacing: -0.01em;
+      border-left: 3px solid transparent;
+    }
+    .two-col .col-head.blue {
+      background: var(--blue-bg);
+      color: var(--blue-ink);
+      border-left-color: #3b82f6;
+    }
+    .two-col .col-head.green {
+      background: var(--green-bg);
+      color: var(--green-ink);
+      border-left-color: #22c55e;
+    }
+    .two-col .col-head.orange {
+      background: var(--orange-bg);
+      color: var(--orange-ink);
+      border-left-color: #f97316;
+    }
+    .two-col ul { margin-top: 0; font-size: 0.8em; }
+    .two-col pre { margin-bottom: 0.45em; }
+
+    .three-col {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 0.7em;
+      margin-top: 0.5em;
+      font-size: 0.72em;
+    }
+    .three-col .box {
+      background: var(--gray-bg);
+      padding: 0.55em 0.65em;
+      min-height: 7.5em;
+    }
+    .three-col .box strong {
+      display: block;
+      margin-bottom: 0.35em;
+      font-size: 1.05em;
+      color: var(--ink);
+    }
+
+    .term-table {
+      display: grid;
+      grid-template-columns: 8em 1fr;
+      gap: 0.4em 0.9em;
+      margin-top: 0.75em;
+      font-size: 0.78em;
+      align-items: stretch;
+    }
+    .term-table .k {
+      font-family: var(--mono);
+      background: var(--code-bg);
+      border-left: 3px solid var(--accent);
+      padding: 0.28em 0.5em;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+    }
+    .term-table > div:nth-child(even) {
+      display: flex;
+      align-items: center;
+      color: var(--ink-soft);
+      border-bottom: 1px solid var(--line);
+      padding: 0.2em 0;
+    }
+
+    .flow-list {
+      margin-top: 0.65em;
+      display: grid;
+      gap: 0.4em;
+      font-size: 0.76em;
+    }
+    .flow-list .row {
+      display: grid;
+      grid-template-columns: 2.4em 1fr;
+      gap: 0.55em;
+      align-items: stretch;
+    }
+    .flow-list .n {
+      background: var(--ink);
+      color: #fff;
+      text-align: center;
+      font-weight: 600;
+      font-family: var(--mono);
+      font-size: 0.9em;
+      letter-spacing: 0.02em;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 1.7em;
+    }
+    .flow-list .row > div:last-child {
+      background: var(--gray-bg);
+      padding: 0.35em 0.65em;
+      display: flex;
+      align-items: center;
+      color: var(--ink);
+    }
+
+    .file-box {
+      font-family: var(--mono);
+      background: var(--code-bg);
+      border-left: 3px solid var(--accent);
+      padding: 0.65em 0.9em;
+      font-size: 0.72em;
+      line-height: 1.55;
+      color: var(--ink);
+      margin: 0.45em 0 0.75em;
+      white-space: pre-wrap;
+    }
+
+    .mode-row {
+      display: grid;
+      grid-template-columns: 3.2em 1fr;
+      gap: 0.6em;
+      align-items: center;
+      margin: 0.4em 0;
+      font-size: 0.8em;
+    }
+    .mode-row .tag {
+      font-family: var(--mono);
+      font-weight: 700;
+      text-align: center;
+      padding: 0.35em 0;
+      background: var(--code-bg);
+    }
+    .mode-row.warn .tag {
+      background: var(--orange-bg);
+      color: var(--orange-ink);
+    }
+
+    .parse-flow {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr auto 1fr;
+      gap: 0.4em;
+      align-items: center;
+      margin: 0.6em 0;
+      font-size: 0.72em;
+    }
+    .parse-flow .cell {
+      background: var(--gray-bg);
+      padding: 0.45em 0.55em;
+      text-align: center;
+      font-family: var(--mono);
+    }
+    .parse-flow .arrow { color: var(--muted); font-family: var(--mono); }
+
+    .goals li {
+      font-size: 0.95em;
+      margin: 0.55em 0 !important;
+    }
+
+    .slide-footer {
+      position: absolute;
+      left: 52px;
+      right: 52px;
+      bottom: 18px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 12px;
+      font-family: var(--mono);
+      font-weight: 500;
+      letter-spacing: 0.02em;
+      color: var(--muted);
+      pointer-events: none;
+      padding-top: 10px;
+      border-top: 1px solid var(--line);
+    }
+    .slide-footer span:last-child {
+      color: var(--accent-deep);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .reveal .controls { color: var(--accent); }
+    .reveal .progress {
+      color: var(--accent);
+      height: 2px;
+      background: rgba(13, 148, 136, 0.12);
+    }
+    .reveal .slide-number { display: none; }
+
+    .back-link {
+      position: fixed;
+      top: 14px;
+      left: 14px;
+      z-index: 30;
+      font-family: var(--font);
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      background: rgba(255, 255, 255, 0.92);
+      backdrop-filter: blur(8px);
+      border: 1px solid var(--line);
+      padding: 6px 12px;
+      text-decoration: none !important;
+      color: var(--accent-deep) !important;
+      transition: border-color 0.15s ease, background 0.15s ease;
+    }
+    .back-link:hover {
+      background: #fff;
+      border-color: var(--accent);
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .reveal .slides section { transition: none !important; }
+    }
+  </style>
+</head>
+<body>
+  <a class="back-link" href="index.html">← 演示列表</a>
+  <div class="reveal">
+    <div class="slides">
+      <!-- 01 -->
+      <section data-page="01">
+        <h1>网络、API 与大模型</h1>
+        <p class="subtitle">让程序向外部服务「提问」并拿回结果</p>
+        <div class="students">
+          <div class="chip">HTTP<br><strong>请求</strong></div>
+          <div class="chip">JSON<br><strong>数据</strong></div>
+          <div class="chip">大模型<br><strong>摘要</strong></div>
+        </div>
+        <div class="band band-blue">本地算完数据之后，如何调用网上的能力？</div>
+      <div class="slide-footer"><span>Python高级应用 · 网络、API 与大模型</span><span>01</span></div>
+      </section>
+
+      <!-- 02 -->
+      <section data-page="02">
+        <h2>今天要完成什么？</h2>
+        <ul class="goals">
+          <li>建立 HTTP 请求的直觉</li>
+          <li>用 requests 发出调用示意</li>
+          <li>读懂状态码与 JSON</li>
+          <li>建立 API Key 安全意识</li>
+          <li>理解提示词与病例摘要流程</li>
+        </ul>
+        <div class="band band-blue" style="margin-top: 1em;">重点在「会调用、会读返回、会保护密钥」。</div>
+      <div class="slide-footer"><span>Python高级应用 · 网络、API 与大模型</span><span>02</span></div>
+      </section>
+
+      <!-- 03 -->
+      <section data-page="03">
+        <h2>网络请求直觉</h2>
+        <div class="flow-list">
+          <div class="row"><div class="n">01</div><div>你的程序提出一个请求（要什么、发给谁）</div></div>
+          <div class="row"><div class="n">02</div><div>服务器处理并返回响应（成功或失败说明）</div></div>
+          <div class="row"><div class="n">03</div><div>你的程序解析响应，继续后续逻辑</div></div>
+        </div>
+        <div class="band band-blue" style="margin-top: 0.8em;">像寄信：写清地址与内容，等待回信。</div>
+      <div class="slide-footer"><span>Python高级应用 · 网络、API 与大模型</span><span>03</span></div>
+      </section>
+
+      <!-- 04 -->
+      <section data-page="04">
+        <h2>客户端与服务器</h2>
+        <div class="two-col">
+          <div>
+            <div class="col-head blue">客户端（你的代码）</div>
+            <ul class="small">
+              <li>发起请求</li>
+              <li>携带参数或正文</li>
+              <li>解析返回结果</li>
+            </ul>
+          </div>
+          <div>
+            <div class="col-head green">服务器（远端服务）</div>
+            <ul class="small">
+              <li>验证身份与权限</li>
+              <li>执行业务逻辑</li>
+              <li>返回状态与数据</li>
+            </ul>
+          </div>
+        </div>
+        <p class="small">浏览器访问网页，本质也是客户端在发 HTTP 请求。</p>
+      <div class="slide-footer"><span>Python高级应用 · 网络、API 与大模型</span><span>04</span></div>
+      </section>
+
+      <!-- 05 -->
+      <section data-page="05">
+        <h2>常见 HTTP 方法</h2>
+        <div class="mode-row">
+          <div class="tag">GET</div>
+          <div>获取资源；参数常放在 URL 查询串</div>
+        </div>
+        <div class="mode-row">
+          <div class="tag">POST</div>
+          <div>提交数据；正文里常带 JSON</div>
+        </div>
+        <div class="mode-row">
+          <div class="tag">其他</div>
+          <div>PUT / PATCH / DELETE 等：更新或删除（了解即可）</div>
+        </div>
+        <div class="band band-blue" style="margin-top: 0.8em;">调用大模型接口时，多数是带正文的 POST。</div>
+      <div class="slide-footer"><span>Python高级应用 · 网络、API 与大模型</span><span>05</span></div>
+      </section>
+
+      <!-- 06 -->
+      <section data-page="06">
+        <h2>requests 调用示意</h2>
+        <pre><code class="language-python">import requests
+
+url = "https://httpbin.org/get"
+resp = requests.get(url, timeout=10)
+print(resp.status_code)
+print(resp.text[:200])</code></pre>
+        <ul class="small">
+          <li><code>timeout</code>：避免无限等待</li>
+          <li><code>status_code</code>：先看成功与否</li>
+          <li><code>text</code>：原始文本；结构化数据再解析</li>
+        </ul>
+      <div class="slide-footer"><span>Python高级应用 · 网络、API 与大模型</span><span>06</span></div>
+      </section>
+
+      <!-- 07 -->
+      <section data-page="07">
+        <h2>POST 提交 JSON 示意</h2>
+        <pre><code class="language-python">payload = {"question": "总结这段病程"}
+resp = requests.post(
+    "https://api.example.com/v1/chat",
+    json=payload,
+    timeout=30,
+)</code></pre>
+        <div class="band band-blue"><code>json=payload</code> 会设置合适的 Content-Type，并把字典编码为 JSON。</div>
+      <div class="slide-footer"><span>Python高级应用 · 网络、API 与大模型</span><span>07</span></div>
+      </section>
+
+      <!-- 08 -->
+      <section data-page="08">
+        <h2>状态码：先读「成没成功」</h2>
+        <div class="three-col">
+          <div class="box">
+            <strong>2xx</strong>
+            成功<br><br>
+            如 200 OK
+          </div>
+          <div class="box">
+            <strong>4xx</strong>
+            客户端问题<br><br>
+            如 401 未授权、404 不存在
+          </div>
+          <div class="box">
+            <strong>5xx</strong>
+            服务端问题<br><br>
+            如 500 内部错误
+          </div>
+        </div>
+        <div class="band band-orange" style="margin-top: 0.8em;">拿到返回后，先判断状态码，再解析正文。</div>
+      <div class="slide-footer"><span>Python高级应用 · 网络、API 与大模型</span><span>08</span></div>
+      </section>
+
+      <!-- 09 -->
+      <section data-page="09">
+        <h2>JSON：机器友好的结构化文本</h2>
+        <div class="file-box">{
+  "status": "ok",
+  "summary": "患者近三日发热好转",
+  "tokens": 128
+}</div>
+        <ul class="small">
+          <li>对象用花括号，键名是字符串</li>
+          <li>与 Python 的 dict / list 高度相似</li>
+          <li>接口返回体里非常常见</li>
+        </ul>
+      <div class="slide-footer"><span>Python高级应用 · 网络、API 与大模型</span><span>09</span></div>
+      </section>
+
+      <!-- 10 -->
+      <section data-page="10">
+        <h2>把响应变成 Python 对象</h2>
+        <pre><code class="language-python">data = resp.json()          # → dict / list
+summary = data["summary"]
+print(summary)</code></pre>
+        <div class="two-col">
+          <div>
+            <div class="col-head blue">成功时</div>
+            <p class="small">按文档约定取字段</p>
+          </div>
+          <div>
+            <div class="col-head orange">失败时</div>
+            <p class="small">可能没有预期字段；先看状态码与错误信息</p>
+          </div>
+        </div>
+      <div class="slide-footer"><span>Python高级应用 · 网络、API 与大模型</span><span>10</span></div>
+      </section>
+
+      <!-- 11 -->
+      <section data-page="11">
+        <h2>API 是什么？</h2>
+        <div class="band band-blue">API：应用程序接口——约定「怎么请求、返回什么」的说明书 + 服务入口。</div>
+        <ul style="margin-top: 0.8em;">
+          <li>URL：访问地址</li>
+          <li>方法与参数：怎么传问题</li>
+          <li>鉴权：如何证明你有权调用</li>
+          <li>响应格式：成功/失败长什么样</li>
+        </ul>
+        <p class="small">学会读官方文档里的「请求示例」，比死记函数名更重要。</p>
+      <div class="slide-footer"><span>Python高级应用 · 网络、API 与大模型</span><span>11</span></div>
+      </section>
+
+      <!-- 12 -->
+      <section data-page="12">
+        <h2>API Key：调用凭证</h2>
+        <div class="term-table">
+          <div class="k">作用</div><div>证明「是谁在调用」，并关联配额与计费</div>
+          <div class="k">形态</div><div>一串保密字符串，常放在请求头</div>
+          <div class="k">风险</div><div>泄露后可能被盗用额度或越权访问</div>
+        </div>
+        <div class="band band-orange" style="margin-top: 0.8em;">密钥等同于密码：能调接口的人，就能花你的额度。</div>
+      <div class="slide-footer"><span>Python高级应用 · 网络、API 与大模型</span><span>12</span></div>
+      </section>
+
+      <!-- 13 -->
+      <section data-page="13">
+        <h2>安全原则：勿硬编码到公开仓库</h2>
+        <div class="two-col">
+          <div>
+            <div class="col-head orange">不推荐</div>
+            <pre><code class="language-python"># 写死在源码里并推送公开仓库
+API_KEY = "sk-xxxxxxxx"</code></pre>
+          </div>
+          <div>
+            <div class="col-head green">更稳妥的方向</div>
+            <ul class="small">
+              <li>用环境变量或本地私密配置</li>
+              <li>配置文件加入忽略规则</li>
+              <li>演示代码用占位符</li>
+            </ul>
+          </div>
+        </div>
+        <div class="band band-orange">原则表述：密钥不要写进会公开分享的代码里。</div>
+      <div class="slide-footer"><span>Python高级应用 · 网络、API 与大模型</span><span>13</span></div>
+      </section>
+
+      <!-- 14 -->
+      <section data-page="14">
+        <h2>读取密钥的示意（概念）</h2>
+        <pre><code class="language-python">import os
+
+api_key = os.environ.get("MY_API_KEY")
+if not api_key:
+    raise RuntimeError("未配置 MY_API_KEY")</code></pre>
+        <ul class="small">
+          <li>程序启动时从环境读取，而不是写死在文件中</li>
+          <li>分享代码时只保留变量名与说明</li>
+          <li>若密钥曾误提交，应作废并更换</li>
+        </ul>
+      <div class="slide-footer"><span>Python高级应用 · 网络、API 与大模型</span><span>14</span></div>
+      </section>
+
+      <!-- 15 -->
+      <section data-page="15">
+        <h2>大模型调用的直觉</h2>
+        <div class="flow-list">
+          <div class="row"><div class="n">01</div><div>准备提示词（你要模型做什么）</div></div>
+          <div class="row"><div class="n">02</div><div>通过 API 发送（常含模型名、消息列表）</div></div>
+          <div class="row"><div class="n">03</div><div>解析返回文本（摘要、分类、草稿等）</div></div>
+        </div>
+        <div class="band band-blue" style="margin-top: 0.8em;">大模型是「按提示生成文本」的远程能力，不是本地魔法函数。</div>
+      <div class="slide-footer"><span>Python高级应用 · 网络、API 与大模型</span><span>15</span></div>
+      </section>
+
+      <!-- 16 -->
+      <section data-page="16">
+        <h2>提示词：把任务说清楚</h2>
+        <div class="file-box">你是医学文书助手。请根据下列病程记录，
+用三条要点写出中文摘要，不要编造未出现的信息：
+——
+{病程文本}
+——</div>
+        <ul class="small">
+          <li>角色 + 任务 + 约束 + 输入材料</li>
+          <li>约束越清楚，输出越可控</li>
+          <li>明确「不要编造」对病历场景尤其重要</li>
+        </ul>
+      <div class="slide-footer"><span>Python高级应用 · 网络、API 与大模型</span><span>16</span></div>
+      </section>
+
+      <!-- 17 -->
+      <section data-page="17">
+        <h2>返回长什么样（示意）</h2>
+        <pre><code class="language-python"># 伪结构示意
+result = {
+    "content": "1. ...\n2. ...\n3. ...",
+    "model": "demo-model",
+}
+print(result["content"])</code></pre>
+        <div class="band band-blue">真实字段名因服务商而异；以文档为准，用 <code>resp.json()</code> 探路。</div>
+      <div class="slide-footer"><span>Python高级应用 · 网络、API 与大模型</span><span>17</span></div>
+      </section>
+
+      <!-- 18 -->
+      <section data-page="18">
+        <h2>生成病例分析摘要：流程</h2>
+        <div class="flow-list">
+          <div class="row"><div class="n">01</div><div>读取并清洗病程 / 检验等文本或结构化字段</div></div>
+          <div class="row"><div class="n">02</div><div>组装提示词（任务说明 + 材料 + 输出格式）</div></div>
+          <div class="row"><div class="n">03</div><div>调用 API，检查状态码</div></div>
+          <div class="row"><div class="n">04</div><div>取出摘要文本，人工复核后写入报告</div></div>
+        </div>
+        <div class="band band-green" style="margin-top: 0.7em;">模型输出是草稿；临床相关内容必须人审。</div>
+      <div class="slide-footer"><span>Python高级应用 · 网络、API 与大模型</span><span>18</span></div>
+      </section>
+
+      <!-- 19 -->
+      <section data-page="19" class="dense">
+        <h2>流程代码骨架（示意）</h2>
+        <pre><code class="language-python">def build_prompt(case_text: str) -> str:
+    return f"请用三条要点摘要，勿编造：\n{case_text}"
+
+def summarize_case(case_text: str) -> str:
+    prompt = build_prompt(case_text)
+    resp = call_llm_api(prompt)   # 内部用 requests + 密钥
+    resp.raise_for_status()
+    data = resp.json()
+    return extract_text(data)     # 按文档取字段</code></pre>
+        <p class="small">把「组提示词 / 发请求 / 抽字段」拆开，便于测试与替换服务商。</p>
+      <div class="slide-footer"><span>Python高级应用 · 网络、API 与大模型</span><span>19</span></div>
+      </section>
+
+      <!-- 20 -->
+      <section data-page="20">
+        <h2>隐私与可靠性注意点</h2>
+        <ul>
+          <li>尽量脱敏：姓名、住院号等按规范处理后再外发</li>
+          <li>模型可能「幻觉」：看起来通顺但无依据</li>
+          <li>网络会失败：超时、限流、5xx 都要有应对</li>
+          <li>费用与配额：频繁调用前先看额度</li>
+        </ul>
+        <div class="band band-orange" style="margin-top: 0.6em;">能调用 ≠ 可直接当作正式病历结论。</div>
+      <div class="slide-footer"><span>Python高级应用 · 网络、API 与大模型</span><span>20</span></div>
+      </section>
+
+      <!-- 21 -->
+      <section data-page="21">
+        <h2>出错时怎么排查？</h2>
+        <div class="mode-row warn">
+          <div class="tag">401</div>
+          <div>鉴权失败 → 检查密钥是否配置、是否过期</div>
+        </div>
+        <div class="mode-row">
+          <div class="tag">429</div>
+          <div>请求过多 → 降频或稍后重试</div>
+        </div>
+        <div class="mode-row">
+          <div class="tag">超时</div>
+          <div>网络或服务慢 → 加大 timeout、检查连通性</div>
+        </div>
+        <div class="mode-row">
+          <div class="tag">字段</div>
+          <div>KeyError → 打印部分 JSON，对照文档路径</div>
+        </div>
+      <div class="slide-footer"><span>Python高级应用 · 网络、API 与大模型</span><span>21</span></div>
+      </section>
+
+      <!-- 22 -->
+      <section data-page="22">
+        <h2>回顾：这节课学到了什么？</h2>
+        <ul>
+          <li>HTTP：请求与响应的基本往来</li>
+          <li><code>requests</code>：GET/POST 与 timeout</li>
+          <li>状态码 + JSON：先成败，再解析</li>
+          <li>API Key：勿硬编码进公开仓库</li>
+          <li>提示词：角色、任务、约束、材料</li>
+          <li>病例摘要：清洗 → 提示 → 调用 → 人审</li>
+        </ul>
+        <div class="band band-blue" style="margin-top: 0.6em;">下一站：把读写、清洗、图表、报告做成可交付的 Web 应用。</div>
+      <div class="slide-footer"><span>Python高级应用 · 网络、API 与大模型</span><span>22</span></div>
+      </section>
+
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/reveal.js@4.6.1/dist/reveal.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/reveal.js@4.6.1/plugin/highlight/highlight.js"></script>
+  <script>
+    Reveal.initialize({
+      hash: true,
+      center: false,
+      transition: 'fade',
+      transitionSpeed: 'fast',
+      backgroundTransition: 'fade',
+      width: 960,
+      height: 540,
+      margin: 0.04,
+      minScale: 0.35,
+      maxScale: 1.6,
+      slideNumber: false,
+      plugins: [RevealHighlight]
+    });
+  </script>
+</body>
+</html>

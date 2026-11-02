@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>实验12：Python API与大模型调用</title>
+  <link rel="stylesheet" href="../style.css">
+  <link rel="stylesheet" href="./practice.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css" crossorigin="anonymous" referrerpolicy="no-referrer">
+</head>
+<body>
+  <div class="book-shell practice-page">
+    <aside class="book-sidebar" aria-label="本页目录">
+      <div class="toc-scroll">
+        <div class="toc__title">目录</div>
+        <ul class="book-nav toc">
+          <li>
+            <a class="lv1" href="#p1">1. 练习</a>
+            <div class="lv2">
+              <a href="#p1-1"><span class="n">1.1</span>什么是 API</a>
+              <a href="#p1-2"><span class="n">1.2</span>GET JSON</a>
+              <a href="#p1-3"><span class="n">1.3</span>GET/POST 参数</a>
+              <a href="#p1-4"><span class="n">1.4</span>嵌套与缺字段</a>
+              <a href="#p1-5"><span class="n">1.5</span>错误处理</a>
+              <a href="#p1-6"><span class="n">1.6</span>API Key</a>
+              <a href="#p1-7"><span class="n">1.7</span>大模型结构</a>
+              <a href="#p1-8"><span class="n">1.8</span>综合模拟报告</a>
+              <a href="#p1-9"><span class="n">1.9</span>常见错误</a>
+            </div>
+          </li>
+          <li>
+            <a class="lv1" href="#p2">2. 任务</a>
+            <div class="lv2">
+              <a href="#p2-1"><span class="n">2.1</span>任务 A：请求函数</a>
+              <a href="#p2-2"><span class="n">2.2</span>任务 B：大模型模板</a>
+            </div>
+          </li>
+          <li>
+            <a class="lv1" href="#p3">3. 实验结果与作业</a>
+            <div class="lv2">
+              <a href="#p3-1"><span class="n">3.1</span>本次实验结果要求</a>
+              <a href="#p3-2"><span class="n">3.2</span>作业</a>
+              <a href="#p3-3"><span class="n">3.3</span>实验提交</a>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </aside>
+
+    <main class="book-main">
+      <article class="article">
+        <div class="practice-breadcrumb">
+          <a href="./">Practice</a><span class="sep">/</span>实验12
+        </div>
+        <h1>实验12：Python API与大模型调用</h1>
+        <p class="practice-lead">从一次公开 JSON 接口开始。完成本节后，能安全调用 HTTP API、解析 JSON，并用模拟方式理解大模型接口结构——即使没有付费密钥也能完成基础练习。</p>
+
+        <div class="meta-row">
+          <div>
+            <strong>本课目标</strong>
+            <span>掌握 GET/POST、请求参数、JSON 响应、API Key 环境变量、错误处理与大模型消息结构</span>
+          </div>
+          <div>
+            <strong>项目阶段</strong>
+            <span>结构化接口调用。与实验11的 HTML 解析明确分工</span>
+          </div>
+          <div>
+            <strong>练习方式</strong>
+            <span>本地运行代码并完成任务，再通过雨课堂填写实验记录</span>
+          </div>
+        </div>
+
+
+        <section class="exercise" id="p1">
+          <h2>1. 练习</h2>
+          <div class="book-callout">实验11处理的是<strong>网页 HTML</strong>；本实验处理的是<strong>结构化 API（多为 JSON）</strong>。不要在这里讲 Beautiful Soup 解析页面。无付费密钥也可完成本节基础练习。</div>
+
+          <h3 id="p1-1">1.1 HTTP API 是什么</h3>
+          <p style="margin: 0 0 10px; color: var(--ink-light);">API 返回的是给程序读的数据（常见 JSON 对象/数组），不是给人浏览的完整网页布局。</p>
+          <pre><code class="language-python"># JSON 示例（字典 / 列表）
+sample = {
+    &quot;id&quot;: 1,
+    &quot;title&quot;: &quot;demo task&quot;,
+    &quot;completed&quot;: False
+}
+print(sample[&quot;title&quot;], type(sample[&quot;completed&quot;]))</code></pre>
+          <div class="check-point"><strong>检查点：</strong>能区分 HTML 字符串与 JSON 数据结构。</div>
+
+          <h3 id="p1-2">1.2 GET：公开 JSON 接口</h3>
+          <p style="margin: 0 0 10px; color: var(--ink-light);">下列公共接口无需登录。若网络不可用，改用本地 <code>todo_1.json</code>。</p>
+          <pre><code class="language-python">import json
+from pathlib import Path
+import requests
+
+url = &quot;https://jsonplaceholder.typicode.com/todos/1&quot;
+try:
+    r = requests.get(url, timeout=10)
+    r.raise_for_status()
+    data = r.json()
+except Exception as exc:
+    print(&quot;在线失败，改用本地:&quot;, exc)
+    data = json.loads(Path(&quot;todo_1.json&quot;).read_text(encoding=&quot;utf-8&quot;))
+
+print(&quot;编号:&quot;, data[&quot;id&quot;])
+print(&quot;任务:&quot;, data[&quot;title&quot;])
+print(&quot;完成:&quot;, data[&quot;completed&quot;])</code></pre>
+          <div class="step-label">本地备份文件 todo_1.json</div>
+          <pre><code class="language-python">{&quot;userId&quot;: 1, &quot;id&quot;: 1, &quot;title&quot;: &quot;demo task&quot;, &quot;completed&quot;: false}</code></pre>
+          <div class="check-point"><strong>检查点：</strong>无论在线或离线，都能读出三个字段。</div>
+
+          <h3 id="p1-3">1.3 请求参数：GET params 与 POST json</h3>
+          <pre><code class="language-python">import requests
+
+# GET 查询参数
+r = requests.get(
+    &quot;https://jsonplaceholder.typicode.com/posts&quot;,
+    params={&quot;userId&quot;: 1},
+    timeout=10,
+)
+r.raise_for_status()
+posts = r.json()
+print(&quot;条数:&quot;, len(posts))
+
+# POST JSON 正文
+r2 = requests.post(
+    &quot;https://jsonplaceholder.typicode.com/posts&quot;,
+    json={&quot;title&quot;: &quot;course-demo&quot;, &quot;body&quot;: &quot;hello api&quot;, &quot;userId&quot;: 1},
+    timeout=10,
+)
+print(&quot;POST 状态码:&quot;, r2.status_code)
+print(r2.json())</code></pre>
+          <div class="check-point"><strong>检查点：</strong>理解 params（拼到 URL）与 json=（放进请求体）的差别。</div>
+
+          <h3 id="p1-4">1.4 嵌套 JSON 与缺字段</h3>
+          <pre><code class="language-python">payload = {
+    &quot;data&quot;: {
+        &quot;items&quot;: [
+            {&quot;id&quot;: 1, &quot;name&quot;: &quot;alpha&quot;},
+            {&quot;id&quot;: 2}
+        ]
+    }
+}
+for item in payload[&quot;data&quot;][&quot;items&quot;]:
+    name = item.get(&quot;name&quot;)
+    print(item[&quot;id&quot;], name if name is not None else &quot;(缺少 name)&quot;)</code></pre>
+          <div class="check-point"><strong>检查点：</strong>缺字段时不崩溃，能给出提示。</div>
+
+          <h3 id="p1-5">1.5 错误处理：超时、状态码、有限重试</h3>
+          <pre><code class="language-python">import time
+import requests
+
+def fetch_json(url, retries=2, timeout=10):
+    last_error = None
+    for attempt in range(retries + 1):
+        try:
+            r = requests.get(url, timeout=timeout)
+            if r.status_code in (401, 403, 429) or r.status_code &gt;= 500:
+                raise requests.HTTPError(f&quot;HTTP {r.status_code}&quot;, response=r)
+            r.raise_for_status()
+            return r.json()
+        except (requests.Timeout, requests.HTTPError, requests.RequestException) as exc:
+            last_error = exc
+            if attempt &lt; retries:
+                time.sleep(0.5)
+                continue
+            raise RuntimeError(f&quot;请求失败: {last_error}&quot;) from last_error
+
+print(fetch_json(&quot;https://jsonplaceholder.typicode.com/todos/1&quot;))</code></pre>
+          <div class="check-point"><strong>检查点：</strong>必须设置 timeout；重试次数有上限；错误信息可读。</div>
+
+          <h3 id="p1-6">1.6 API Key：环境变量，不进仓库</h3>
+          <pre><code class="language-python">import os
+
+api_key = os.environ.get(&quot;COURSE_API_KEY&quot;, &quot;&quot;)
+if not api_key:
+    print(&quot;未设置 COURSE_API_KEY → 使用模拟数据路径&quot;)
+else:
+    print(&quot;已检测到密钥，长度 =&quot;, len(api_key), &quot;（不要打印完整密钥）&quot;)
+    # headers = {&quot;Authorization&quot;: f&quot;Bearer {api_key}&quot;}</code></pre>
+          <div class="book-callout">严禁把真实密钥写进代码仓库、网页或截图。</div>
+          <div class="check-point"><strong>检查点：</strong>无密钥时基础练习仍可完成。</div>
+
+          <h3 id="p1-7">1.7 大模型接口：请求结构与模拟响应</h3>
+          <p style="margin: 0 0 10px; color: var(--ink-light);">真实供应商路径与计费不同。课堂用模拟响应理解 messages / choices 结构；有合法密钥的同学可选做真实调用。</p>
+          <pre><code class="language-python">def build_chat_request(user_text, model=&quot;demo-model&quot;):
+    return {
+        &quot;model&quot;: model,
+        &quot;messages&quot;: [
+            {&quot;role&quot;: &quot;system&quot;, &quot;content&quot;: &quot;你是课程助教，用中文简明回答。&quot;},
+            {&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: user_text},
+        ],
+    }
+
+def parse_chat_response(resp):
+    try:
+        return resp[&quot;choices&quot;][0][&quot;message&quot;][&quot;content&quot;]
+    except (KeyError, IndexError, TypeError) as exc:
+        raise ValueError(&quot;响应结构不符合预期&quot;) from exc
+
+def mock_chat(user_text):
+    req = build_chat_request(user_text)
+    fake = {
+        &quot;choices&quot;: [
+            {&quot;message&quot;: {&quot;role&quot;: &quot;assistant&quot;, &quot;content&quot;: f&quot;【模拟】已收到：{user_text[:20]}&quot;}}
+        ]
+    }
+    return req, parse_chat_response(fake)
+
+req, answer = mock_chat(&quot;用一句话总结：本日采集了 60 本图书&quot;)
+print(&quot;模型:&quot;, req[&quot;model&quot;], &quot;消息数:&quot;, len(req[&quot;messages&quot;]))
+print(&quot;回复:&quot;, answer)</code></pre>
+          <div class="check-point"><strong>检查点：</strong>能构造请求并解析回复；理解费用与不确定性边界。</div>
+
+          <h3 id="p1-8">1.8 综合：统一请求函数 + 模拟报告</h3>
+          <pre><code class="language-python">import json
+from pathlib import Path
+
+def load_records():
+    # 基础练习：不依赖付费 API
+    path = Path(&quot;records_demo.json&quot;)
+    if not path.exists():
+        demo = [
+            {&quot;id&quot;: 1, &quot;title&quot;: &quot;Book A&quot;, &quot;price&quot;: 12.0},
+            {&quot;id&quot;: 2, &quot;title&quot;: &quot;Book B&quot;, &quot;price&quot;: 25.5},
+        ]
+        path.write_text(json.dumps(demo, ensure_ascii=False, indent=2), encoding=&quot;utf-8&quot;)
+    return json.loads(path.read_text(encoding=&quot;utf-8&quot;))
+
+records = load_records()
+avg_price = sum(r[&quot;price&quot;] for r in records) / len(records)
+summary = f&quot;共 {len(records)} 条，均价 {avg_price:.2f}&quot;
+_, answer = mock_chat(summary)
+print(summary)
+print(answer)</code></pre>
+          <div class="check-point"><strong>检查点：</strong>无网络、无密钥也能跑通“读数据 → 汇总 → 模拟生成说明”。</div>
+
+          <h3 id="p1-9">1.9 常见错误</h3>
+          <p style="margin: 0 0 10px; color: var(--ink-light);"><strong>错误 1：</strong>把 API JSON 当成 HTML 去用 Beautiful Soup 解析。</p>
+          <p style="margin: 16px 0 10px; color: var(--ink-light);"><strong>错误 2：</strong>不设置 timeout。</p>
+          <p style="margin: 16px 0 10px; color: var(--ink-light);"><strong>错误 3：</strong>在代码里硬编码并打印密钥。</p>
+          <p style="margin: 16px 0 10px; color: var(--ink-light);"><strong>错误 4：</strong>无限重试，触发 429 后仍狂打接口。</p>
+          <p style="margin: 16px 0 10px; color: var(--ink-light);"><strong>错误 5：</strong>没有本地/模拟降级，断网就无法交作业。</p>
+        </section>
+
+        <section class="exercise" id="p2">
+          <h2>2. 任务</h2>
+          <p style="margin: 0 0 10px; color: var(--ink-light);">依赖：<code>pip install requests</code>。基础路径不要求付费 API Key。</p>
+          <h3 id="p2-1">2.1 任务 A：请求函数与字段输出（必做）</h3>
+          <ul class="tasks">
+            <li>编写带 timeout、状态码检查的 GET 函数</li>
+            <li>在线拉取公开 JSON，或离线读取本地 JSON</li>
+            <li>打印至少 3 个字段；异常时给出清晰信息</li>
+            <li>不打印、不提交任何密钥</li>
+          </ul>
+          <h3 id="p2-2">2.2 任务 B：大模型模板（拓展）</h3>
+          <ul class="tasks">
+            <li>实现 build_chat_request / parse_chat_response / mock_chat</li>
+            <li>把任务 A 的汇总文本送入模拟对话并打印回复</li>
+            <li>可选：自有合法密钥下做一次真实调用，并说明费用与风险</li>
+          </ul>
+        </section>
+
+        <section class="exercise" id="p3">
+          <h2>3. 实验结果与作业</h2>
+          <h3 id="p3-1">3.1 本次实验结果要求</h3>
+          <ul class="tasks">
+            <li>区分网页 HTML 与 API JSON</li>
+            <li>掌握 GET/POST 与 JSON 解析</li>
+            <li>完成错误处理与环境变量密钥读取</li>
+            <li>用模拟方式理解大模型请求/响应</li>
+          </ul>
+          <h3 id="p3-2">3.2 作业</h3>
+          <p style="margin: 16px 0 10px; color: var(--ink-light);"><strong>题目1：</strong>实验11与实验12的对象分别是什么？</p>
+          <p style="margin: 16px 0 10px; color: var(--ink-light);"><strong>题目2：</strong>写出任务 A 的三个字段取值。</p>
+          <p style="margin: 16px 0 10px; color: var(--ink-light);"><strong>题目3：</strong>说明你的离线 JSON 路径或在线 URL。</p>
+          <h3 id="p3-3">3.3 实验提交</h3>
+          <p style="margin: 0 0 10px; color: var(--ink-light);">提交代码与运行截图；禁止提交密钥。按雨课堂要求作答。</p>
+        </section>
+
+        <p class="practice-footer-note">上一节：<a href="sop11-web.html">实验11：Python网络请求与网页解析</a>　|　下一节：<a href="sop13-platform.html">实验13：Python综合项目与Streamlit Web应用</a></p>
+      </article>
+    </main>
+  </div>
+
+  <script>
+    (function () {
+      document.querySelectorAll('pre > code').forEach((code) => {
+        const pre = code.parentElement;
+        if (!pre || pre.querySelector('.copy-btn')) return;
+        const btn = document.createElement('button');
+        btn.className = 'copy-btn';
+        btn.type = 'button';
+        btn.textContent = '复制';
+        btn.addEventListener('click', async () => {
+          try {
+            await navigator.clipboard.writeText(code.innerText);
+            btn.dataset.state = 'ok';
+            btn.textContent = '已复制';
+            setTimeout(() => { delete btn.dataset.state; btn.textContent = '复制'; }, 1200);
+          } catch (e) {
+            const range = document.createRange();
+            range.selectNodeContents(code);
+            const sel = window.getSelection();
+            sel.removeAllRanges();
+            sel.addRange(range);
+            btn.textContent = '请 Ctrl+C';
+            setTimeout(() => { btn.textContent = '复制'; }, 1200);
+          }
+        });
+        pre.appendChild(btn);
+      });
+    })();
+  </script>
+  <script>
+    (function () {
+      const links = Array.from(document.querySelectorAll('.toc a[href^="#"]'));
+      const idToLink = new Map();
+      links.forEach((a) => {
+        const id = decodeURIComponent(a.getAttribute('href').slice(1));
+        if (id) idToLink.set(id, a);
+      });
+      const headings = Array.from(document.querySelectorAll('h2[id], h3[id], section[id]'))
+        .filter((h) => idToLink.has(h.id));
+      if (headings.length === 0) return;
+      const clear = () => links.forEach((a) => a.classList.remove('is-active'));
+      const setActive = (id) => { clear(); const a = idToLink.get(id); if (a) a.classList.add('is-active'); };
+      const initial = (location.hash && location.hash.slice(1)) || headings[0].id;
+      setActive(decodeURIComponent(initial));
+      const obs = new IntersectionObserver((entries) => {
+        const visible = entries.filter((e) => e.isIntersecting).sort((a, b) => (a.boundingClientRect.top - b.boundingClientRect.top));
+        if (visible.length > 0) setActive(visible[0].target.id);
+      }, { rootMargin: '-15% 0px -75% 0px', threshold: [0, 1] });
+      headings.forEach((h) => obs.observe(h));
+    })();
+  </script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/python.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script>hljs.highlightAll();</script>
+  <script src="./split.js"></script>
+
+</body>
+</html>
