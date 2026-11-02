@@ -6,25 +6,352 @@
   <title>实验7：异常处理与课程数据读写</title>
   <link rel="stylesheet" href="../style.css">
   <link rel="stylesheet" href="./practice.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css" crossorigin="anonymous" referrerpolicy="no-referrer">
 </head>
 <body>
   <div class="book-shell practice-page">
-    <aside class="book-sidebar" aria-label="导航">
+    <aside class="book-sidebar" aria-label="本页目录">
       <div class="toc-scroll">
+        <div class="toc__title">目录</div>
+        <ul class="book-nav toc">
+          <li>
+            <a class="lv1" href="#p1">1. 练习</a>
+            <div class="lv2">
+              <a href="#p1-1"><span class="n">1.1</span>报错不等于程序报废</a>
+              <a href="#p1-2"><span class="n">1.2</span>try / except</a>
+              <a href="#p1-3"><span class="n">1.3</span>多分支与 else / finally</a>
+              <a href="#p1-4"><span class="n">1.4</span>raise 主动拒绝</a>
+              <a href="#p1-5"><span class="n">1.5</span>校验函数</a>
+              <a href="#p1-6"><span class="n">1.6</span>综合：病例 CSV</a>
+              <a href="#p1-7"><span class="n">1.7</span>常见错误</a>
+            </div>
+          </li>
+          <li>
+            <a class="lv1" href="#p2">2. 任务</a>
+            <div class="lv2">
+              <a href="#p2-1"><span class="n">2.1</span>任务 A：校验分流</a>
+              <a href="#p2-2"><span class="n">2.2</span>任务 B：规则拆分</a>
+            </div>
+          </li>
+          <li>
+            <a class="lv1" href="#p3">3. 实验结果与作业</a>
+            <div class="lv2">
+              <a href="#p3-1"><span class="n">3.1</span>本次实验结果要求</a>
+              <a href="#p3-2"><span class="n">3.2</span>作业</a>
+              <a href="#p3-3"><span class="n">3.3</span>实验提交</a>
+            </div>
+          </li>
+        </ul>
       </div>
     </aside>
+
     <main class="book-main">
       <article class="article">
         <div class="practice-breadcrumb">
           <a href="./">Practice</a><span class="sep">/</span>实验7
         </div>
         <h1>实验7：异常处理与课程数据读写</h1>
+        <p class="practice-lead">从一行住院天数文本开始。完成本节后，能用 try / except / raise 校验数据，并把有效病例与错误记录分别写入文件。</p>
 
-        <p class="practice-lead">try / except、路径与编码问题 · 病例数据进出</p>
+        <div class="meta-row">
+          <div>
+            <strong>本课目标</strong>
+            <span>掌握 try / except / else / finally、指定异常类型、raise 校验，以及用标准库 csv 分流有效/错误数据</span>
+          </div>
+          <div>
+            <strong>项目阶段</strong>
+            <span>病例数据进出。对教学模拟 CSV 做合法性校验并输出两份结果文件</span>
+          </div>
+          <div>
+            <strong>练习方式</strong>
+            <span>本地运行代码并完成任务，再通过雨课堂填写实验记录</span>
+          </div>
+        </div>
+
+
+        <section class="exercise" id="p1">
+          <h2>1. 练习</h2>
+
+          <h3 id="p1-1">1.1 报错不等于程序报废</h3>
+          <p style="margin: 0 0 10px; color: var(--ink-light);">语法错误会在运行前就拦住你；运行时异常发生在程序已经开始执行之后。异常可以被捕获和处理，不一定意味着整次实验失败。</p>
+          <div class="step-label">Step 1 / 先观察三类常见异常</div>
+          <pre><code class="language-python">print(int(&quot;12&quot;))
+# print(int(&quot;十二&quot;))          # ValueError
+# print(10 / 0)               # ZeroDivisionError
+# open(&quot;no_such_file.csv&quot;)    # FileNotFoundError</code></pre>
+          <div class="book-callout">先预测：把上面三行分别取消注释运行，终端会停在哪一行？错误类型分别是什么？</div>
+          <div class="check-point"><strong>检查点：</strong>能说出 ValueError、ZeroDivisionError、FileNotFoundError 各自常见触发条件。</div>
+
+          <h3 id="p1-2">1.2 try / except 处理单个异常</h3>
+          <p style="margin: 0 0 10px; color: var(--ink-light);">把“可能失败”的代码放进 <code>try</code>，用 <code>except</code> 接住指定异常，程序可以继续往下走。</p>
+          <div class="step-label">Step 1 / 失败输入</div>
+          <pre><code class="language-python">text = &quot;abc&quot;
+try:
+    days = int(text)
+    print(&quot;转换成功:&quot;, days)
+except ValueError:
+    print(&quot;转换失败：不是整数文本&quot;)</code></pre>
+          <div class="step-label">Step 2 / 成功输入</div>
+          <pre><code class="language-python">text = &quot;8&quot;
+try:
+    days = int(text)
+    print(&quot;转换成功:&quot;, days)
+except ValueError:
+    print(&quot;转换失败：不是整数文本&quot;)</code></pre>
+          <div class="check-point"><strong>检查点：</strong>失败时输出「转换失败…」；成功时输出 <code>转换成功: 8</code>。</div>
+
+          <h3 id="p1-3">1.3 多个 except 与 else / finally</h3>
+          <p style="margin: 0 0 10px; color: var(--ink-light);"><code>else</code> 只在没有异常时执行；<code>finally</code> 无论成败都会执行，不代表错误已被修好。</p>
+          <pre><code class="language-python">def demo(a, b):
+    try:
+        result = a / b
+    except ZeroDivisionError:
+        print(&quot;除零了&quot;)
+        result = None
+    except TypeError:
+        print(&quot;类型不对&quot;)
+        result = None
+    else:
+        print(&quot;计算成功&quot;)
+    finally:
+        print(&quot;收尾：无论成败都会走到这里&quot;)
+    return result
+
+print(&quot;结果1:&quot;, demo(10, 2))
+print(&quot;结果2:&quot;, demo(10, 0))</code></pre>
+          <div class="check-point"><strong>检查点：</strong>成功路径看到「计算成功」和「收尾…」；除零路径看到「除零了」和「收尾…」，没有「计算成功」。</div>
+
+          <h3 id="p1-4">1.4 raise：主动拒绝无效数据</h3>
+          <p style="margin: 0 0 10px; color: var(--ink-light);"><code>raise ValueError(...)</code> 是主动抛出异常，不是简单打印一行错误文字。调用方可以选择捕获。</p>
+          <pre><code class="language-python">def parse_stay(text):
+    try:
+        days = int(text)
+    except ValueError as exc:
+        raise ValueError(&quot;住院天数必须是整数&quot;) from exc
+    if days &lt; 0:
+        raise ValueError(&quot;住院天数不能为负数&quot;)
+    return days
+
+for value in [&quot;8&quot;, &quot;abc&quot;, &quot;-2&quot;]:
+    try:
+        print(value, parse_stay(value))
+    except ValueError as error:
+        print(value, &quot;校验失败：&quot;, error)</code></pre>
+          <p style="margin: 16px 0 10px; color: var(--ink-light);">预期输出：</p>
+          <pre><code class="language-python">8 8
+abc 校验失败： 住院天数必须是整数
+-2 校验失败： 住院天数不能为负数</code></pre>
+          <div class="check-point"><strong>检查点：</strong><code>8</code> 成功；<code>abc</code> 与 <code>-2</code> 分别报告不同原因。</div>
+
+          <h3 id="p1-5">1.5 用函数做数据合法性校验</h3>
+          <p style="margin: 0 0 10px; color: var(--ink-light);">区分两类问题：格式错误（无法转换成数字）与业务规则不满足（年龄不合理、天数不能为负）。</p>
+          <pre><code class="language-python">def parse_age(text):
+    try:
+        age = int(text)
+    except ValueError as exc:
+        raise ValueError(&quot;年龄必须是整数&quot;) from exc
+    if age &lt; 0 or age &gt; 120:
+        raise ValueError(&quot;年龄超出合理范围&quot;)
+    return age
+
+samples = [&quot;45&quot;, &quot;&quot;, &quot;130&quot;, &quot;十八&quot;]
+for s in samples:
+    try:
+        print(repr(s), &quot;-&gt;&quot;, parse_age(s))
+    except ValueError as err:
+        print(repr(s), &quot;-&gt;&quot;, err)</code></pre>
+          <div class="check-point"><strong>检查点：</strong>空字符串、超范围、非数字都能给出可读原因；合法年龄正常返回。</div>
+
+          <h3 id="p1-6">1.6 综合：校验小型病例 CSV</h3>
+          <p style="margin: 0 0 10px; color: var(--ink-light);">用标准库 <code>csv</code> 读取教学模拟病例；无效行写入错误记录，有效行写入清洗结果。不要默默丢弃异常。</p>
+          <div class="step-label">Step 1 / 准备教学数据 cases_raw.csv（UTF-8）</div>
+          <pre><code class="language-python"># case_id,age,stay_days
+# C001,45,5
+# C002,abc,3
+# C003,60,-1
+# C004,33,8</code></pre>
+          <div class="step-label">Step 2 / 逐行校验并分流</div>
+          <pre><code class="language-python">import csv
+from pathlib import Path
+
+src = Path(&quot;cases_raw.csv&quot;)
+ok_path = Path(&quot;cases_valid.csv&quot;)
+err_path = Path(&quot;cases_errors.csv&quot;)
+
+def parse_stay(text):
+    try:
+        days = int(text)
+    except ValueError as exc:
+        raise ValueError(&quot;住院天数必须是整数&quot;) from exc
+    if days &lt; 0:
+        raise ValueError(&quot;住院天数不能为负数&quot;)
+    return days
+
+def parse_age(text):
+    try:
+        age = int(text)
+    except ValueError as exc:
+        raise ValueError(&quot;年龄必须是整数&quot;) from exc
+    if age &lt; 0 or age &gt; 120:
+        raise ValueError(&quot;年龄超出合理范围&quot;)
+    return age
+
+valid_rows = []
+error_rows = []
+
+with src.open(&quot;r&quot;, encoding=&quot;utf-8&quot;, newline=&quot;&quot;) as f:
+    reader = csv.DictReader(f)
+    for i, row in enumerate(reader, start=2):  # 表头为第 1 行
+        try:
+            case_id = (row.get(&quot;case_id&quot;) or &quot;&quot;).strip()
+            if not case_id:
+                raise ValueError(&quot;编号不能为空&quot;)
+            age = parse_age(row.get(&quot;age&quot;, &quot;&quot;))
+            stay = parse_stay(row.get(&quot;stay_days&quot;, &quot;&quot;))
+            valid_rows.append({&quot;case_id&quot;: case_id, &quot;age&quot;: age, &quot;stay_days&quot;: stay})
+        except ValueError as err:
+            error_rows.append({&quot;line&quot;: i, &quot;raw&quot;: dict(row), &quot;error&quot;: str(err)})
+
+with ok_path.open(&quot;w&quot;, encoding=&quot;utf-8&quot;, newline=&quot;&quot;) as f:
+    writer = csv.DictWriter(f, fieldnames=[&quot;case_id&quot;, &quot;age&quot;, &quot;stay_days&quot;])
+    writer.writeheader()
+    writer.writerows(valid_rows)
+
+with err_path.open(&quot;w&quot;, encoding=&quot;utf-8&quot;, newline=&quot;&quot;) as f:
+    writer = csv.DictWriter(f, fieldnames=[&quot;line&quot;, &quot;error&quot;, &quot;raw&quot;])
+    writer.writeheader()
+    for item in error_rows:
+        writer.writerow({&quot;line&quot;: item[&quot;line&quot;], &quot;error&quot;: item[&quot;error&quot;], &quot;raw&quot;: item[&quot;raw&quot;]})
+
+print(&quot;有效行:&quot;, len(valid_rows), &quot;错误行:&quot;, len(error_rows))</code></pre>
+          <div class="check-point"><strong>检查点：</strong>单行失败不中断后续行；错误原因写入错误文件，有效数据不混入无效值。</div>
+
+          <h3 id="p1-7">1.7 常见错误</h3>
+          <p style="margin: 0 0 10px; color: var(--ink-light);"><strong>错误 1：</strong>用裸 <code>except:</code> 吞掉所有异常，排错时看不到真正原因。</p>
+          <pre><code class="language-python"># 不推荐
+# try:
+#     ...
+# except:
+#     pass</code></pre>
+          <p style="margin: 16px 0 10px; color: var(--ink-light);"><strong>错误 2：</strong>把 <code>raise</code> 当成 <code>print</code>，以为抛出后还能继续同一段逻辑。</p>
+          <p style="margin: 16px 0 10px; color: var(--ink-light);"><strong>错误 3：</strong>捕获了异常却不记录行号/原始内容，事后无法复查。</p>
+          <p style="margin: 16px 0 10px; color: var(--ink-light);"><strong>错误 4：</strong>文件不存在时只打印“失败”，不区分 FileNotFoundError 与内容校验错误。</p>
+          <p style="margin: 16px 0 10px; color: var(--ink-light);"><strong>错误 5：</strong>校验失败后仍把原字符串写进“有效结果”。</p>
+          <p style="margin: 16px 0 10px; color: var(--ink-light);">完成本节后，应能把校验规则写成函数，并在读表时分流有效/错误记录。</p>
+        </section>
+
+        <section class="exercise" id="p2">
+          <h2>2. 任务</h2>
+          <p style="margin: 0 0 10px; color: var(--ink-light);">请亲自输入代码、运行程序、观察结果。数据为教学模拟病例，不是真实患者信息。</p>
+
+          <h3 id="p2-1">2.1 任务 A：15 行病例校验分流（必做）</h3>
+          <p style="margin: 0 0 10px; color: var(--ink-light);">自行准备约 15 行教学模拟 CSV（含表头 <code>case_id,age,stay_days</code>），其中至少包含：非整数年龄、负数住院天数、空编号各一例。</p>
+          <ul class="tasks">
+            <li>逐行检查编号、年龄、住院天数</li>
+            <li>生成 <code>cases_valid.csv</code> 与 <code>cases_errors.csv</code>（UTF-8）</li>
+            <li>错误文件至少包含行号与可读错误消息</li>
+            <li>程序遇到单行异常后继续处理下一行</li>
+            <li>打印有效行数与错误行数</li>
+          </ul>
+          <p style="margin: 16px 0 10px; color: var(--ink-light);"><strong>输出参考：</strong><code>有效行: 12 错误行: 3</code>（具体数字随你的数据而定）</p>
+
+          <h3 id="p2-2">2.2 任务 B：规则拆分与异常类型（拓展）</h3>
+          <ul class="tasks">
+            <li>将编号、年龄、住院天数校验拆成多个函数</li>
+            <li>在错误记录中增加异常类型名称（如 <code>ValueError</code>）</li>
+            <li>用 1～2 句话说明：格式错误与业务规则错误有何不同</li>
+            <li>任选一行错误数据，写出触发代码、报错信息、修复后再运行的结果</li>
+          </ul>
+        </section>
+
+        <section class="exercise" id="p3">
+          <h2>3. 实验结果与作业</h2>
+          <h3 id="p3-1">3.1 本次实验结果要求</h3>
+          <p style="margin: 0 0 10px; color: var(--ink-light);">完成本次实验后，你应该能够：</p>
+          <ul class="tasks">
+            <li>区分语法错误与运行时异常</li>
+            <li>使用 try / except / else / finally，并指定异常类型</li>
+            <li>用 raise 拒绝无效输入</li>
+            <li>把校验写成函数，区分格式错误与业务规则</li>
+            <li>读取小型 CSV，分流有效数据与错误记录</li>
+          </ul>
+          <h3 id="p3-2">3.2 作业</h3>
+          <p style="margin: 0 0 10px; color: var(--ink-light);">请先在本地实际运行，再按雨课堂题目作答。</p>
+          <p style="margin: 16px 0 10px; color: var(--ink-light);"><strong>题目1：</strong><code>finally</code> 是否表示错误已经解决？________</p>
+          <p style="margin: 16px 0 10px; color: var(--ink-light);"><strong>题目2：</strong>对输入 <code>"-2"</code> 调用 <code>parse_stay</code>，预期错误消息是：________</p>
+          <p style="margin: 16px 0 10px; color: var(--ink-light);"><strong>题目3：</strong>任务 A 的有效行数、错误行数，以及错误文件中的两例消息。</p>
+          <p style="margin: 16px 0 10px; color: var(--ink-light);"><strong>题目4：</strong>提交核心校验函数与主循环代码（或完整程序）。</p>
+          <h3 id="p3-3">3.3 实验提交</h3>
+          <p style="margin: 0 0 10px; color: var(--ink-light);">请先在自己的 Python 环境中完成代码练习并实际运行。</p>
+          <p style="margin: 0 0 10px; color: var(--ink-light);">完成实验后，按照雨课堂中的题目填写实验记录。本次主要记录：</p>
+          <ul class="tasks">
+            <li>三类常见异常的观察结果</li>
+            <li>parse_stay 对 8 / abc / -2 的输出</li>
+            <li>有效/错误两个 CSV 的路径与行数</li>
+            <li>一种异常场景的简短说明</li>
+          </ul>
+          <p style="margin: 16px 0 10px; color: var(--ink-light);">请按照雨课堂发布的要求完成提交。</p>
+        </section>
 
       </article>
     </main>
   </div>
+
+  <script>
+    (function () {
+      document.querySelectorAll('pre > code').forEach((code) => {
+        const pre = code.parentElement;
+        if (!pre || pre.querySelector('.copy-btn')) return;
+        const btn = document.createElement('button');
+        btn.className = 'copy-btn';
+        btn.type = 'button';
+        btn.textContent = '复制';
+        btn.addEventListener('click', async () => {
+          try {
+            await navigator.clipboard.writeText(code.innerText);
+            btn.dataset.state = 'ok';
+            btn.textContent = '已复制';
+            setTimeout(() => { delete btn.dataset.state; btn.textContent = '复制'; }, 1200);
+          } catch (e) {
+            const range = document.createRange();
+            range.selectNodeContents(code);
+            const sel = window.getSelection();
+            sel.removeAllRanges();
+            sel.addRange(range);
+            btn.textContent = '请 Ctrl+C';
+            setTimeout(() => { btn.textContent = '复制'; }, 1200);
+          }
+        });
+        pre.appendChild(btn);
+      });
+    })();
+  </script>
+  <script>
+    (function () {
+      const links = Array.from(document.querySelectorAll('.toc a[href^="#"]'));
+      const idToLink = new Map();
+      links.forEach((a) => {
+        const id = decodeURIComponent(a.getAttribute('href').slice(1));
+        if (id) idToLink.set(id, a);
+      });
+      const headings = Array.from(document.querySelectorAll('h2[id], h3[id], section[id]'))
+        .filter((h) => idToLink.has(h.id));
+      if (headings.length === 0) return;
+      const clear = () => links.forEach((a) => a.classList.remove('is-active'));
+      const setActive = (id) => { clear(); const a = idToLink.get(id); if (a) a.classList.add('is-active'); };
+      const initial = (location.hash && location.hash.slice(1)) || headings[0].id;
+      setActive(decodeURIComponent(initial));
+      const obs = new IntersectionObserver((entries) => {
+        const visible = entries.filter((e) => e.isIntersecting).sort((a, b) => (a.boundingClientRect.top - b.boundingClientRect.top));
+        if (visible.length > 0) setActive(visible[0].target.id);
+      }, { rootMargin: '-15% 0px -75% 0px', threshold: [0, 1] });
+      headings.forEach((h) => obs.observe(h));
+    })();
+  </script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/python.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script>hljs.highlightAll();</script>
   <script src="./split.js"></script>
+
 </body>
 </html>

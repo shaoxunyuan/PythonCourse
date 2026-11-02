@@ -6,25 +6,288 @@
   <title>实验8：NumPy 数组与数值计算</title>
   <link rel="stylesheet" href="../style.css">
   <link rel="stylesheet" href="./practice.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css" crossorigin="anonymous" referrerpolicy="no-referrer">
 </head>
 <body>
   <div class="book-shell practice-page">
-    <aside class="book-sidebar" aria-label="导航">
+    <aside class="book-sidebar" aria-label="本页目录">
       <div class="toc-scroll">
+        <div class="toc__title">目录</div>
+        <ul class="book-nav toc">
+          <li>
+            <a class="lv1" href="#p1">1. 练习</a>
+            <div class="lv2">
+              <a href="#p1-1"><span class="n">1.1</span>列表 vs 数组加法</a>
+              <a href="#p1-2"><span class="n">1.2</span>创建与属性</a>
+              <a href="#p1-3"><span class="n">1.3</span>索引与切片</a>
+              <a href="#p1-4"><span class="n">1.4</span>向量化运算</a>
+              <a href="#p1-5"><span class="n">1.5</span>布尔索引</a>
+              <a href="#p1-6"><span class="n">1.6</span>按轴统计</a>
+              <a href="#p1-7"><span class="n">1.7</span>广播与报错</a>
+              <a href="#p1-8"><span class="n">1.8</span>综合测验矩阵</a>
+              <a href="#p1-9"><span class="n">1.9</span>常见错误</a>
+            </div>
+          </li>
+          <li>
+            <a class="lv1" href="#p2">2. 任务</a>
+            <div class="lv2">
+              <a href="#p2-1"><span class="n">2.1</span>任务 A</a>
+              <a href="#p2-2"><span class="n">2.2</span>任务 B</a>
+            </div>
+          </li>
+          <li>
+            <a class="lv1" href="#p3">3. 实验结果与作业</a>
+            <div class="lv2">
+              <a href="#p3-1"><span class="n">3.1</span>本次实验结果要求</a>
+              <a href="#p3-2"><span class="n">3.2</span>作业</a>
+              <a href="#p3-3"><span class="n">3.3</span>实验提交</a>
+            </div>
+          </li>
+        </ul>
       </div>
     </aside>
+
     <main class="book-main">
       <article class="article">
         <div class="practice-breadcrumb">
           <a href="./">Practice</a><span class="sep">/</span>实验8
         </div>
         <h1>实验8：NumPy 数组与数值计算</h1>
+        <p class="practice-lead">从一次测验分数矩阵开始。完成本节后，能用 ndarray 做向量化运算、布尔筛选和按轴统计。</p>
 
-        <p class="practice-lead">ndarray、向量化运算与常用统计 · 数值基础</p>
+        <div class="meta-row">
+          <div>
+            <strong>本课目标</strong>
+            <span>掌握 ndarray、创建与属性、索引切片、布尔索引、向量化运算与 axis 统计</span>
+          </div>
+          <div>
+            <strong>项目阶段</strong>
+            <span>数值基础。用数组完成多样本测量数据的转换与汇总</span>
+          </div>
+          <div>
+            <strong>练习方式</strong>
+            <span>本地运行代码并完成任务，再通过雨课堂填写实验记录</span>
+          </div>
+        </div>
+
+
+        <section class="exercise" id="p1">
+          <h2>1. 练习</h2>
+          <h3 id="p1-1">1.1 列表加法 vs 数组加法</h3>
+          <p style="margin: 0 0 10px; color: var(--ink-light);">先预测结果，再运行。列表的 <code>+</code> 是拼接；NumPy 数组的 <code>+</code> 是逐元素相加。</p>
+          <pre><code class="language-python">import numpy as np
+
+a_list = [1, 2, 3]
+b_list = [10, 20, 30]
+print(&quot;列表相加:&quot;, a_list + b_list)
+
+a = np.array([1, 2, 3])
+b = np.array([10, 20, 30])
+print(&quot;数组相加:&quot;, a + b)</code></pre>
+          <div class="book-callout">想一想：若希望列表也做逐元素相加，要用循环或推导式；数组则直接写 <code>a + b</code>。</div>
+          <div class="check-point"><strong>检查点：</strong>列表得到 <code>[1, 2, 3, 10, 20, 30]</code>；数组得到 <code>[11 22 33]</code>。</div>
+
+          <h3 id="p1-2">1.2 创建数组与 shape / dtype / ndim</h3>
+          <pre><code class="language-python">import numpy as np
+
+x = np.array([1.5, 2.0, 3.5])
+m = np.array([
+    [86, 90, 88],
+    [72, 79, 81],
+    [95, 93, 97]
+])
+z = np.zeros((2, 3))
+r = np.arange(0, 10, 2)
+
+print(x.shape, x.ndim, x.dtype)
+print(m.shape, m.ndim, m.dtype)
+print(z)
+print(r)</code></pre>
+          <div class="check-point"><strong>检查点：</strong>一维测验向量 <code>ndim=1</code>；成绩矩阵形状为 <code>(3, 3)</code>，<code>ndim=2</code>。</div>
+
+          <h3 id="p1-3">1.3 索引与切片</h3>
+          <pre><code class="language-python">import numpy as np
+m = np.array([
+    [86, 90, 88],
+    [72, 79, 81],
+    [95, 93, 97]
+])
+print(&quot;单个元素 m[0, 1] =&quot;, m[0, 1])
+print(&quot;第 1 行:&quot;, m[0])
+print(&quot;第 2 列:&quot;, m[:, 1])
+print(&quot;子矩阵:\n&quot;, m[0:2, 1:3])</code></pre>
+          <div class="check-point"><strong>检查点：</strong>能取出单个元素、整行、整列与子矩阵，索引从 0 开始。</div>
+
+          <h3 id="p1-4">1.4 向量化运算与单位换算</h3>
+          <p style="margin: 0 0 10px; color: var(--ink-light);">数组运算默认逐元素进行，不必手写三重循环。</p>
+          <pre><code class="language-python">import numpy as np
+cm = np.array([160, 175, 182], dtype=float)
+meters = cm / 100
+print(meters)
+print(meters * 2)</code></pre>
+          <div class="check-point"><strong>检查点：</strong>得到米制身高；乘以 2 仍是逐元素缩放。</div>
+
+          <h3 id="p1-5">1.5 布尔索引</h3>
+          <pre><code class="language-python">import numpy as np
+values = np.array([6, 12, 9, 15, 3])
+mask = values &gt;= 10
+print(&quot;掩码:&quot;, mask)
+print(&quot;筛选结果:&quot;, values[mask])</code></pre>
+          <div class="check-point"><strong>检查点：</strong>掩码是布尔数组；用它取子集得到满足条件的元素。</div>
+
+          <h3 id="p1-6">1.6 按轴统计</h3>
+          <p style="margin: 0 0 10px; color: var(--ink-light);"><code>axis=1</code> 沿列方向聚合，得到每一行的统计；<code>axis=0</code> 沿行方向聚合，得到每一列的统计。</p>
+          <pre><code class="language-python">import numpy as np
+
+scores = np.array([
+    [86, 90, 88],
+    [72, 79, 81],
+    [95, 93, 97]
+])
+print(&quot;形状:&quot;, scores.shape)
+print(&quot;每名学生的平均分:&quot;, scores.mean(axis=1))
+print(&quot;每次测试的平均分:&quot;, scores.mean(axis=0))
+print(&quot;各学生达标次数:&quot;, (scores &gt;= 80).sum(axis=1))</code></pre>
+          <p style="margin: 16px 0 10px; color: var(--ink-light);">预期（近似）：学生均分约 <code>[88.  77.333 95. ]</code>；测验均分约 <code>[84.333 87.333 88.667]</code>；达标次数 <code>[3 1 3]</code>。</p>
+          <div class="check-point"><strong>检查点：</strong>能解释 axis 方向，并用手工验算其中一行/一列。</div>
+
+          <h3 id="p1-7">1.7 广播与形状错误</h3>
+          <pre><code class="language-python">import numpy as np
+row = np.array([1, 2, 3])
+col = np.array([[10], [20], [30]])
+print(row + col)  # (3,) 与 (3,1) 可广播
+
+a = np.ones((2, 3))
+b = np.ones((2, 4))
+try:
+    print(a + b)
+except ValueError as e:
+    print(&quot;形状不兼容:&quot;, e)</code></pre>
+          <div class="check-point"><strong>检查点：</strong>不是任意数组都能相加；形状不满足广播规则会报错。</div>
+
+          <h3 id="p1-8">1.8 综合：5 名学生 × 3 次测验</h3>
+          <pre><code class="language-python">import numpy as np
+
+scores = np.array([
+    [86, 90, 88],
+    [72, 79, 81],
+    [95, 93, 97],
+    [60, 70, 75],
+    [88, 85, 90]
+], dtype=float)
+
+student_mean = scores.mean(axis=1)
+test_mean = scores.mean(axis=0)
+pass_counts = (scores &gt;= 80).sum(axis=1)
+
+print(&quot;每人平均:&quot;, student_mean)
+print(&quot;每次平均:&quot;, test_mean)
+print(&quot;达标次数:&quot;, pass_counts)</code></pre>
+          <div class="check-point"><strong>检查点：</strong>原始 <code>scores</code> 未被原地修改；三项统计都能打印。</div>
+
+          <h3 id="p1-9">1.9 常见错误</h3>
+          <p style="margin: 0 0 10px; color: var(--ink-light);"><strong>错误 1：</strong>把列表 <code>+</code> 当成逐元素加法。</p>
+          <p style="margin: 16px 0 10px; color: var(--ink-light);"><strong>错误 2：</strong>混淆 <code>axis=0</code> 与 <code>axis=1</code> 的汇总方向。</p>
+          <p style="margin: 16px 0 10px; color: var(--ink-light);"><strong>错误 3：</strong>用整数数组做除法却期望得到小数时，注意 <code>dtype</code>。</p>
+          <p style="margin: 16px 0 10px; color: var(--ink-light);"><strong>错误 4：</strong>布尔条件写成 <code>10 &lt;= values &lt;= 20</code>（对数组不合法），应拆成两次比较再 <code>&amp;</code>。</p>
+          <p style="margin: 16px 0 10px; color: var(--ink-light);"><strong>错误 5：</strong>形状不兼容时强行相加，未先打印 <code>shape</code>。</p>
+        </section>
+
+        <section class="exercise" id="p2">
+          <h2>2. 任务</h2>
+          <p style="margin: 0 0 10px; color: var(--ink-light);">测量数据为教学模拟数值，请在本地安装 NumPy 后运行：<code>pip install numpy</code>。</p>
+          <h3 id="p2-1">2.1 任务 A：测量矩阵汇总（必做）</h3>
+          <p style="margin: 0 0 10px; color: var(--ink-light);">给定形状为 <code>(样本数, 指标数)</code> 的二维数组（至少 5×3）。</p>
+          <ul class="tasks">
+            <li>输出每样本均值、各指标均值、全局最大值</li>
+            <li>找出“第 1 个指标 ≥ 阈值”的样本编号（从 0 或 1 编号需在代码注释中说明）</li>
+            <li>打印数组 <code>shape</code> 并用一句话解释行列含义</li>
+            <li>确认统计前后原始数组未被改写</li>
+          </ul>
+          <h3 id="p2-2">2.2 任务 B：标准化（拓展）</h3>
+          <ul class="tasks">
+            <li>对某一数值列做 <code>(x - mean) / std</code> 标准化</li>
+            <li>若某列标准差为 0，给出处理方式（例如跳过或输出提示）并解释原因</li>
+            <li>对比标准化前后该列的均值与标准差</li>
+          </ul>
+        </section>
+
+        <section class="exercise" id="p3">
+          <h2>3. 实验结果与作业</h2>
+          <h3 id="p3-1">3.1 本次实验结果要求</h3>
+          <ul class="tasks">
+            <li>说明 ndarray 与列表在加法上的差异</li>
+            <li>使用 shape / dtype / ndim、索引切片、布尔索引</li>
+            <li>正确使用 axis 做按行/按列统计</li>
+            <li>完成多样本测量矩阵的汇总</li>
+          </ul>
+          <h3 id="p3-2">3.2 作业</h3>
+          <p style="margin: 16px 0 10px; color: var(--ink-light);"><strong>题目1：</strong><code>[1,2]+[3,4]</code> 与 <code>np.array([1,2])+np.array([3,4])</code> 结果分别是？</p>
+          <p style="margin: 16px 0 10px; color: var(--ink-light);"><strong>题目2：</strong><code>mean(axis=1)</code> 得到的是每行还是每列的平均？</p>
+          <p style="margin: 16px 0 10px; color: var(--ink-light);"><strong>题目3：</strong>粘贴任务 A 的关键输出（均值向量与达标/筛选结果）。</p>
+          <h3 id="p3-3">3.3 实验提交</h3>
+          <p style="margin: 0 0 10px; color: var(--ink-light);">本地运行后，按雨课堂题目提交：数组形状说明、按轴统计结果、至少两处关键步骤截图、简短输入-处理-输出说明。</p>
+        </section>
 
       </article>
     </main>
   </div>
+
+  <script>
+    (function () {
+      document.querySelectorAll('pre > code').forEach((code) => {
+        const pre = code.parentElement;
+        if (!pre || pre.querySelector('.copy-btn')) return;
+        const btn = document.createElement('button');
+        btn.className = 'copy-btn';
+        btn.type = 'button';
+        btn.textContent = '复制';
+        btn.addEventListener('click', async () => {
+          try {
+            await navigator.clipboard.writeText(code.innerText);
+            btn.dataset.state = 'ok';
+            btn.textContent = '已复制';
+            setTimeout(() => { delete btn.dataset.state; btn.textContent = '复制'; }, 1200);
+          } catch (e) {
+            const range = document.createRange();
+            range.selectNodeContents(code);
+            const sel = window.getSelection();
+            sel.removeAllRanges();
+            sel.addRange(range);
+            btn.textContent = '请 Ctrl+C';
+            setTimeout(() => { btn.textContent = '复制'; }, 1200);
+          }
+        });
+        pre.appendChild(btn);
+      });
+    })();
+  </script>
+  <script>
+    (function () {
+      const links = Array.from(document.querySelectorAll('.toc a[href^="#"]'));
+      const idToLink = new Map();
+      links.forEach((a) => {
+        const id = decodeURIComponent(a.getAttribute('href').slice(1));
+        if (id) idToLink.set(id, a);
+      });
+      const headings = Array.from(document.querySelectorAll('h2[id], h3[id], section[id]'))
+        .filter((h) => idToLink.has(h.id));
+      if (headings.length === 0) return;
+      const clear = () => links.forEach((a) => a.classList.remove('is-active'));
+      const setActive = (id) => { clear(); const a = idToLink.get(id); if (a) a.classList.add('is-active'); };
+      const initial = (location.hash && location.hash.slice(1)) || headings[0].id;
+      setActive(decodeURIComponent(initial));
+      const obs = new IntersectionObserver((entries) => {
+        const visible = entries.filter((e) => e.isIntersecting).sort((a, b) => (a.boundingClientRect.top - b.boundingClientRect.top));
+        if (visible.length > 0) setActive(visible[0].target.id);
+      }, { rootMargin: '-15% 0px -75% 0px', threshold: [0, 1] });
+      headings.forEach((h) => obs.observe(h));
+    })();
+  </script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/python.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script>hljs.highlightAll();</script>
   <script src="./split.js"></script>
+
 </body>
 </html>
