@@ -212,22 +212,6 @@ def std_toc(items, a="任务 A", b="任务 B"):
     ]
 
 
-def redirect(target, label):
-    return f"""<!DOCTYPE html>
-<html lang="zh-CN">
-<head>
-  <meta charset="UTF-8">
-  <meta http-equiv="refresh" content="0; url={target}">
-  <link rel="canonical" href="{target}">
-  <title>已迁移</title>
-</head>
-<body>
-  <p><a href="{target}">进入{label}</a></p>
-</body>
-</html>
-"""
-
-
 # ===================== LAB 11: scraping =====================
 body11 = f"""
         <section class="exercise" id="p1">
@@ -923,23 +907,6 @@ html13 = page(
 )
 (P / "sop13-platform.html").write_text(html13, encoding="utf-8")
 print("wrote sop13-platform", len(html13))
-
-# Redirects for compatibility
-(P / "sop11-api.html").write_text(
-    redirect("sop12-api.html", "实验12：Python API与大模型调用"), encoding="utf-8"
-)
-(P / "sop12-platform.html").write_text(
-    redirect("sop13-platform.html", "实验13：Python综合项目与Streamlit Web应用"),
-    encoding="utf-8",
-)
-(P / "sop10-api.html").write_text(
-    redirect("sop12-api.html", "实验12：Python API与大模型调用"), encoding="utf-8"
-)
-(P / "sop11-platform.html").write_text(
-    redirect("sop13-platform.html", "实验13：Python综合项目与Streamlit Web应用"),
-    encoding="utf-8",
-)
-print("redirects updated")
 
 # Practice index
 nav_items = LABS

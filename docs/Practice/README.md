@@ -33,18 +33,6 @@
 | 12 | Python API与大模型调用 | `sop12-api.html` | **新建**（承接原“API/大模型”主题） |
 | 13 | Python综合项目与Streamlit Web应用 | `sop13-platform.html` | **新建**（承接原实验 12） |
 
-### 旧链接兼容（重定向）
-
-| 旧路径 | 现指向 |
-|--------|--------|
-| `sop11-api.html` | `sop12-api.html` |
-| `sop12-platform.html` | `sop13-platform.html` |
-| `sop10-api.html` | `sop12-api.html` |
-| `sop11-platform.html` | `sop13-platform.html` |
-| `sop08-pandas-clean.html` | `sop09-pandas.html`（原有） |
-| `sop09-analysis.html` | `sop10-matplotlib.html`（原有） |
-| `sop06-dynamic.html` | （原有动态页，未改用途） |
-
 ## 3. 主要变动文件
 
 ### Practice
@@ -52,9 +40,9 @@
 - 更新：`index.html`（目录扩至 13 次）
 - 更新：`sop07-files.html` … `sop10-matplotlib.html`（标题/导语/页脚导航）
 - 新增：`sop11-web.html`、`sop12-api.html`、`sop13-platform.html`
-- 更新重定向：`sop11-api.html`、`sop12-platform.html`、`sop10-api.html`、`sop11-platform.html`
 - 页脚导航：`sop00`–`sop13` 均补充「上一节 / 下一节」
 - 本说明：`docs/Practice/README.md`
+- 已删除旧链接重定向页（`sop06-dynamic` / `sop08-pandas-clean` / `sop09-analysis` / `sop10-api` / `sop11-api` / `sop11-platform` / `sop12-platform`）
 
 ### Presentations（目录对齐）
 
@@ -105,6 +93,4 @@
 
 - [ ] 打开 Practice 首页，侧栏可见实验 1–13  
 - [ ] 依次打开实验 7–13，确认三大部分与可运行代码块齐全  
-- [ ] 访问旧 URL `Practice/sop11-api.html` 应跳到实验12  
-- [ ] 访问旧 URL `Practice/sop12-platform.html` 应跳到实验13  
 - [ ] 实验1–6正文与改版前一致（仅页脚导航可能新增）
