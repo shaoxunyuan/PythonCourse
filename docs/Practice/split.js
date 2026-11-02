@@ -42,7 +42,7 @@
     };
 
     resizer.addEventListener("pointerdown", (e) => {
-      if (window.matchMedia("(max-width: 980px)").matches) return;
+      if (window.matchMedia("(max-width: 1280px)").matches) return;
       dragging = true;
       shell.classList.add("is-resizing");
       resizer.classList.add("is-dragging");

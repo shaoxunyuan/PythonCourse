@@ -198,7 +198,7 @@ a:hover {
     color: var(--ink-muted);
 }
 
-@media (max-width: 980px) {
+@media (max-width: 1280px) {
     .book-shell {
         grid-template-columns: 1fr;
         height: auto;
@@ -728,7 +728,7 @@ a:hover {
     padding: 0 6px;
 }
 
-@media (max-width: 980px) {
+@media (max-width: 1280px) {
     .app-shell {
         grid-template-columns: 1fr;
     }

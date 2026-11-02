@@ -608,7 +608,7 @@ body.practice-index .book-main pre code {
 .practice-page .hljs-title.class_,
 .practice-page .hljs-title.function_ { color: #1d4ed8; }
 
-@media (max-width: 980px) {
+@media (max-width: 1280px) {
   .book-shell.practice-page,
   body.practice-index .book-shell {
     grid-template-columns: 1fr;
