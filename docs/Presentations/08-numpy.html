@@ -421,30 +421,30 @@
         <h1>NumPy：从循环到数组思维</h1>
         <p class="subtitle">以形状为线索，用数组运算代替逐元素循环</p>
         <div class="students">
-          <div class="chip">整体<br><strong>ndarray</strong></div>
-          <div class="chip">先看<br><strong>shape</strong></div>
-          <div class="chip">目标<br><strong>数组化</strong></div>
+          <div class="chip">对象<br><strong>ndarray</strong></div>
+          <div class="chip">形状<br><strong>shape</strong></div>
+          <div class="chip">运算<br><strong>vectorize</strong></div>
         </div>
-        <div class="band band-blue">NumPy 是 Python 数值计算的地基；这一讲重在想法的转变：把数组当作整体来操作。</div>
+        <div class="band band-blue">NumPy 是 Python 数值计算的基础；本讲聚焦思维方式的转变：将数组作为整体进行运算。</div>
         <div class="slide-footer"><span>Python高级应用 · NumPy 数组与数值计算</span><span>01</span></div>
       </section>
 
       <!-- 02 -->
       <section data-page="02">
-        <h2>本讲的思路：完成一次思维切换</h2>
+        <h2>本讲的思路：思维方式的转变</h2>
         <ul class="goals">
-          <li>重规则：记住形状与运算规则，函数名随时可以查</li>
-          <li>整体操作：把整个数组当成一个对象来操作</li>
-          <li>先看形状：动手前先 <code>print(x.shape, x.dtype)</code></li>
-          <li>小矩阵验证：每学一个概念，立刻用 3×2 矩阵试一次</li>
+          <li>重规则：掌握形状与运算规则，函数名可按需查阅</li>
+          <li>整体操作：将整个数组作为对象进行运算</li>
+          <li>先核对形状：运算前先输出 <code>print(x.shape, x.dtype)</code></li>
+          <li>小矩阵验证：每掌握一个概念，立即用 3×2 矩阵验证一次</li>
         </ul>
-        <div class="band band-blue">学到的标志：用一条数组运算替代整段循环。</div>
+        <div class="band band-blue">掌握程度的标志：能用一条数组运算替代整段循环。</div>
         <div class="slide-footer"><span>Python高级应用 · NumPy 数组与数值计算</span><span>02</span></div>
       </section>
 
       <!-- 03 -->
       <section data-page="03">
-        <h2>两种思维：逐个处理 vs 整体操作</h2>
+        <h2>两种处理方式：逐个处理与整体操作</h2>
         <div class="two-col">
           <div>
             <div class="col-head orange">逐个处理：for 循环</div>
@@ -462,17 +462,17 @@ out = los * 2
 # 描述“结果是什么”</code></pre>
           </div>
         </div>
-        <div class="band band-blue">同一件事，左边关心过程，右边直接表达结果——这就是本次思维切换。</div>
+        <div class="band band-blue">同一计算任务，左侧描述处理过程，右侧直接表达结果——这正是思维方式转变的体现。</div>
         <div class="slide-footer"><span>Python高级应用 · NumPy 数组与数值计算</span><span>03</span></div>
       </section>
 
       <!-- 04 -->
       <section data-page="04">
-        <h2>ndarray 的身体结构：四个属性</h2>
+        <h2>ndarray 的四个基本属性</h2>
         <pre><code class="language-python">x = np.array([[3, 5, 12], [2, 8, 6]])
 print(x.ndim, x.shape, x.dtype, x.size)</code></pre>
         <div class="term-table">
-          <div class="k">ndim</div><div>维度个数，也就是“有几个轴”</div>
+          <div class="k">ndim</div><div>维度个数，即数组的轴数</div>
           <div class="k">shape</div><div>每一维的长度，元组；本例 (2, 3)</div>
           <div class="k">dtype</div><div>元素类型，整个数组统一</div>
           <div class="k">size</div><div>元素总数，等于 shape 各维相乘</div>
@@ -482,14 +482,14 @@ print(x.ndim, x.shape, x.dtype, x.size)</code></pre>
 
       <!-- 05 -->
       <section data-page="05">
-        <h2>动手前先看形状</h2>
+        <h2>运算前先核对形状</h2>
         <pre><code class="language-python">x = np.array([[3, 5, 12],
               [2, 8, 6]])
 print(x.shape)   # (2, 3)
 print(x.dtype)   # 整数（int32 或 int64，随平台）
 print(x.ndim)    # 2</code></pre>
         <div class="band band-blue">二维 <code>shape</code> 读作 <code>(行, 列)</code>：2 行 3 列，共 6 个元素。</div>
-        <div class="band band-green">口头禅：动手前先打印形状；遇到报错，先核对形状与类型。</div>
+        <div class="band band-green">原则：运算前先输出形状；出现报错时，先核对形状与类型。</div>
         <div class="slide-footer"><span>Python高级应用 · NumPy 数组与数值计算</span><span>05</span></div>
       </section>
 
@@ -503,7 +503,7 @@ d = np.linspace(0, 1, 5)      # 0 到 1 等分 5 点
 e = np.array([1, 2.5, 3])     # 混合 → float64
 print(a.dtype, b.shape, e.dtype)</code></pre>
         <div class="band band-orange">一个数组只有一种 dtype；混合输入会被统一，整数遇到小数就变成浮点。</div>
-        <div class="band band-blue">先想“要什么形状、什么类型”，再选创建函数。</div>
+        <div class="band band-blue">先确定“目标形状与类型”，再选择创建函数。</div>
         <div class="slide-footer"><span>Python高级应用 · NumPy 数组与数值计算</span><span>06</span></div>
       </section>
 
@@ -517,7 +517,7 @@ print(a[0], a[-1])    # 3 4
 print(a[1:4])         # [5 12 2]
 print(m[0, 1])        # 5
 print(m[:, 1])        # [5 8]</code></pre>
-        <div class="band band-blue">逗号前是行、逗号后是列；冒号表示“这一维全要”。取完先看结果的 shape。</div>
+        <div class="band band-blue">逗号前为行、逗号后为列；冒号表示该维全部选取。选取后先核对结果 shape。</div>
         <div class="slide-footer"><span>Python高级应用 · NumPy 数组与数值计算</span><span>07</span></div>
       </section>
 
@@ -547,7 +547,7 @@ print(los[mask])       # [12 8]
 m = np.array([[3, 5, 12],
               [2, 9, 6]])
 print(m[m[:, 1] >= 8]) # [[2 9 6]] 按列条件选行</code></pre>
-        <div class="band band-green">mask 与原数组同形状；放进方括号就是筛选。按列条件选行：先取一列得到 mask，再按行取。</div>
+        <div class="band band-green">mask 与原数组同形状；放入方括号即可完成筛选。按列条件选行：先取一列得到 mask，再按行选取。</div>
         <div class="slide-footer"><span>Python高级应用 · NumPy 数组与数值计算</span><span>09</span></div>
       </section>
 
@@ -559,7 +559,7 @@ print(los + 1)        # [4 6 13 3 9]
 print(los * 2)        # [6 10 24 4 16]
 z = (los - los.mean()) / los.std()
 print(z.round(2))</code></pre>
-        <div class="band band-blue">标量与数组运算会作用到每个元素；整条表达式串起来，仍然没有循环。</div>
+        <div class="band band-blue">标量与数组运算会作用于每个元素；整条表达式串联起来，全程无循环。</div>
         <div class="slide-footer"><span>Python高级应用 · NumPy 数组与数值计算</span><span>10</span></div>
       </section>
 
@@ -583,7 +583,7 @@ los = np.array([3, 5, 12])
 out = (los - 3) ** 2</code></pre>
           </div>
         </div>
-        <div class="band band-blue">写法更短、意图更清楚；性能来自底层 C 循环，通常更快，具体数字以实测为准。</div>
+        <div class="band band-blue">写法更简洁、意图更清晰；性能来自底层 C 循环，通常更快，具体性能以实际测试为准。</div>
         <div class="slide-footer"><span>Python高级应用 · NumPy 数组与数值计算</span><span>11</span></div>
       </section>
 
@@ -602,14 +602,14 @@ print(np.where(a > 5, 1, 0))   # [0 0 1 0]</code></pre>
 
       <!-- 13 -->
       <section data-page="13">
-        <h2>聚合：把整个数组压成一个数</h2>
+        <h2>聚合：将数组归约为单个数值</h2>
         <pre><code class="language-python">los = np.array([3, 5, 12, 2, 8, 6, 4])
 print(los.sum())    # 40
 print(los.mean())   # 5.714285...
 print(los.max())    # 12
 print(los.min())    # 2
 print((los >= 8).mean())  # 0.2857 长住院占比</code></pre>
-        <div class="band band-blue">默认对全部元素聚合，一条调用就得到结果；布尔数组求 mean，就是满足条件的比例。</div>
+        <div class="band band-blue">默认对全部元素聚合，一次调用即可得到结果；布尔数组求 mean，即满足条件的比例。</div>
         <div class="slide-footer"><span>Python高级应用 · NumPy 数组与数值计算</span><span>13</span></div>
       </section>
 
@@ -621,7 +621,7 @@ print(X.sum(axis=0))   # [20 15] 每列
 print(X.sum(axis=1))   # [8 9 18] 每行
 print(X.mean(axis=0).shape)  # (2,)</code></pre>
         <div class="band band-orange"><code>axis</code> 指“被压掉的那一维”：axis=0 压掉行，按列汇总；axis=1 压掉列，按行汇总。</div>
-        <div class="band band-gray">记忆法：结果 shape = 原 shape 去掉 axis 这一维。</div>
+        <div class="band band-gray">记忆方法：结果 shape = 原 shape 去掉 axis 这一维。</div>
         <div class="slide-footer"><span>Python高级应用 · NumPy 数组与数值计算</span><span>14</span></div>
       </section>
 
@@ -633,7 +633,7 @@ print(X.mean(axis=0).shape)  # (2,)</code></pre>
           <div class="row"><div class="n">02</div><div>逐维比较：相等，或其中一个是 1，才算兼容</div></div>
           <div class="row"><div class="n">03</div><div>1 可扩展：长度为 1 的那一维，复制到另一侧的长度</div></div>
         </div>
-        <div class="band band-blue">三条同时成立才能算。先写 shape 推演，再写代码；例：(2,3) 与 (3,) → (1,3) → (2,3)。</div>
+        <div class="band band-blue">三条规则同时成立才能运算。先完成 shape 推演，再编写代码；例：(2,3) 与 (3,) → (1,3) → (2,3)。</div>
         <div class="slide-footer"><span>Python高级应用 · NumPy 数组与数值计算</span><span>15</span></div>
       </section>
 
@@ -653,7 +653,7 @@ print(X + col)                   # 每行加 1 / 加 2</code></pre>
 
       <!-- 17 -->
       <section data-page="17">
-        <h2>广播失败：读报错，修形状</h2>
+        <h2>广播失败：解析报错并修正形状</h2>
         <pre><code class="language-python">X = np.array([[1, 2, 3],
               [4, 5, 6]])        # (2, 3)
 y = np.array([10, 20])           # (2,)
@@ -666,7 +666,7 @@ print((X + y.reshape(2, 1)).shape)  # (2, 3)</code></pre>
 
       <!-- 18 -->
       <section data-page="18">
-        <h2>小矩阵验证法：3×2 走一遍</h2>
+        <h2>小矩阵验证法：3×2 矩阵示例</h2>
         <pre><code class="language-python">m = np.array([[3, 5],
               [2, 9],
               [8, 6]])            # (3, 2)
@@ -675,13 +675,13 @@ print(m[0])                       # [3 5]
 print(m[:, 1])                    # [5 9 6]
 print(m.sum(axis=0), m.sum(0).shape)  # [13 20] (2,)
 print((m + np.array([10, 20])).shape) # (3, 2)</code></pre>
-        <div class="band band-green">每学一个概念，就打印 shape 与结果，对照预期；小矩阵足够暴露所有形状问题。</div>
+        <div class="band band-green">每掌握一个概念，就输出 shape 与结果并对照预期；小矩阵足以暴露所有形状问题。</div>
         <div class="slide-footer"><span>Python高级应用 · NumPy 数组与数值计算</span><span>18</span></div>
       </section>
 
       <!-- 19 -->
       <section data-page="19">
-        <h2>综合小流程：住院天数</h2>
+        <h2>综合示例：住院天数</h2>
         <pre><code class="language-python">los = np.array([[3, 5],
                 [2, 9],
                 [8, 6]])              # (3, 2)
@@ -696,14 +696,14 @@ print(z.shape)                    # (3, 2) 按列广播</code></pre>
 
       <!-- 20 -->
       <section data-page="20">
-        <h2>常见坑：四类</h2>
+        <h2>常见错误：四类</h2>
         <div class="term-table">
           <div class="k">形状不匹配</div><div>(3,) 与 (3,1) 不同，广播前先右端对齐</div>
           <div class="k">视图改原数据</div><div>切片赋值会写回；需要独立数据用 .copy()</div>
-          <div class="k">axis 搞反</div><div>想按行汇总却写了 axis=0；先问“压掉哪一维”</div>
+          <div class="k">axis 方向错误</div><div>想按行汇总却写了 axis=0；先判断“压掉哪一维”</div>
           <div class="k">dtype 截断</div><div>整数数组存小数会截断；求均值前先转 float</div>
         </div>
-        <div class="band band-orange">这四类错误的共同点：动手前没看形状 / 类型。</div>
+        <div class="band band-orange">四类错误的共同原因：运算前未核对形状与类型。</div>
         <div class="slide-footer"><span>Python高级应用 · NumPy 数组与数值计算</span><span>20</span></div>
       </section>
 
@@ -712,11 +712,11 @@ print(z.shape)                    # (3, 2) 按列广播</code></pre>
         <h2>排错顺序：从形状与类型入手</h2>
         <div class="flow-list">
           <div class="row"><div class="n">01</div><div>找到报错那一行，看两个操作数</div></div>
-          <div class="row"><div class="n">02</div><div><code>print</code> 两边的 <code>shape</code> 与 <code>dtype</code></div></div>
+          <div class="row"><div class="n">02</div><div>输出两边的 <code>shape</code> 与 <code>dtype</code></div></div>
           <div class="row"><div class="n">03</div><div>按广播规则推演；同时核对视图与 dtype</div></div>
-          <div class="row"><div class="n">04</div><div>改形状或类型，用最小例子复跑一次</div></div>
+          <div class="row"><div class="n">04</div><div>改形状或类型，用最小示例重新验证</div></div>
         </div>
-        <div class="band band-blue">NumPy 的多数报错都在说“形状对不上”；先读 shapes，再决定改哪里。</div>
+        <div class="band band-blue">NumPy 的多数报错都指向“形状不一致”；先读取 shapes，再决定修改位置。</div>
         <div class="slide-footer"><span>Python高级应用 · NumPy 数组与数值计算</span><span>21</span></div>
       </section>
 
@@ -731,7 +731,7 @@ print(z.shape)                    # (3, 2) 按列广播</code></pre>
           <div class="chip">整体运算<br><strong>vectorize</strong></div>
           <div class="chip">axis 压维<br><strong>broadcast</strong></div>
         </div>
-        <div class="band band-green">形状先行，再看结果；用数组整体表达代替逐元素循环——这就是 NumPy 的思考方式。</div>
+        <div class="band band-green">形状先行，再核对结果；用数组整体表达替代逐元素循环——这是 NumPy 的思考方式。</div>
         <div class="slide-footer"><span>Python高级应用 · NumPy 数组与数值计算</span><span>22</span></div>
       </section>
 
