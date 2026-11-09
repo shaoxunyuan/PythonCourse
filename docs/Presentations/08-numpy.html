@@ -419,26 +419,26 @@
       <!-- 01 -->
       <section data-page="01">
         <h1>NumPy：从循环到数组思维</h1>
-        <p class="subtitle">以形状为线索，以不写循环为目标</p>
+        <p class="subtitle">以形状为线索，用数组运算代替逐元素循环</p>
         <div class="students">
           <div class="chip">整体<br><strong>ndarray</strong></div>
           <div class="chip">先看<br><strong>shape</strong></div>
-          <div class="chip">目标<br><strong>无 for</strong></div>
+          <div class="chip">目标<br><strong>数组化</strong></div>
         </div>
-        <div class="band band-blue">NumPy 是 Python 数值计算的地基；这一讲不背函数，只完成一次思维切换。</div>
+        <div class="band band-blue">NumPy 是 Python 数值计算的地基；这一讲重在想法的转变：把数组当作整体来操作。</div>
         <div class="slide-footer"><span>Python高级应用 · NumPy 数组与数值计算</span><span>01</span></div>
       </section>
 
       <!-- 02 -->
       <section data-page="02">
-        <h2>本讲只做一件事：完成思维切换</h2>
+        <h2>本讲的思路：完成一次思维切换</h2>
         <ul class="goals">
-          <li>不背函数：记住形状与规则，函数名随时可以查</li>
-          <li>整体操作：把整个数组当成一个对象，而不是一堆元素</li>
+          <li>重规则：记住形状与运算规则，函数名随时可以查</li>
+          <li>整体操作：把整个数组当成一个对象来操作</li>
           <li>先看形状：动手前先 <code>print(x.shape, x.dtype)</code></li>
           <li>小矩阵验证：每学一个概念，立刻用 3×2 矩阵试一次</li>
         </ul>
-        <div class="band band-blue">判断自己学会的标准：代码里的 <code>for</code> 循环消失了。</div>
+        <div class="band band-blue">学到的标志：用一条数组运算替代整段循环。</div>
         <div class="slide-footer"><span>Python高级应用 · NumPy 数组与数值计算</span><span>02</span></div>
       </section>
 
@@ -489,7 +489,7 @@ print(x.shape)   # (2, 3)
 print(x.dtype)   # 整数（int32 或 int64，随平台）
 print(x.ndim)    # 2</code></pre>
         <div class="band band-blue">二维 <code>shape</code> 读作 <code>(行, 列)</code>：2 行 3 列，共 6 个元素。</div>
-        <div class="band band-green">口头禅：先打印形状再动手；报错先看形状，而不是猜函数。</div>
+        <div class="band band-green">口头禅：动手前先打印形状；遇到报错，先核对形状与类型。</div>
         <div class="slide-footer"><span>Python高级应用 · NumPy 数组与数值计算</span><span>05</span></div>
       </section>
 
@@ -523,7 +523,7 @@ print(m[:, 1])        # [5 8]</code></pre>
 
       <!-- 08 -->
       <section data-page="08">
-        <h2>视图 vs 副本：改的是不是原数据</h2>
+        <h2>视图 vs 副本：谁会改动原数组</h2>
         <pre><code class="language-python">m = np.array([[3, 5, 12],
               [2, 8, 6]])
 v = m[0]            # 视图
@@ -532,7 +532,7 @@ print(m[0])         # [99 5 12] 原数组被改
 c = m.copy(); c[0, 0] = 1
 print(m[0, 0])      # 99 副本独立</code></pre>
         <div class="band band-orange">切片返回视图，赋值会写回原数组；需要独立数据就用 <code>.copy()</code>。</div>
-        <div class="band band-gray">布尔掩码与花式索引返回的是副本，不是视图。</div>
+        <div class="band band-gray">布尔掩码与花式索引返回副本，修改它们只作用于副本，原数组保持原样。</div>
         <div class="slide-footer"><span>Python高级应用 · NumPy 数组与数值计算</span><span>08</span></div>
       </section>
 
@@ -553,7 +553,7 @@ print(m[m[:, 1] >= 8]) # [[2 9 6]] 按列条件选行</code></pre>
 
       <!-- 10 -->
       <section data-page="10">
-        <h2>向量化：让 for 从代码里消失</h2>
+        <h2>向量化：用数组运算替代逐元素循环</h2>
         <pre><code class="language-python">los = np.array([3, 5, 12, 2, 8])
 print(los + 1)        # [4 6 13 3 9]
 print(los * 2)        # [6 10 24 4 16]
@@ -583,7 +583,7 @@ los = np.array([3, 5, 12])
 out = (los - 3) ** 2</code></pre>
           </div>
         </div>
-        <div class="band band-blue">写法更短、意图更清楚；性能来自底层 C 循环，通常更快，但不必夸大或背数字。</div>
+        <div class="band band-blue">写法更短、意图更清楚；性能来自底层 C 循环，通常更快，具体数字以实测为准。</div>
         <div class="slide-footer"><span>Python高级应用 · NumPy 数组与数值计算</span><span>11</span></div>
       </section>
 
@@ -609,7 +609,7 @@ print(los.mean())   # 5.714285...
 print(los.max())    # 12
 print(los.min())    # 2
 print((los >= 8).mean())  # 0.2857 长住院占比</code></pre>
-        <div class="band band-blue">默认对全部元素聚合，不需要循环；布尔数组求 mean，就是满足条件的比例。</div>
+        <div class="band band-blue">默认对全部元素聚合，一条调用就得到结果；布尔数组求 mean，就是满足条件的比例。</div>
         <div class="slide-footer"><span>Python高级应用 · NumPy 数组与数值计算</span><span>13</span></div>
       </section>
 
@@ -660,7 +660,7 @@ y = np.array([10, 20])           # (2,)
 # X + y → ValueError: shapes (2,3) and (2,)
 print((X + y[:, None]).shape)    # (2, 3)
 print((X + y.reshape(2, 1)).shape)  # (2, 3)</code></pre>
-        <div class="band band-orange">尾维 3 与 2 无法对齐 → 报错。<code>[:, None]</code> 或 <code>reshape</code> 把 y 变成 (2,1)，不要改函数名。</div>
+        <div class="band band-orange">尾维 3 与 2 无法对齐 → 报错。用 <code>[:, None]</code> 或 <code>reshape</code> 把 y 变成 (2,1)，形状就匹配了。</div>
         <div class="slide-footer"><span>Python高级应用 · NumPy 数组与数值计算</span><span>17</span></div>
       </section>
 
@@ -709,11 +709,11 @@ print(z.shape)                    # (3, 2) 按列广播</code></pre>
 
       <!-- 21 -->
       <section data-page="21">
-        <h2>排错顺序：先看形状，不猜函数</h2>
+        <h2>排错顺序：从形状与类型入手</h2>
         <div class="flow-list">
           <div class="row"><div class="n">01</div><div>找到报错那一行，看两个操作数</div></div>
           <div class="row"><div class="n">02</div><div><code>print</code> 两边的 <code>shape</code> 与 <code>dtype</code></div></div>
-          <div class="row"><div class="n">03</div><div>按广播规则推演；顺便确认是不是视图或类型问题</div></div>
+          <div class="row"><div class="n">03</div><div>按广播规则推演；同时核对视图与 dtype</div></div>
           <div class="row"><div class="n">04</div><div>改形状或类型，用最小例子复跑一次</div></div>
         </div>
         <div class="band band-blue">NumPy 的多数报错都在说“形状对不上”；先读 shapes，再决定改哪里。</div>
@@ -728,10 +728,10 @@ print(z.shape)                    # (3, 2) 按列广播</code></pre>
           <div class="chip">类型<br><strong>dtype</strong></div>
           <div class="chip">视图/副本<br><strong>copy</strong></div>
           <div class="chip">筛选<br><strong>mask</strong></div>
-          <div class="chip">不写循环<br><strong>vectorize</strong></div>
+          <div class="chip">整体运算<br><strong>vectorize</strong></div>
           <div class="chip">axis 压维<br><strong>broadcast</strong></div>
         </div>
-        <div class="band band-green">形状先行，再看结果；能用数组整体表达，就不写循环——这就是 NumPy 的思考方式。</div>
+        <div class="band band-green">形状先行，再看结果；用数组整体表达代替逐元素循环——这就是 NumPy 的思考方式。</div>
         <div class="slide-footer"><span>Python高级应用 · NumPy 数组与数值计算</span><span>22</span></div>
       </section>
 
